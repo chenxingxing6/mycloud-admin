@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>关注用户表</title>
+		<#include "/header.html">
+</head>
+<body>
+<div id="rrapp" v-cloak>
+    <div v-show="showList">
+        <div class="grid-btn">
+            <div class="form-group col-sm-2">
+                <input type="text" class="form-control" v-model="username" @keyup.enter="query" placeholder="请输入用户名">
+            </div>
+            <a class="btn btn-default" @click="query">搜索</a>
+        </div>
+        <div>
+            <div>
+                <h2>未关注的用户</h2>
+                <ul>
+                    <li v-for="info in followeds">
+                        用户名：{{ info.userName }}
+                        用户头像：{{ info.imgPath }}
+                        用户ID：{{ info.followUserId }}
+                    </li>
+                </ul>
+                <h2>已关注的用户</h2>
+                <ul>
+                    <li v-for="info in follow">
+                        用户名：{{ info.userName }}
+                        用户头像：{{ info.imgPath }}
+                        用户ID：{{ info.followUserId }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div v-show="!showList" class="panel panel-default">
+        <div class="panel-heading">{{title}}</div>
+       <!-- <form class="form-horizontal">
+					<div class="form-group">
+                        <div class="col-sm-2 control-label">用户ID</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="follow.fromUserId" placeholder="用户ID"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">被关注用户ID</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="follow.toUserId" placeholder="被关注用户ID"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">是否有效</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="follow.isValid" placeholder="是否有效"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">登录者</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="follow.createUser" placeholder="登录者"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">登录时间</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="follow.createTime" placeholder="登录时间"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">更新者</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="follow.opUser" placeholder="更新者"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">更新时间</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="follow.opTime" placeholder="更新时间"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">版本号</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="follow.lastVer" placeholder="版本号"/>
+                        </div>
+                    </div>
+							            <div class="form-group">
+                <div class="col-sm-2 control-label"></div>
+                <input type="button" class="btn btn-primary" @click="saveOrUpdate" value="确定"/>
+                &nbsp;&nbsp;<input type="button" class="btn btn-warning" @click="reload" value="返回"/>
+            </div>
+        </form>-->
+    </div>
+</div>
+
+<script src="${request.contextPath}/statics/libs/jquery.min.js"></script>
+<script src="${request.contextPath}/statics/libs/vue.min.js"></script>
+<script src="${request.contextPath}/statics/libs/router.js"></script>
+<script src="${request.contextPath}/statics/libs/bootstrap.min.js"></script>
+<script src="${request.contextPath}/statics/js/modules/front/follow.js?_${.now?long}"></script>
+<script src="${request.contextPath}/statics/libs/app.js"></script>
+</body>
+</html>
