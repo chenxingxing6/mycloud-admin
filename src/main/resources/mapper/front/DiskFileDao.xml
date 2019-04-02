@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.modules.front.dao.DiskFileDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.example.modules.front.entity.DiskFileEntity" id="diskFileMap">
+        <result property="id" column="id"/>
+        <result property="diskId" column="disk_id"/>
+        <result property="fileId" column="file_id"/>
+        <result property="isValid" column="is_valid"/>
+        <result property="createUser" column="create_user"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+
+</mapper>

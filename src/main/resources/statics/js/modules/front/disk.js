@@ -1,49 +1,72 @@
 var vm = new Vue({
 	el:'#rrapp',
 	data:{
-		current:"所有",
+		current:{name:"所有", type:0},
 		title:null,
         showCreateDir:false,
         showList:true,
-        types:[
-        	{name:"文件",type:1},
-            {name:"图片",type:2},
-            {name:"视频",type:3},
-            {name:"音乐",type:4},
-            {name:"文档",type:5}
-		],
+        items:[],
         files:[
-            {id:1,parentId:1,name:"文件名1.doc",type:1,time:"2014-10-13",url:"http://www.baidu.com"},
-            {id:2,parentId:1,name:"文件名2.doc",type:2,time:"2014-10-13",url:"http://www.baidu.com"},
-            {id:3,parentId:1,name:"文件名3.doc",type:3,time:"2014-10-13",url:"http://www.baidu.com"},
+            {id:1,parentId:1,name:"文件名1.doc",type:1,time:"2014-10-13",url:"http://193.112.27.123:8012/onlinePreview?url=http://193.112.27.123:8012/demo/%E5%92%95%E6%B3%A1%E5%AD%A6%E9%99%A2Java%E6%9E%B6%E6%9E%84%E5%B8%88VIP%E8%AF%BE%E7%A8%8B%E5%A4%A7.png"},
+            {id:2,parentId:1,name:"文件名2.doc",type:2,time:"2014-10-13",url:"http://193.112.27.123:8012/onlinePreview?url=http://193.112.27.123:8012/demo/XiaoYing_Video_1549677991268.mp4"},
+            {id:3,parentId:1,name:"文件名3.doc",type:3,time:"2014-10-13",url:"http://193.112.27.123:8012/onlinePreview?url=http://193.112.27.123:8012/demo/鞠文娴-BINGBIAN病变.mp3"},
             {id:4,parentId:1,name:"文件名4.doc",type:4,time:"2014-10-13",url:"http://www.baidu.com"},
             {id:5,parentId:1,name:"文件名5.doc",type:5,time:"2014-10-13",url:"http://www.baidu.com"}
         ],
-		file:{name:""}
+        sysDisk: {}
+
 	},
+    created: function () {
+        this.listDir();
+    },
 	methods: {
         clickFile: function (type, name) {
-			this.current = name;
+			this.current.name = name;
+			this.current.type = type;
 			if(type == 2){
-				this.files = null;
+				this.files = [];
 			}
 		},
         see: function (url) {
-            alert("see文件"+url);
+            layer.open({
+                type: 2,
+                area: ['700px', '450px'],
+                fixed: false, //不固定
+                maxmin: true,
+                content: url
+            });
+        },
+        reNameDir: function () {
+            if(this.current.type == 0){
+                layer.tips('请选择目录', '#reNameDir', {
+                    tips: [1, '#3595CC'],
+                    time: 4000
+                });
+                return;
+            }
+            this.title ="重命名";
+            this.showCreateDir = true;
+            this.showList = false;
+            this.sysDisk.name = this.current.name;
+            this.sysDisk.id = this.current.type;
         },
         delFile: function (id) {
             alert("del文件"+id);
         },
         createFile: function () {
-        	if(this.current === '所有'){
-                alert("不能为所有");
-                return;
-			}
 			this.title ="创建目录";
         	this.showCreateDir = true;
         	this.showList = false;
+            this.sysDisk = {};
         },
         uploadFile: function () {
+            if(this.current.type == 0){
+                layer.tips('不能为所有', '#createFile', {
+                    tips: [1, '#3595CC'],
+                    time: 4000
+                });
+                return;
+            }
             layer.open({
                 type: 2,
                 area: ['700px', '450px'],
@@ -53,13 +76,12 @@ var vm = new Vue({
             });
         },
 		saveOrUpdate: function (event) {
-        	var creatUrl = "front/file/createFile?dirName="+vm.dirName+"&originalDir="+vm.originalDir+"&parentId="+vm.parentId;
-			var url = vm.file.id == null ? creatUrl : "front/file/updateFile";
+			var url = vm.sysDisk.id == null ? "front/disk/createDir" : "front/disk/updateDir";
 			$.ajax({
 				type: "POST",
 			    url: baseURL + url,
                 contentType: "application/json",
-			    data: JSON.stringify(vm.file),
+			    data: JSON.stringify(vm.sysDisk),
 			    success: function(r){
 			    	if(r.code === 0){
 						alert('操作成功', function(index){
@@ -94,6 +116,14 @@ var vm = new Vue({
 				});
 			});
 		},
+        listDir: function(){
+            $.get(baseURL + "front/disk/listDir/", function(r){
+            	this.items = JSON.stringify(r.diskDirs);
+                console.log(this.items)
+                this.items = r.diskDirs;
+            	console.log(this.items)
+            });
+        },
 		getInfo: function(id){
 			$.get(baseURL + "front/file/info/"+id, function(r){
                 vm.file = r.file;

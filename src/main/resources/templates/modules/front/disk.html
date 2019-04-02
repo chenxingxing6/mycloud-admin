@@ -19,16 +19,18 @@
                 <div class="ibox float-e-margins">
                     <div class="ibox-content">
                         <div class="file-manager">
-                            <h5>显示：<a class="file-control active">{{current}}</a></h5>
+                            <h5>显示：<a class="file-control active">{{current.name}}</a></h5>
 
                             <div class="hr-line-dashed"></div>
                             <button class="btn btn-primary btn-block" @click="uploadFile()">上传文件</button>
                             <div class="hr-line-dashed"></div>
-                            <button class="btn btn-primary btn-block" @click="createFile()">创建目录</button>
+                            <button class="btn btn-primary btn-block" @click="createFile()" id="createFile">创建目录</button>
+                            <div class="hr-line-dashed"></div>
+                            <button class="btn btn-primary btn-block" @click="reNameDir()" id="reNameDir">重命名</button>
                             <div class="hr-line-dashed"></div>
                             <h5>文件夹</h5>
                             <ul class="folder-list" style="padding: 0">
-                                <li v-for="item in types">
+                                <li v-for="item in items">
                                     <a @click="clickFile(item.type,item.name)"><i class="fa fa-folder"></i>{{item.name}}</a>
                                 </li>
                             </ul>
@@ -64,9 +66,10 @@
             <div class="panel-heading">{{title}}</div>
             <form class="form-horizontal">
                 <div class="form-group">
+                    <input type="hidden" class="form-control" v-model="sysDisk.id"/>
                     <div class="col-sm-2 control-label">目录名</div>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" v-model="file.name" placeholder="目录名"/>
+                        <input type="text" class="form-control" v-model="sysDisk.name" placeholder="目录名"/>
                     </div>
                 </div>
                 <div class="form-group">

@@ -59,4 +59,16 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDeptEntity> i
 			deptIdList.add(deptId);
 		}
 	}
+
+	@Override
+	public Long getSuperDeptId(Long deptId) {
+		SysDeptEntity deptEntity = this.selectById(deptId);
+		while (deptEntity != null && deptEntity.getParentId() != 0){
+			deptEntity = this.selectById(deptEntity.getParentId());
+			if (deptEntity.getParentId() == 0){
+				break;
+			}
+		}
+		return deptEntity.getDeptId();
+	}
 }

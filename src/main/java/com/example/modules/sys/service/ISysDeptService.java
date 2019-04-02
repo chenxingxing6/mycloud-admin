@@ -26,4 +26,10 @@ public interface ISysDeptService extends IService<SysDeptEntity> {
 	 */
 	List<Long> getSubDeptIdList(Long deptId);
 
+
+	/**
+	 * 获取superID
+	 */
+	Long getSuperDeptId(Long deptId);
+
 }
