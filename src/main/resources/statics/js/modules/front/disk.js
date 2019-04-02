@@ -44,7 +44,13 @@ var vm = new Vue({
         	this.showList = false;
         },
         uploadFile: function () {
-            alert("createFile文件");
+            layer.open({
+                type: 2,
+                area: ['700px', '450px'],
+                fixed: false, //不固定
+                maxmin: true,
+                content: 'upload.html'
+            });
         },
 		saveOrUpdate: function (event) {
         	var creatUrl = "front/file/createFile?dirName="+vm.dirName+"&originalDir="+vm.originalDir+"&parentId="+vm.parentId;
