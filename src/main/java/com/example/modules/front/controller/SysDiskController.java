@@ -1,9 +1,7 @@
 package com.example.modules.front.controller;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.io.*;
+import java.util.*;
 
 import com.example.common.exception.BizException;
 import com.example.common.utils.PageUtils;
@@ -26,6 +24,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
+
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -87,7 +90,7 @@ public class SysDiskController extends AbstractController{
     public R update(@RequestBody SysDiskEntity sysDisk){
         ValidatorUtils.validateEntity(sysDisk);
         sysDiskService.updateAllColumnById(sysDisk);//全部更新
-        
+
         return R.ok();
     }
 
@@ -170,5 +173,29 @@ public class SysDiskController extends AbstractController{
             diskDirVos.add(vo);
         }
         return R.ok().put("diskDirs", diskDirVos);
+    }
+
+    /**
+     * 上传文件
+     */
+    @RequestMapping("/uploadFile")
+    public R uploadFile(HttpServletRequest request){
+        try {
+            CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());
+            if (multipartResolver.isMultipart(request)) {
+                MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+                multipartRequest.setCharacterEncoding("UTF-8");
+                Map<String, MultipartFile> fms = multipartRequest.getFileMap();
+                for (Map.Entry<String, MultipartFile> entity : fms.entrySet()) {
+                    MultipartFile multipartFile = entity.getValue();
+                    InputStream inputStream = multipartFile.getInputStream();
+                    int splitIndex = multipartFile.getOriginalFilename().lastIndexOf(".");
+                    String name = System.nanoTime() + "." + multipartFile.getOriginalFilename().substring(splitIndex + 1);
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+       return R.ok();
     }
 }
