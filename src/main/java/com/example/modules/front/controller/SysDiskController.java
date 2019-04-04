@@ -1,5 +1,6 @@
 package com.example.modules.front.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 
 /**
@@ -170,5 +172,20 @@ public class SysDiskController extends AbstractController{
             diskDirVos.add(vo);
         }
         return R.ok().put("diskDirs", diskDirVos);
+    }
+
+    @RequestMapping(value = "/uploadFile")
+    public String upload(@RequestParam("file") MultipartFile file, @RequestParam("name")String name) {
+        logger.info("name: "+name);
+        if (file.isEmpty()) {
+            return "文件为空";
+        }
+        // 获取文件名
+        String fileName = file.getOriginalFilename();
+        logger.info("上传的文件名为:" + fileName);
+        // 获取文件的后缀名
+        String suffixName = fileName.substring(fileName.lastIndexOf("."));
+        logger.info("上传的后缀名为:" + suffixName);
+        return "上传成功";
     }
 }
