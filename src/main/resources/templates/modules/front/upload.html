@@ -1,47 +1,293 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+
 <head>
-    <title>easyUploader</title>
-    <#include "/header.html">
-    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
-    <!-- 引入样式 -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcss.com/vue/2.5.13/vue.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        li {
+            list-style: none;
+        }
+
+        /*引入阿里的icon*/
+
+        @font-face {
+            font-family: "iconfont";
+            src: url('iconfont.eot?t=1534844614970');
+            /* IE9*/
+            src: url('iconfont.eot?t=1534844614970#iefix') format('embedded-opentype'), /* IE6-IE8 */
+            url('data:application/x-font-woff;charset=utf-8;base64,d09GRgABAAAAAATgAAsAAAAAB1AAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAABHU1VCAAABCAAAADMAAABCsP6z7U9TLzIAAAE8AAAARAAAAFY8qEgkY21hcAAAAYAAAABLAAABcOdatkBnbHlmAAABzAAAASwAAAFY2/C2dWhlYWQAAAL4AAAALwAAADYSY0OKaGhlYQAAAygAAAAcAAAAJAfeA4NobXR4AAADRAAAAAgAAAAICAAAAGxvY2EAAANMAAAABgAAAAYArAAAbWF4cAAAA1QAAAAgAAAAIAEPAH1uYW1lAAADdAAAAUUAAAJtPlT+fXBvc3QAAAS8AAAAIwAAADQ9SsrveJxjYGRgYOBikGPQYWB0cfMJYeBgYGGAAJAMY05meiJQDMoDyrGAaQ4gZoOIAgCKIwNPAHicY2BkYWCcwMDKwMHUyXSGgYGhH0IzvmYwYuRgYGBiYGVmwAoC0lxTGByeGT0zYm7438AQw9zA0AAUZgTJAQDk9QxHeJxjYGBgZWBgYAZiHSBmYWBgDGFgZAABP6AoI1icmYELLM7CoARWwwISf2b0/z+MBPJZwCQDIxvDKOABkzJQHjisIJiBEQCjLgoxAHicHY3BTsJAGIR3drv/0hZaqXVLIKJSugVNQAOUxCKYeNKLMTHRB+Bi4sGTD2B8GV8C4zNxJepC/vxzmMzMxwRjfz/iW1wzn52xN8YQQLWRzDEdQJA60Co1C5gJhSAzLbZ3BB1TZwgjY2XTaceMixK2UZi8Y2u5Iesb+3ZIl9CJppTyAYaYFFObG21XEp3EI30EzlYbKTernX6B89ALAAFuvARwsiwI7sgPyXBo7p6ffLqe737Eh1K2Wxrifn65bKhKFjXbTtpS6rUu4LvlrFcSwL2y59Dpy/vjQMmZB7HYgRxnq78PwDqSMlpbHM9cv6pk1q3Vbin0KeNdomMDr+4h2W/2uF48+2o03kvhVPpF5gChW7WEoi8SonyIaNloPV3cyPoVZ+wfIBIx1XicY2BkYGAA4r3qZgbx/DZfGbhZGEDg+sL/xxD0/4MsDMwOQC4HAxNIFAA6yguGAHicY2BkYGBu+N/AEMPCAAJAkpEBFTABAEcIAmsEAAAABAAAAAAAAAAArAAAAAEAAAACAHEAAwAAAAAAAgAAAAoACgAAAP8AAAAAAAB4nGWPTU7DMBCFX/oHpBKqqGCH5AViASj9EatuWFRq911036ZOmyqJI8et1ANwHo7ACTgC3IA78EgnmzaWx9+8eWNPANzgBx6O3y33kT1cMjtyDRe4F65TfxBukF+Em2jjVbhF/U3YxzOmwm10YXmD17hi9oR3YQ8dfAjXcI1P4Tr1L+EG+Vu4iTv8CrfQ8erCPuZeV7iNRy/2x1YvnF6p5UHFockikzm/gple75KFrdLqnGtbxCZTg6BfSVOdaVvdU+zXQ+ciFVmTqgmrOkmMyq3Z6tAFG+fyUa8XiR6EJuVYY/62xgKOcQWFJQ6MMUIYZIjK6Og7VWb0r7FDwl57Vj3N53RbFNT/c4UBAvTPXFO6stJ5Ok+BPV8bUnV0K27LnpQ0kV7NSRKyQl7WtlRC6gE2ZVeOEXpc0Yk/KGdI/wAJWm7IAAAAeJxjYGKAAC4G7ICJkYmRmYGrOCMxLz05ozQxj4EBACJZBEAA') format('woff'), url('iconfont.ttf?t=1534844614970') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
+            url('iconfont.svg?t=1534844614970#iconfont') format('svg');
+            /* iOS 4.1- */
+        }
+
+        .iconfont {
+            font-family: "iconfont" !important;
+            font-size: 16px;
+            font-style: normal;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .icon-shangchuan:before {
+            content: "\e632";
+        }
+
+
+        .iconfont {
+            font-family: "iconfont";
+            font-size: 18px;
+            font-style: normal;
+            -webkit-font-smoothing: antialiased;
+            -webkit-text-stroke-width: 0.2px;
+            -moz-osx-font-smoothing: grayscale;
+            padding-left: 20px
+        }
+
+        .uploadBox {
+            width: 400px;
+            border: 1px solid #ccc;
+            margin: 100px auto;
+        }
+
+        .fileBox,
+        .fileInfo {
+            margin: 16px;
+            height: 60px;
+            line-height: 60px;
+            border: 1px solid #ccc;
+            padding-left: 16px;
+            font-size: 16px;
+        }
+
+        .inputfile {
+            width: 0.1px;
+            height: 0.1px;
+            opacity: 0;
+            overflow: hidden;
+            position: absolute;
+            z-index: -1;
+        }
+
+        /*E + F 毗邻元素选择器，匹配所有紧随E元素之后的同级元素F*/
+
+        .inputfile+label {
+            color: #3e97df;
+            display: inline-block;
+        }
+
+        .inputfile:focus+label,
+        .inputfile+label:hover {
+            color: #0c89f0;
+        }
+
+        h3 {
+            padding: 10px 0 0 16px;
+            font-weight: normal;
+            font-size: 18px;
+            color: #666;
+        }
+
+        .filePart {
+            line-height: 30px;
+            overflow: hidden;
+            float: left;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            font-size: 12px;
+            height: 30px;
+        }
+
+        .fileStatus {
+            overflow: hidden;
+            float: left;
+            height: 20px;
+            font-size: 10px;
+            line-height: 20px;
+        }
+
+        .ml10 {
+            margin-left: 10px;
+        }
+
+        .fileName {
+            width: 200px;
+        }
+
+        .fileSize {
+            width: 120px;
+            text-align: center;
+        }
+
+        .uploadFail {
+            color: #ff0800d3;
+        }
+
+        .uploadSuccess {
+            color: #2c832c;
+        }
+
+        /*对应CSS*/
+
+        .progress {
+            position: relative;
+            width: 80%;
+            height: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            overflow: hidden;
+            /*注意这里*/
+            box-shadow: 0 0 1px 0px #ddd inset;
+        }
+
+        .progress span {
+            position: absolute;
+            display: inline-block;
+            width: 10%;
+            height: 100%;
+            background-color: #3e97df;
+        }
+    </style>
+    <title>Document</title>
 </head>
+
 <body>
-<div id="rrapp">
-    <el-upload
-            class="upload-demo"
-            action="https://jsonplaceholder.typicode.com/posts/"
-            :on-preview="handlePreview"
-            :on-remove="handleRemove"
-            :before-remove="beforeRemove"
-            multiple
-            :limit="3"
-            :on-exceed="handleExceed"
-            :file-list="fileList">
-        <el-button size="small" type="primary">点击上传</el-button>
-    </el-upload>
+<div id="app" class="m-5">
+    <div class="uploadBox">
+        <h3>上传文件</h3>
+        <div class="fileBox">
+            <input type="file" id="myFile" class="inputfile" @change="handlerUpload($event)">
+            <label for="myFile">
+                <i class="iconfont">&#xe632;</i>点击上传本地文件
+            </label>
+        </div>
+        <ul class="files">
+            <li v-for="(file, index) in files">
+                <div class="fileInfo">
+
+                    <div class="fileName filePart">
+                        {{ file.name }}
+                    </div>
+                    <div class="fileSize filePart ml10">
+                        {{file.size}}
+                    </div>
+                    <!--进度条-->
+                    <div class="progress">
+                        <span :style="{width:file.uploadPercentage,backgroundColor:file.uploadStatus==1 ||file.uploadStatus==2?'':'red'}"></span>
+                    </div>
+                    <div class="fileStatus">
+                        <span v-if="file.uploadStatus == -1" class="uploadFail">出错啦，请重新上传或者删除</span>
+                        <span v-if="file.uploadStatus == 2" class="uploadSuccess"> 已上传</span>
+                        <span v-if="file.uploadStatus == 1" class="uploadSuccess"> 上传中...</span>
+                        <span v-if="file.uploadStatus == -2" class="uploadFail">出错啦，文件类型不符合要求</span>
+                        <span v-if="file.uploadStatus == -3" class="uploadFail">出错啦，文件大小超出限制</span>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
 </div>
-<!-- 引入组件库 -->
-<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+</div>
 <script>
-    var vm = new Vue({
-        el:'#rrapp',
-        data:{
-            fileList: [{name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}, {name: 'food2.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}]
+    new Vue({
+        el: '#app',
+        data: {
+            files: [],
+            uploadSuccess: 0
         },
         methods: {
-            submitUpload() {
-                this.$refs.upload.submit();
+            handlerUpload: function (e) {
+                //获取选定的文件
+                let tFiles = e.target.files;
+                let len = tFiles.length;
+                for (var i = 0; i < len; i++) {
+                    //开始上传每一个文件
+                    var item = {
+                        name: tFiles[i].name,
+                        uploadPercentage: 1,
+                        size: this.formatFileSize(tFiles[i].size, 0),
+                        uploadStatus: 0
+                    }
+                    console.log(item)
+                    this.files.push(item);
+                    //开始上传文件 新建一个formData
+                    let param = new FormData();
+                    param.append("name", "wiiiiiinney");
+                    //通过append向form对象添加数据
+                    param.append("file", tFiles[i]);
+                    //FormData私有类对象，访问不到，可以通过get判断值是否传进去
+                    console.log(param.get("file"));
+                    //判断大小
+                    if (!this.checkFileSize(tFiles[i].size)) {
+                        item.uploadStatus = -3;
+                        return false;
+                    }
+                    if (!this.checkFileType(tFiles[i].name.split('.')[1])) {
+                        item.uploadStatus = -2;
+                        return false;
+                    }
+                    //通过axios上传文件
+                    //配置
+                    let config = {
+                        //添加请求头
+                        headers: {
+                            "Content-Type": "multipart/form-data"
+                        },
+                        //添加上传进度监听事件
+                        onUploadProgress: e => {
+                        var completeProgress = ((e.loaded / e.total * 100) | 0) + "%";
+                    console.log(this.files)
+                    item.uploadPercentage = completeProgress;
+                }
+                };
+                    axios.post('http://localhost:9000/front/disk/uploadFile', param, config).then(function (
+                        response) {
+                        console.log(response);
+                        item.uploadStatus = 2;
+                    }).catch(function (error) {
+                        console.log(error);
+                        item.uploadStatus = -1;
+                    });
+                }
             },
-            handleRemove(file, fileList) {
-                console.log(file, fileList);
+            formatFileSize: function (fileSize, idx) {
+                var units = ["B", "KB", "MB", "GB"];
+                idx = idx || 0;
+                if (fileSize < 1024 || idx === units.length - 1) {
+                    return fileSize.toFixed(1) +
+                        units[idx];
+                }
+                return this.formatFileSize(fileSize / 1024, ++idx);
             },
-            handlePreview(file) {
-                console.log(file);
+            checkFileType: function (fileType) {
+                const acceptTypes = ['xls', 'doc', 'jpg'];
+                for (var i = 0; i < acceptTypes.length; i++) {
+                    if (fileType === acceptTypes[i]) {
+                        return true;
+                    }
+                }
+                return false;
+            },
+            checkFileSize: function (fileSize) {
+                //2M
+                const MAX_SIZE = 2 * 1024 * 1024;
+                if (fileSize > MAX_SIZE) {
+                    return false;
+                }
+                return true;
             }
         }
     });
 </script>
-
 </body>
+
 </html>

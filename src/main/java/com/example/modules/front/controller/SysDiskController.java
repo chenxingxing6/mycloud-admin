@@ -1,7 +1,10 @@
 package com.example.modules.front.controller;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 import com.example.common.exception.BizException;
 import com.example.common.utils.PageUtils;
@@ -25,10 +28,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.multipart.commons.CommonsMultipartResolver;
-
-import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -175,28 +174,18 @@ public class SysDiskController extends AbstractController{
         return R.ok().put("diskDirs", diskDirVos);
     }
 
-    /**
-     * 上传文件
-     */
-    @RequestMapping("/uploadFile")
-    public R uploadFile(HttpServletRequest request, @RequestParam("file") MultipartFile file){
-        try {
-            System.out.println(file);
-            CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());
-            if (multipartResolver.isMultipart(request)) {
-                MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
-                multipartRequest.setCharacterEncoding("UTF-8");
-                Map<String, MultipartFile> fms = multipartRequest.getFileMap();
-                for (Map.Entry<String, MultipartFile> entity : fms.entrySet()) {
-                    MultipartFile multipartFile = entity.getValue();
-                    InputStream inputStream = multipartFile.getInputStream();
-                    int splitIndex = multipartFile.getOriginalFilename().lastIndexOf(".");
-                    String name = System.nanoTime() + "." + multipartFile.getOriginalFilename().substring(splitIndex + 1);
-                }
-            }
-        }catch (Exception e){
-            e.printStackTrace();
+    @RequestMapping(value = "/uploadFile")
+    public String upload(@RequestParam("file") MultipartFile file, @RequestParam("name")String name) {
+        logger.info("name: "+name);
+        if (file.isEmpty()) {
+            return "文件为空";
         }
-       return R.ok();
+        // 获取文件名
+        String fileName = file.getOriginalFilename();
+        logger.info("上传的文件名为:" + fileName);
+        // 获取文件的后缀名
+        String suffixName = fileName.substring(fileName.lastIndexOf("."));
+        logger.info("上传的后缀名为:" + suffixName);
+        return "上传成功";
     }
 }
