@@ -1,10 +1,13 @@
 var vm = new Vue({
-	el:'#rrapp',
-	data:{
-		current:{name:"所有", type:0},
-		title:null,
+    el:'#rrapp',
+    data:{
+        current:{
+            name: "所有",
+            type: 0
+        },
+        showList: true,
+        title:null,
         showCreateDir:false,
-        showList:true,
         items:[],
         files:[
             {id:1,parentId:1,name:"文件名1.doc",type:1,time:"2014-10-13",url:"http://193.112.27.123:8012/onlinePreview?url=http://193.112.27.123:8012/demo/%E5%92%95%E6%B3%A1%E5%AD%A6%E9%99%A2Java%E6%9E%B6%E6%9E%84%E5%B8%88VIP%E8%AF%BE%E7%A8%8B%E5%A4%A7.png"},
@@ -14,19 +17,32 @@ var vm = new Vue({
             {id:5,parentId:1,name:"文件名5.doc",type:5,time:"2014-10-13",url:"http://www.baidu.com"}
         ],
         sysDisk: {}
-
-	},
+    },
     created: function () {
+        console.log(this)
         this.listDir();
     },
-	methods: {
+    methods: {
+        listDir: function(){
+            var _this = this
+            axios.get(baseURL +'front/disk/listDir')
+                .then(function (res) {
+                    console.log(res.data);
+                    _this.items = res.data.diskDirs;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                })
+                .then(function () {
+                });
+        },
         clickFile: function (type, name) {
-			this.current.name = name;
-			this.current.type = type;
-			if(type == 2){
-				this.files = [];
-			}
-		},
+            this.current.name = name;
+            this.current.type = type;
+            if(type == 2){
+                this.files = [];
+            }
+        },
         see: function (url) {
             layer.open({
                 type: 2,
@@ -54,9 +70,9 @@ var vm = new Vue({
             alert("del文件"+id);
         },
         createFile: function () {
-			this.title ="创建目录";
-        	this.showCreateDir = true;
-        	this.showList = false;
+            this.title ="创建目录";
+            this.showCreateDir = true;
+            this.showList = false;
             this.sysDisk = {};
         },
         uploadFile: function () {
@@ -69,70 +85,63 @@ var vm = new Vue({
             }
             layer.open({
                 type: 2,
-                area: ['700px', '450px'],
+                area: ['780px', '650px'],
                 fixed: false, //不固定
                 maxmin: true,
                 content: 'upload.html'
             });
         },
-		saveOrUpdate: function (event) {
-			var url = vm.sysDisk.id == null ? "front/disk/createDir" : "front/disk/updateDir";
-			$.ajax({
-				type: "POST",
-			    url: baseURL + url,
+        saveOrUpdate: function (event) {
+            var url = vm.sysDisk.id == null ? "front/disk/createDir" : "front/disk/updateDir";
+            $.ajax({
+                type: "POST",
+                url: baseURL + url,
                 contentType: "application/json",
-			    data: JSON.stringify(vm.sysDisk),
-			    success: function(r){
-			    	if(r.code === 0){
-						alert('操作成功', function(index){
-							vm.reload();
-						});
-					}else{
-						alert(r.msg);
-					}
-				}
-			});
-		},
-		del: function (event) {
-			var ids = getSelectedRows();
-			if(ids == null){
-				return ;
-			}
-			confirm('确定要删除选中的记录？', function(){
-				$.ajax({
-					type: "POST",
-				    url: baseURL + "front/file/deleteFileOrFolder",
-                    contentType: "application/json",
-				    data: JSON.stringify(ids),
-				    success: function(r){
-						if(r.code == 0){
-							alert('操作成功', function(index){
-								$("#jqGrid").trigger("reloadGrid");
-							});
-						}else{
-							alert(r.msg);
-						}
-					}
-				});
-			});
-		},
-        listDir: function(){
-            $.get(baseURL + "front/disk/listDir/", function(r){
-            	this.items = JSON.stringify(r.diskDirs);
-                console.log(this.items)
-                this.items = r.diskDirs;
-            	console.log(this.items)
+                data: JSON.stringify(vm.sysDisk),
+                success: function(r){
+                    if(r.code === 0){
+                        alert('操作成功', function(index){
+                            vm.reload();
+                        });
+                    }else{
+                        alert(r.msg);
+                    }
+                }
             });
         },
-		getInfo: function(id){
-			$.get(baseURL + "front/file/info/"+id, function(r){
+        del: function (event) {
+            var ids = getSelectedRows();
+            if(ids == null){
+                return ;
+            }
+            confirm('确定要删除选中的记录？', function(){
+                $.ajax({
+                    type: "POST",
+                    url: baseURL + "front/file/deleteFileOrFolder",
+                    contentType: "application/json",
+                    data: JSON.stringify(ids),
+                    success: function(r){
+                        if(r.code == 0){
+                            alert('操作成功', function(index){
+                                $("#jqGrid").trigger("reloadGrid");
+                            });
+                        }else{
+                            alert(r.msg);
+                        }
+                    }
+                });
+            });
+        },
+        getInfo: function(id){
+            $.get(baseURL + "front/file/info/"+id, function(r){
                 vm.file = r.file;
             });
-		},
-		reload: function (event) {
+        },
+        reload: function (event) {
             this.title = null;
             this.showCreateDir = false;
             this.showList = true;
-		}
-	}
+            this.listDir();
+        },
+    }
 });

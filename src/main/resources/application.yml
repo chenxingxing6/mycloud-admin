@@ -36,14 +36,19 @@ spring:
   freemarker:
     suffix: .html
     request-context-attribute: request
-#  cloud:
-#    config:
-#      discovery:
-#        enabled: false      #开启配置服务发现
-#      name: mycloud-admin  #文件前缀名称
-#      profile: dev
-#      uri: http://localhost:8888/
-      #label: master  #配置文件所在分支
+    cache: false
+  devtools:
+    restart:
+      enabled: true
+
+    #  cloud:
+    #    config:
+    #      discovery:
+    #        enabled: false      #开启配置服务发现
+    #      name: mycloud-admin  #文件前缀名称
+    #      profile: dev
+    #      uri: http://localhost:8888/
+    #label: master  #配置文件所在分支
 
 
 mycloud:

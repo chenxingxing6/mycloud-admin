@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>文件管理器</title>
     <#include "/header.html">
     <link href="${request.contextPath}/statics/hplus/css/font-awesome.min93e3.css?v=4.4.0" rel="stylesheet">
@@ -12,15 +10,14 @@
     <link href="${request.contextPath}/statics/hplus/css/style.min862f.css?v=4.1.0" rel="stylesheet">
 </head>
 <body class="gray-bg">
-    <div class="wrapper wrapper-content" id="rrapp" v-cloak>
-        <div v-show="showList">
-           <div class="row">
+<div class="wrapper wrapper-content" id="rrapp" v-cloak>
+    <div v-show="showList">
+        <div class="row">
             <div class="col-sm-3">
                 <div class="ibox float-e-margins">
                     <div class="ibox-content">
                         <div class="file-manager">
                             <h5>显示：<a class="file-control active">{{current.name}}</a></h5>
-
                             <div class="hr-line-dashed"></div>
                             <button class="btn btn-primary btn-block" @click="uploadFile()">上传文件</button>
                             <div class="hr-line-dashed"></div>
@@ -41,18 +38,27 @@
             </div>
             <div class="col-sm-9 animated fadeInRight">
                 <div class="row">
- 				<div class="col-sm-12">
-                	  <div class="file-box" v-for="file in files">
+                    <div class="col-sm-12">
+                        <div class="file-box" v-if="files===null || files.length===0">
+                            <div class="file">
+                                <a>
+                                    <span class="corner"></span>
+                                    <div class="icon"><i class="fa fa-file"></i></div>
+                                </a>
+                                <a><div class="file-name">{{current.name}}里面什么都没有<br/></div></a>
+                            </div>
+                        </div>
+                        <div class="file-box" v-for="file in files">
                             <div class="file">
                                 <a @click="see(file.url)">
                                     <span class="corner"></span>
                                     <div class="icon"><i class="fa fa-file"></i></div>
                                 </a>
                                 <a @click="delFile(file.id)">
-                                <div class="file-name">{{file.name}}<br/>
-                                    <small>添加时间：{{file.time}}</small>&nbsp;&nbsp;
-                                    <i class="fa fa-trash-o" aria-hidden="true"></i>
-                                </div>
+                                    <div class="file-name">{{file.name}}<br/>
+                                        <small>添加时间：{{file.time}}</small>&nbsp;&nbsp;
+                                        <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                    </div>
                                 </a>
                             </div>
                         </div>
@@ -60,34 +66,33 @@
                 </div>
             </div>
         </div>
-        </div>
-
-        <div v-show="showCreateDir" class="panel panel-default">
-            <div class="panel-heading">{{title}}</div>
-            <form class="form-horizontal">
-                <div class="form-group">
-                    <input type="hidden" class="form-control" v-model="sysDisk.id"/>
-                    <div class="col-sm-2 control-label">目录名</div>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" v-model="sysDisk.name" placeholder="目录名"/>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-sm-2 control-label"></div>
-                    <input type="button" class="btn btn-primary" @click="saveOrUpdate" value="确定"/>
-                    &nbsp;&nbsp;<input type="button" class="btn btn-warning" @click="reload" value="返回"/>
-                </div>
-            </form>
-        </div>
     </div>
+    <div v-show="showCreateDir" class="panel panel-default">
+        <div class="panel-heading">{{title}}</div>
+        <form class="form-horizontal">
+            <div class="form-group">
+                <input type="hidden" class="form-control" v-model="sysDisk.id"/>
+                <div class="col-sm-2 control-label">目录名</div>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" v-model="sysDisk.name" placeholder="目录名"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2 control-label"></div>
+                <input type="button" class="btn btn-primary" @click="saveOrUpdate" value="确定"/>
+                &nbsp;&nbsp;<input type="button" class="btn btn-warning" @click="reload" value="返回"/>
+            </div>
+        </form>
+    </div>
+    <div v-show="uploadFile" class="panel panel-default">
 
+    </div>
+</div>
 
-    <script src="${request.contextPath}/statics/hplus/js/jquery.min.js?v=2.1.4"></script>
-    <script src="${request.contextPath}/statics/layer/layer.js?v=2.1.4"></script>
-    <script src="${request.contextPath}/statics/hplus/js/bootstrap.min.js?v=3.3.6"></script>
-    <script>
-        $(document).ready(function(){$(".file-box").each(function(){animationHover(this,"pulse")})});
-    </script>
-    <script src="${request.contextPath}/statics/js/modules/front/disk.js?_${.now?long}"></script>
+<script src="${request.contextPath}/statics/hplus/js/jquery.min.js?v=2.1.4"></script>
+<script src="${request.contextPath}/statics/layer/layer.js?v=2.1.4"></script>
+<script src="${request.contextPath}/statics/js/axios.min.js"></script>
+<script src="${request.contextPath}/statics/hplus/js/bootstrap.min.js?v=3.3.6"></script>
+<script src="${request.contextPath}/statics/js/modules/front/disk.js?_${.now?long}"></script>
 </body>
 </html>

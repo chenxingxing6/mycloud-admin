@@ -89,7 +89,7 @@ public class SysDiskController extends AbstractController{
     public R update(@RequestBody SysDiskEntity sysDisk){
         ValidatorUtils.validateEntity(sysDisk);
         sysDiskService.updateAllColumnById(sysDisk);//全部更新
-        
+
         return R.ok();
     }
 

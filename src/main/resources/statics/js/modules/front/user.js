@@ -74,6 +74,7 @@ var vm = new Vue({
     },
     methods: {
         query: function () {
+            console.log(this)
             vm.reload();
         },
         add: function(){
