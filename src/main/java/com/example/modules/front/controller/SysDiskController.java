@@ -1,16 +1,26 @@
 package com.example.modules.front.controller;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import com.example.common.constants.FileEnum;
+import com.example.common.constants.FileTypeEnum;
+import com.example.common.constants.ViewEnum;
 import com.example.common.exception.BizException;
+import com.example.common.utils.FilesUtil;
+import com.example.common.utils.IdGen;
 import com.example.common.utils.PageUtils;
 import com.example.common.utils.R;
 import com.example.common.validator.ValidatorUtils;
+import com.example.modules.front.entity.DiskFileEntity;
+import com.example.modules.front.entity.FileEntity;
 import com.example.modules.front.entity.SysDiskEntity;
+import com.example.modules.front.service.DiskFileService;
+import com.example.modules.front.service.FileService;
 import com.example.modules.front.service.SysDiskService;
 import com.example.modules.front.vo.DiskDirVo;
 import com.example.modules.sys.controller.AbstractController;
@@ -22,6 +32,7 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,11 +52,15 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("front/disk")
 public class SysDiskController extends AbstractController{
     private static final Logger logger = LoggerFactory.getLogger(SysDiskController.class);
-
+    final static IdGen idGen = IdGen.get();
     @Autowired
     private SysDiskService sysDiskService;
     @Autowired
     private ISysDeptService sysDeptService;
+    @Autowired
+    private FileService fileService;
+    @Autowired
+    private DiskFileService diskFileService;
 
     /**
      * 列表
@@ -175,17 +190,53 @@ public class SysDiskController extends AbstractController{
     }
 
     @RequestMapping(value = "/uploadFile")
-    public String upload(@RequestParam("file") MultipartFile file, @RequestParam("name")String name) {
-        logger.info("name: "+name);
-        if (file.isEmpty()) {
-            return "文件为空";
+    public R upload(@RequestParam("file") MultipartFile file, @RequestParam("diskId")String diskId) {
+        try {
+            if (file.isEmpty()) {
+                return R.error("文件为空");
+            }
+            SysUserEntity userEntity = getUser();
+            InputStream is = file.getInputStream();
+            uploadFile(is, file, userEntity, diskId);
+            is.close();
+        } catch (Exception e){
+            logger.error("文件上传失败",e);
+            throw new BizException("文件上传失败");
         }
+        return R.ok("上传成功");
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void uploadFile(InputStream is, MultipartFile file, SysUserEntity userEntity, String diskId){
         // 获取文件名
         String fileName = file.getOriginalFilename();
-        logger.info("上传的文件名为:" + fileName);
         // 获取文件的后缀名
-        String suffixName = fileName.substring(fileName.lastIndexOf("."));
-        logger.info("上传的后缀名为:" + suffixName);
-        return "上传成功";
+        String suffixName = FilesUtil.getFileSufix(fileName);
+        //创建文件
+        FileEntity fileEntity = new FileEntity();
+        fileEntity.setType(FileEnum.FILE.getType());
+        fileEntity.setLength(FilesUtil.FormetFileSize(file.getSize()));
+        fileEntity.setOriginalName(fileName);
+        int splitIndex = file.getOriginalFilename().lastIndexOf(".");
+        String name1 = System.nanoTime() + "." + suffixName;
+        Long fileId = idGen.nextId();
+        fileEntity.setId(fileId);
+        fileEntity.setName(name1);
+        fileEntity.setPath("/"+name1);
+        fileEntity.setOriginalPath("/");
+        fileEntity.setViewFlag(ViewEnum.Y.getType());
+        fileEntity.setCreateUser(userEntity.getUserId().toString());
+        fileEntity.setOpUser(userEntity.getUserId().toString());
+        fileEntity.setCreateTime(System.currentTimeMillis());
+        fileEntity.setOpTime(System.currentTimeMillis());
+
+        fileService.uploadFile(is, fileEntity, userEntity);
+        //关系表添加数据
+        DiskFileEntity diskFileEntity = new DiskFileEntity();
+        diskFileEntity.setCreateUser(userEntity.getUserId().toString());
+        diskFileEntity.setCreateTime(System.currentTimeMillis());
+        diskFileEntity.setDiskId(Long.valueOf(diskId));
+        diskFileEntity.setFileId(fileId);
+        diskFileService.insert(diskFileEntity);
     }
 }

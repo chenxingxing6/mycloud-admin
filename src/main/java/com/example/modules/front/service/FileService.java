@@ -6,6 +6,7 @@ import com.example.common.utils.PageUtils;
 import com.example.modules.front.entity.FileEntity;
 import com.example.modules.sys.entity.SysUserEntity;
 
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -51,6 +52,15 @@ public interface FileService extends IService<FileEntity> {
      * @param file
      */
     public void deleteFileRecursion(SysUserEntity user, FileEntity file);
+
+
+    /**
+     * 上传文件 (tb_file  hdfs)
+     * @param inputStream
+     * @param file
+     * @param user
+     */
+    public void uploadFile(InputStream inputStream, FileEntity file, SysUserEntity user);
 
 }
 

@@ -10,6 +10,7 @@ import com.example.modules.sys.entity.SysUserEntity;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -66,7 +67,7 @@ public class FileServiceImpl extends ServiceImpl<FileDao, FileEntity> implements
         userFileEntity.setUserId(user.getUserId());
         userFileService.insert(userFileEntity);
 
-        //hdfs上传文件
+        //hdfs上传文件夹
         hdfsDao.mkDir(file, user);
 
         //文件表
@@ -104,5 +105,13 @@ public class FileServiceImpl extends ServiceImpl<FileDao, FileEntity> implements
                 userFileService.delete(new EntityWrapper<UserFileEntity>().eq("user_id", user.getUserId()).and().eq("file_id", subFile.getId()));
             }
         }
+    }
+
+    @Override
+    public void uploadFile(InputStream inputStream, FileEntity file, SysUserEntity user) {
+        //hdfs上传文件
+        hdfsDao.put(inputStream, file, user);
+        //文件表
+        this.insert(file);
     }
 }

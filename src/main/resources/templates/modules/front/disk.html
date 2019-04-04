@@ -85,25 +85,6 @@
             </div>
         </form>
     </div>
-    <div v-show="uploadFile">
-        <div class="panel-heading">{{title}}</div>
-        <form class="form-horizontal">
-            <div class="form-group">
-            <el-upload
-                    class="upload-demo"
-                    action="https://jsonplaceholder.typicode.com/posts/"
-                    :on-preview="handlePreview"
-                    :on-remove="handleRemove"
-                    :before-remove="beforeRemove"
-                    multiple
-                    :limit="3"
-                    :on-exceed="handleExceed"
-                    :file-list="fileList">
-                <el-button size="small" type="primary">点击上传</el-button>
-            </el-upload>
-            </div>
-        </form>
-    </div>
 </div>
 
 <script src="${request.contextPath}/statics/hplus/js/jquery.min.js?v=2.1.4"></script>
@@ -111,7 +92,5 @@
 <script src="${request.contextPath}/statics/js/axios.min.js"></script>
 <script src="${request.contextPath}/statics/hplus/js/bootstrap.min.js?v=3.3.6"></script>
 <script src="${request.contextPath}/statics/js/modules/front/disk.js?_${.now?long}"></script>
-<!-- 引入组件库 -->
-<script src="https://unpkg.com/element-ui/lib/index.js"></script>
 </body>
 </html>

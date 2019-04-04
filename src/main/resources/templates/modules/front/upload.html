@@ -1,6 +1,5 @@
 <!doctype html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
@@ -54,9 +53,8 @@
         }
 
         .uploadBox {
-            width: 400px;
             border: 1px solid #ccc;
-            margin: 100px auto;
+            margin: 0px auto;
         }
 
         .fileBox,
@@ -221,7 +219,7 @@
                     this.files.push(item);
                     //开始上传文件 新建一个formData
                     let param = new FormData();
-                    param.append("name", "wiiiiiinney");
+                    param.append("diskId", localStorage.getItem('diskId'));
                     //通过append向form对象添加数据
                     param.append("file", tFiles[i]);
                     //FormData私有类对象，访问不到，可以通过get判断值是否传进去
@@ -249,14 +247,16 @@
                     item.uploadPercentage = completeProgress;
                 }
                 };
-                    axios.post('http://localhost:9000/front/disk/uploadFile', param, config).then(function (
-                        response) {
-                        console.log(response);
+                axios.post('http://localhost:9000/front/disk/uploadFile', param, config).then(function (response) {
+                    if (response.data.code == 0){
                         item.uploadStatus = 2;
-                    }).catch(function (error) {
-                        console.log(error);
+                    } else{
                         item.uploadStatus = -1;
-                    });
+                    }
+                }).catch(function (error) {
+                    console.log(error);
+                    item.uploadStatus = -1;
+                });
                 }
             },
             formatFileSize: function (fileSize, idx) {

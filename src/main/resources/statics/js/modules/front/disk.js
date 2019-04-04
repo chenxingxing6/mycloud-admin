@@ -24,8 +24,9 @@ var vm = new Vue({
         sysDisk: {}
     },
     created: function () {
-        console.log(this)
         this.listDir();
+        localStorage.setItem('name',"lanxinghua")
+        console.log(localStorage.getItem('name'))
     },
     methods: {
         listDir: function(){
@@ -59,7 +60,7 @@ var vm = new Vue({
         },
         reNameDir: function () {
             if(this.current.type == 0){
-                layer.tips('请选择目录', '#reNameDir', {
+                layer.tips('请选择你需要修改的文件夹', '#reNameDir', {
                     tips: [1, '#3595CC'],
                     time: 4000
                 });
@@ -82,22 +83,20 @@ var vm = new Vue({
         },
         uploadFileView: function () {
             if(this.current.type == 0){
-                layer.tips('不能为所有', '#uploadFile', {
+                layer.tips('请选择某个类别再上传文件', '#uploadFile', {
                     tips: [1, '#3595CC'],
                     time: 4000
                 });
                 return;
             }
-            this.title = '导入文件';
-            this.uploadFile = true;
-            this.showList = false;
-            /*layer.open({
+            localStorage.setItem('diskId', this.current.type);
+            layer.open({
                 type: 2,
-                area: ['780px', '650px'],
+                area: ['700px', '550px'],
                 fixed: false, //不固定
                 maxmin: true,
                 content: 'upload.html'
-            });*/
+            });
         },
         saveOrUpdate: function (event) {
             var url = vm.sysDisk.id == null ? "front/disk/createDir" : "front/disk/updateDir";
