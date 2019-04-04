@@ -8,6 +8,7 @@ var vm = new Vue({
         showList: true,
         title:null,
         showCreateDir:false,
+        uploadFile: false,
         items:[],
         files:[
             {id:1,parentId:1,name:"文件名1.doc",type:1,time:"2014-10-13",url:"http://193.112.27.123:8012/onlinePreview?url=http://193.112.27.123:8012/demo/%E5%92%95%E6%B3%A1%E5%AD%A6%E9%99%A2Java%E6%9E%B6%E6%9E%84%E5%B8%88VIP%E8%AF%BE%E7%A8%8B%E5%A4%A7.png"},
@@ -15,6 +16,10 @@ var vm = new Vue({
             {id:3,parentId:1,name:"文件名3.doc",type:3,time:"2014-10-13",url:"http://193.112.27.123:8012/onlinePreview?url=http://193.112.27.123:8012/demo/鞠文娴-BINGBIAN病变.mp3"},
             {id:4,parentId:1,name:"文件名4.doc",type:4,time:"2014-10-13",url:"http://www.baidu.com"},
             {id:5,parentId:1,name:"文件名5.doc",type:5,time:"2014-10-13",url:"http://www.baidu.com"}
+        ],
+        fileList: [
+            {name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'},
+            {name: 'food2.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}
         ],
         sysDisk: {}
     },
@@ -75,21 +80,24 @@ var vm = new Vue({
             this.showList = false;
             this.sysDisk = {};
         },
-        uploadFile: function () {
+        uploadFileView: function () {
             if(this.current.type == 0){
-                layer.tips('不能为所有', '#createFile', {
+                layer.tips('不能为所有', '#uploadFile', {
                     tips: [1, '#3595CC'],
                     time: 4000
                 });
                 return;
             }
-            layer.open({
+            this.title = '导入文件';
+            this.uploadFile = true;
+            this.showList = false;
+            /*layer.open({
                 type: 2,
                 area: ['780px', '650px'],
                 fixed: false, //不固定
                 maxmin: true,
                 content: 'upload.html'
-            });
+            });*/
         },
         saveOrUpdate: function (event) {
             var url = vm.sysDisk.id == null ? "front/disk/createDir" : "front/disk/updateDir";
@@ -143,5 +151,17 @@ var vm = new Vue({
             this.showList = true;
             this.listDir();
         },
+        handleRemove(file, fileList) {
+            console.log(file, fileList);
+        },
+        handlePreview(file) {
+            console.log(file);
+        },
+        handleExceed(files, fileList) {
+            this.$message.warning('当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件');
+        },
+        beforeRemove(file, fileList) {
+            return this.$confirm('确定移除 ${ file.name }？');
+        }
     }
 });

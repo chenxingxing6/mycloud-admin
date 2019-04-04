@@ -1,60 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>easyUploader</title>
-    <link rel="stylesheet" href="${request.contextPath}/statics/hplus/css/upload.css">
-    <style>
-        html * {
-            margin: 0;
-            padding: 0;
-        }
-        .wrapper {
-            padding: 20px;
-        }
-    </style>
+    <#include "/header.html">
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- 引入样式 -->
 </head>
 <body>
-<div class="wrapper">
-    <div id="uploader"></div>
+<div id="rrapp">
+    <el-upload
+            class="upload-demo"
+            action="https://jsonplaceholder.typicode.com/posts/"
+            :on-preview="handlePreview"
+            :on-remove="handleRemove"
+            :before-remove="beforeRemove"
+            multiple
+            :limit="3"
+            :on-exceed="handleExceed"
+            :file-list="fileList">
+        <el-button size="small" type="primary">点击上传</el-button>
+    </el-upload>
 </div>
-
-<script src="${request.contextPath}/statics/hplus/js/easyUploader.jq.js"></script>
+<!-- 引入组件库 -->
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
 <script>
-    var uploader = easyUploader({
-        id: "uploader",
-        accept: '.jpg,.png,.doc,.docx',
-        action: '../../front/disk/uploadFile',
-        dataFormat: 'formData',
-        contentType: 'application/x-www-form-urlencoded',
-        dataType: 'json',
-        crossDomain: true,
-        maxCount: 10,
-        maxSize: 3,
-        multiple: true,
-        data: null,
-        beforeUpload: function(file, data, args) {
-            /* dataFormat为formData时配置发送数据的方式 */
-            /*data.append('token', '387126b0-7b3e-4a2a-86ad-ae5c5edd0ae6TT');
-            data.append('otherKey', 'otherValue');*/
+    var vm = new Vue({
+        el:'#rrapp',
+        data:{
+            fileList: [{name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}, {name: 'food2.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}]
         },
-        onChange: function(fileList) {
-            /* input选中时触发 */
-        },
-        onRemove: function(removedFiles, files) {
-            console.log('onRemove', removedFiles);
-        },
-        onSuccess: function(res) {
-            console.log('onSuccess', res);
-            /* 通过实例的files熟悉可以访问上传文件 */
-            var files = uploader.files;
-            console.log('files', files);
-        },
-        onError: function(err) {
-            console.log('onError', err);
-        },
+        methods: {
+            submitUpload() {
+                this.$refs.upload.submit();
+            },
+            handleRemove(file, fileList) {
+                console.log(file, fileList);
+            },
+            handlePreview(file) {
+                console.log(file);
+            }
+        }
     });
 </script>
+
 </body>
 </html>

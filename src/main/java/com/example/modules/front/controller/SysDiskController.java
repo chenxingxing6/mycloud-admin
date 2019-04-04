@@ -179,8 +179,9 @@ public class SysDiskController extends AbstractController{
      * 上传文件
      */
     @RequestMapping("/uploadFile")
-    public R uploadFile(HttpServletRequest request){
+    public R uploadFile(HttpServletRequest request, @RequestParam("file") MultipartFile file){
         try {
+            System.out.println(file);
             CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());
             if (multipartResolver.isMultipart(request)) {
                 MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;

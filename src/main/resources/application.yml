@@ -40,6 +40,7 @@ spring:
   devtools:
     restart:
       enabled: true
+      additional-paths: resources/**,statics/**,templates/**
 
     #  cloud:
     #    config:

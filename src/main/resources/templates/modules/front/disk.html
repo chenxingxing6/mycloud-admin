@@ -8,6 +8,7 @@
     <link href="${request.contextPath}/statics/hplus/css/animate.min.css" rel="stylesheet">
     <link rel="stylesheet" href="${request.contextPath}/statics/css/font-awesome.min.css">
     <link href="${request.contextPath}/statics/hplus/css/style.min862f.css?v=4.1.0" rel="stylesheet">
+
 </head>
 <body class="gray-bg">
 <div class="wrapper wrapper-content" id="rrapp" v-cloak>
@@ -19,7 +20,7 @@
                         <div class="file-manager">
                             <h5>显示：<a class="file-control active">{{current.name}}</a></h5>
                             <div class="hr-line-dashed"></div>
-                            <button class="btn btn-primary btn-block" @click="uploadFile()">上传文件</button>
+                            <button class="btn btn-primary btn-block" @click="uploadFileView()" id="uploadFile">上传文件</button>
                             <div class="hr-line-dashed"></div>
                             <button class="btn btn-primary btn-block" @click="createFile()" id="createFile">创建目录</button>
                             <div class="hr-line-dashed"></div>
@@ -84,8 +85,24 @@
             </div>
         </form>
     </div>
-    <div v-show="uploadFile" class="panel panel-default">
-
+    <div v-show="uploadFile">
+        <div class="panel-heading">{{title}}</div>
+        <form class="form-horizontal">
+            <div class="form-group">
+            <el-upload
+                    class="upload-demo"
+                    action="https://jsonplaceholder.typicode.com/posts/"
+                    :on-preview="handlePreview"
+                    :on-remove="handleRemove"
+                    :before-remove="beforeRemove"
+                    multiple
+                    :limit="3"
+                    :on-exceed="handleExceed"
+                    :file-list="fileList">
+                <el-button size="small" type="primary">点击上传</el-button>
+            </el-upload>
+            </div>
+        </form>
     </div>
 </div>
 
@@ -94,5 +111,7 @@
 <script src="${request.contextPath}/statics/js/axios.min.js"></script>
 <script src="${request.contextPath}/statics/hplus/js/bootstrap.min.js?v=3.3.6"></script>
 <script src="${request.contextPath}/statics/js/modules/front/disk.js?_${.now?long}"></script>
+<!-- 引入组件库 -->
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
 </body>
 </html>
