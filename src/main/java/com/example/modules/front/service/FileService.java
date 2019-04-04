@@ -30,6 +30,14 @@ public interface FileService extends IService<FileEntity> {
      */
     public List<FileEntity> getFileList(long userId, long parentId);
 
+    /**
+     * 获取文件列表,批量查询
+     *
+     * @param ids
+     * @return
+     */
+    public List<FileEntity> listFileByIds(List<Long> ids);
+
 
     /**
      * 创建文件夹

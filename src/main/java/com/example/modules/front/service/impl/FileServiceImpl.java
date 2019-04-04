@@ -59,6 +59,15 @@ public class FileServiceImpl extends ServiceImpl<FileDao, FileEntity> implements
     }
 
     @Override
+    public List<FileEntity> listFileByIds(List<Long> ids) {
+        List<FileEntity> results = this.selectBatchIds(ids);
+        if (CollectionUtils.isEmpty(results)){
+            return new ArrayList<FileEntity>();
+        }
+        return results.stream().filter(e->e.getIsValid() == 1).collect(Collectors.toList());
+    }
+
+    @Override
     public void makeFolder(FileEntity file, SysUserEntity user, long parentid) {
         //用户文件关联表
         UserFileEntity userFileEntity = new UserFileEntity();

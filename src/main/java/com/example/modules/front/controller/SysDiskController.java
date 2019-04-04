@@ -6,15 +6,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.example.common.constants.FileEnum;
 import com.example.common.constants.FileTypeEnum;
 import com.example.common.constants.ViewEnum;
 import com.example.common.exception.BizException;
-import com.example.common.utils.FilesUtil;
-import com.example.common.utils.IdGen;
-import com.example.common.utils.PageUtils;
-import com.example.common.utils.R;
+import com.example.common.utils.*;
+import com.example.common.validator.Assert;
 import com.example.common.validator.ValidatorUtils;
 import com.example.modules.front.entity.DiskFileEntity;
 import com.example.modules.front.entity.FileEntity;
@@ -23,6 +22,7 @@ import com.example.modules.front.service.DiskFileService;
 import com.example.modules.front.service.FileService;
 import com.example.modules.front.service.SysDiskService;
 import com.example.modules.front.vo.DiskDirVo;
+import com.example.modules.front.vo.FileVo;
 import com.example.modules.sys.controller.AbstractController;
 import com.example.modules.sys.entity.SysDeptEntity;
 import com.example.modules.sys.entity.SysUserEntity;
@@ -31,6 +31,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -187,6 +188,36 @@ public class SysDiskController extends AbstractController{
             diskDirVos.add(vo);
         }
         return R.ok().put("diskDirs", diskDirVos);
+    }
+
+    /**
+     * 获取网盘文件列表
+     * @param diskId 为0的时候查所有
+     */
+    @RequestMapping("/listFiles")
+    public R listFileList(@RequestParam("diskId") String diskId){
+        Assert.isBlank(diskId, "参数错误");
+        SysUserEntity user = getUser();
+        if (user == null){
+            logger.warn("用户信息为空");
+            return R.ok().put("files", new ArrayList<FileVo>());
+        }
+        List<DiskFileEntity> diskFileEntities = diskFileService.listDiskAllFile(Long.valueOf(diskId));
+        if (CollectionUtils.isEmpty(diskFileEntities)){
+            return R.ok().put("files", new ArrayList<FileVo>());
+        }
+        List<Long> fileIds = diskFileEntities.stream().map(e->e.getFileId()).distinct().collect(Collectors.toList());
+        List<FileEntity> fileEntities = fileService.listFileByIds(fileIds);
+        List<FileVo> fileVos = new ArrayList<>();
+        for (FileEntity fileEntity : fileEntities) {
+            FileVo fileVo = new FileVo();
+            BeanUtils.copyProperties(fileEntity, fileVo);
+            fileVo.setOpTime(DateUtils.format(fileEntity.getOpTime(), DateUtils.DATE_TIME_PATTERN));
+            fileVo.setId(fileEntity.getId().toString());
+            fileVo.setParentId(fileEntity.getParentId().toString());
+            fileVos.add(fileVo);
+        }
+        return R.ok().put("files", fileVos);
     }
 
     @RequestMapping(value = "/uploadFile")

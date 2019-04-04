@@ -4,6 +4,8 @@ import com.example.modules.front.dao.DiskFileDao;
 import com.example.modules.front.entity.DiskFileEntity;
 import com.example.modules.front.service.DiskFileService;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 import java.util.Map;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
@@ -26,4 +28,11 @@ public class DiskFileServiceImpl extends ServiceImpl<DiskFileDao, DiskFileEntity
         return new PageUtils(page);
     }
 
+    @Override
+    public List<DiskFileEntity> listDiskAllFile(Long diskId) {
+        return this.selectList(new EntityWrapper<DiskFileEntity>()
+        .eq(diskId !=null, "disk_id", diskId).and()
+        .eq("is_valid", 1)
+        .orderBy("create_time", Boolean.FALSE));
+    }
 }

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.service.IService;
 import com.example.common.utils.PageUtils;
 import com.example.modules.front.entity.DiskFileEntity;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -15,5 +16,13 @@ import java.util.Map;
 public interface DiskFileService extends IService<DiskFileEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
+
+
+    /**
+     * 获取某网盘下所有文件, 按时间倒序
+     * @param diskId
+     * @return
+     */
+    List<DiskFileEntity> listDiskAllFile(Long diskId);
 }
 

@@ -10,23 +10,19 @@ var vm = new Vue({
         showCreateDir:false,
         uploadFile: false,
         items:[],
-        files:[
+        files:[],
+       /* files:[
             {id:1,parentId:1,name:"文件名1.doc",type:1,time:"2014-10-13",url:"http://193.112.27.123:8012/onlinePreview?url=http://193.112.27.123:8012/demo/%E5%92%95%E6%B3%A1%E5%AD%A6%E9%99%A2Java%E6%9E%B6%E6%9E%84%E5%B8%88VIP%E8%AF%BE%E7%A8%8B%E5%A4%A7.png"},
             {id:2,parentId:1,name:"文件名2.doc",type:2,time:"2014-10-13",url:"http://193.112.27.123:8012/onlinePreview?url=http://193.112.27.123:8012/demo/XiaoYing_Video_1549677991268.mp4"},
             {id:3,parentId:1,name:"文件名3.doc",type:3,time:"2014-10-13",url:"http://193.112.27.123:8012/onlinePreview?url=http://193.112.27.123:8012/demo/鞠文娴-BINGBIAN病变.mp3"},
             {id:4,parentId:1,name:"文件名4.doc",type:4,time:"2014-10-13",url:"http://www.baidu.com"},
             {id:5,parentId:1,name:"文件名5.doc",type:5,time:"2014-10-13",url:"http://www.baidu.com"}
-        ],
-        fileList: [
-            {name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'},
-            {name: 'food2.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}
-        ],
+        ],*/
         sysDisk: {}
     },
     created: function () {
         this.listDir();
-        localStorage.setItem('name',"lanxinghua")
-        console.log(localStorage.getItem('name'))
+        this.listFiles();
     },
     methods: {
         listDir: function(){
@@ -42,12 +38,23 @@ var vm = new Vue({
                 .then(function () {
                 });
         },
+        listFiles: function(){
+            var _this = this
+            axios.get(baseURL +'front/disk/listFiles?diskId='+ _this.current.type)
+                .then(function (res) {
+                    console.log("files:"+res.data);
+                    _this.files = res.data.files;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                })
+                .then(function () {
+                });
+        },
         clickFile: function (type, name) {
             this.current.name = name;
             this.current.type = type;
-            if(type == 2){
-                this.files = [];
-            }
+            this.listFiles();
         },
         see: function (url) {
             layer.open({
@@ -149,18 +156,7 @@ var vm = new Vue({
             this.showCreateDir = false;
             this.showList = true;
             this.listDir();
-        },
-        handleRemove(file, fileList) {
-            console.log(file, fileList);
-        },
-        handlePreview(file) {
-            console.log(file);
-        },
-        handleExceed(files, fileList) {
-            this.$message.warning('当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件');
-        },
-        beforeRemove(file, fileList) {
-            return this.$confirm('确定移除 ${ file.name }？');
+            this.listFiles();
         }
     }
 });

@@ -56,9 +56,10 @@
                                     <div class="icon"><i class="fa fa-file"></i></div>
                                 </a>
                                 <a @click="delFile(file.id)">
-                                    <div class="file-name">{{file.name}}<br/>
-                                        <small>添加时间：{{file.time}}</small>&nbsp;&nbsp;
-                                        <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                    <div class="file-name">{{file.originalName}}<br/>
+                                        <small>{{file.opTime}}</small>&nbsp;&nbsp;
+                                        <br>
+                                        <small>文件大小：{{file.length}}</small>
                                     </div>
                                 </a>
                             </div>
