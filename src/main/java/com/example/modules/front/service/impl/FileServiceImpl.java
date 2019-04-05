@@ -123,4 +123,9 @@ public class FileServiceImpl extends ServiceImpl<FileDao, FileEntity> implements
         //文件表
         this.insert(file);
     }
+
+    @Override
+    public boolean downloadFile(SysUserEntity user, FileEntity file, String localPath) {
+        return hdfsDao.download(user, file, localPath);
+    }
 }

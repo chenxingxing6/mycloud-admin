@@ -11,13 +11,6 @@ var vm = new Vue({
         uploadFile: false,
         items:[],
         files:[],
-       /* files:[
-            {id:1,parentId:1,name:"文件名1.doc",type:1,time:"2014-10-13",url:"http://193.112.27.123:8012/onlinePreview?url=http://193.112.27.123:8012/demo/%E5%92%95%E6%B3%A1%E5%AD%A6%E9%99%A2Java%E6%9E%B6%E6%9E%84%E5%B8%88VIP%E8%AF%BE%E7%A8%8B%E5%A4%A7.png"},
-            {id:2,parentId:1,name:"文件名2.doc",type:2,time:"2014-10-13",url:"http://193.112.27.123:8012/onlinePreview?url=http://193.112.27.123:8012/demo/XiaoYing_Video_1549677991268.mp4"},
-            {id:3,parentId:1,name:"文件名3.doc",type:3,time:"2014-10-13",url:"http://193.112.27.123:8012/onlinePreview?url=http://193.112.27.123:8012/demo/鞠文娴-BINGBIAN病变.mp3"},
-            {id:4,parentId:1,name:"文件名4.doc",type:4,time:"2014-10-13",url:"http://www.baidu.com"},
-            {id:5,parentId:1,name:"文件名5.doc",type:5,time:"2014-10-13",url:"http://www.baidu.com"}
-        ],*/
         sysDisk: {}
     },
     created: function () {
@@ -56,14 +49,28 @@ var vm = new Vue({
             this.current.type = type;
             this.listFiles();
         },
-        see: function (url) {
-            layer.open({
-                type: 2,
-                area: ['700px', '450px'],
-                fixed: false, //不固定
-                maxmin: true,
-                content: url
-            });
+        see: function (id) {
+            console.log("查看文件");
+            var url = 'http://localhost:8012/onlinePreview?url=';
+            axios.get(baseURL +'front/disk/downloadFile?fileId='+ id)
+                .then(function (res) {
+                    if (res.data.code == 0){
+                        url = url + "http://localhost:8012/disk/"+ res.data.url;
+                        console.log(res.data)
+                    }
+                })
+                .catch(function (error) {
+                    console.log(error)
+                })
+                .then(function () {
+                    layer.open({
+                        type: 2,
+                        area: ['700px', '450px'],
+                        fixed: false, //不固定
+                        maxmin: true,
+                        content: url
+                    });
+                });
         },
         reNameDir: function () {
             if(this.current.type == 0){

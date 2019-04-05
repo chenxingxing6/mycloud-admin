@@ -70,5 +70,16 @@ public interface FileService extends IService<FileEntity> {
      */
     public void uploadFile(InputStream inputStream, FileEntity file, SysUserEntity user);
 
+
+    /**
+     * hdfs下载文件到服务器
+     *
+     * @param user
+     * @param file
+     * @param localPath
+     * @return
+     */
+    public boolean downloadFile(SysUserEntity user, FileEntity file, String localPath);
+
 }
 

@@ -1,5 +1,6 @@
 package com.example.modules.front.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -27,12 +28,14 @@ import com.example.modules.sys.controller.AbstractController;
 import com.example.modules.sys.entity.SysDeptEntity;
 import com.example.modules.sys.entity.SysUserEntity;
 import com.example.modules.sys.service.ISysDeptService;
+import com.example.modules.sys.service.ISysUserService;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -62,6 +65,12 @@ public class SysDiskController extends AbstractController{
     private FileService fileService;
     @Autowired
     private DiskFileService diskFileService;
+    @Autowired
+    private ISysUserService sysUserService;
+
+    //文件下载路径
+    @Value("${file.dir}")
+    String fileDir;
 
     /**
      * 列表
@@ -202,9 +211,31 @@ public class SysDiskController extends AbstractController{
             logger.warn("用户信息为空");
             return R.ok().put("files", new ArrayList<FileVo>());
         }
-        List<DiskFileEntity> diskFileEntities = diskFileService.listDiskAllFile(Long.valueOf(diskId));
+        List<FileVo> fileVos = new ArrayList<>();
+        if (diskId.equals("0")){
+            if (user.getDeptId() == null){
+                logger.warn("用户所在部门信息查询失败");
+                return R.ok().put("files", fileVos);
+            }
+            //获取到顶级部门ID
+            Long superDeptId = sysDeptService.getSuperDeptId(user.getDeptId());
+            List<SysDiskEntity> sysDiskEntities = sysDiskService.listSysDisksByCompanyId(superDeptId);
+            if (CollectionUtils.isEmpty(sysDiskEntities)){
+                return R.ok().put("files", fileVos);
+            }
+            for (SysDiskEntity sysDiskEntity : sysDiskEntities) {
+                fileVos.addAll(innerListDiskFiles(sysDiskEntity.getId()));
+            }
+        }else {
+            fileVos.addAll(innerListDiskFiles(Long.valueOf(diskId)));
+        }
+        return R.ok().put("files", fileVos);
+    }
+
+    private List<FileVo> innerListDiskFiles(Long diskId){
+        List<DiskFileEntity> diskFileEntities = diskFileService.listDiskAllFile(diskId);
         if (CollectionUtils.isEmpty(diskFileEntities)){
-            return R.ok().put("files", new ArrayList<FileVo>());
+            return new ArrayList<>();
         }
         List<Long> fileIds = diskFileEntities.stream().map(e->e.getFileId()).distinct().collect(Collectors.toList());
         List<FileEntity> fileEntities = fileService.listFileByIds(fileIds);
@@ -217,7 +248,7 @@ public class SysDiskController extends AbstractController{
             fileVo.setParentId(fileEntity.getParentId().toString());
             fileVos.add(fileVo);
         }
-        return R.ok().put("files", fileVos);
+        return fileVos;
     }
 
     @RequestMapping(value = "/uploadFile")
@@ -269,5 +300,42 @@ public class SysDiskController extends AbstractController{
         diskFileEntity.setDiskId(Long.valueOf(diskId));
         diskFileEntity.setFileId(fileId);
         diskFileService.insert(diskFileEntity);
+    }
+
+
+    /**
+     * 下载文件
+     *
+     * @param fileId
+     * @return
+     */
+    @RequestMapping(value = "/downloadFile")
+    public R download(@RequestParam("fileId")String fileId) {
+        Assert.isBlank(fileId, "参数错误");
+        FileEntity file = fileService.selectById(fileId);
+        if (file == null){
+            return R.error("文件不存在");
+        }
+        String createUserId = file.getCreateUser();
+        Assert.isBlank(createUserId, "文件上传没有用户ID");
+        SysUserEntity createUser = sysUserService.selectById(createUserId);
+        Assert.isNull(createUser, "上传用户不存在");
+        SysUserEntity userEntity = getUser();
+        Assert.isNull(userEntity, "用户信息错误");
+        String localFilePath = fileDir + file.getOriginalName();
+        File localFile = new File(localFilePath);
+        if (!localFile.exists()){
+           File realPath = new File(fileDir);
+            if(!realPath.exists()) {
+                realPath.mkdirs();
+            }
+            if(fileService.downloadFile(createUser, file, localFilePath)) {
+                return R.ok("下载成功").put("url", file.getOriginalName());
+            }else {
+                return R.error("文件不存在");
+            }
+        }else {
+            return R.ok("文件已经存在").put("url", file.getOriginalName());
+        }
     }
 }
