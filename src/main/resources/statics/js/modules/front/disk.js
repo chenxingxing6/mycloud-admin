@@ -112,13 +112,18 @@ var vm = new Vue({
                 });
                 return;
             }
+            var _this = this;
             localStorage.setItem('diskId', this.current.type);
             layer.open({
                 type: 2,
                 area: ['700px', '550px'],
                 fixed: false, //不固定
                 maxmin: true,
-                content: 'upload.html'
+                content: 'upload.html',
+                end: function () {
+                    layer.msg('上传成功!',{icon:1,time:1000});
+                    _this.reload();
+                }
             });
         },
         saveOrUpdate: function (event) {
