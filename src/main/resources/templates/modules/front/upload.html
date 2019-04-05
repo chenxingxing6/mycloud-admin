@@ -269,7 +269,7 @@
                 return this.formatFileSize(fileSize / 1024, ++idx);
             },
             checkFileType: function (fileType) {
-                const acceptTypes = ['xls','xlsx','doc','docx','jpg', 'jpeg', 'gif', 'txt', 'html', 'xml', 'java','sql','pdf','properties','mp3','mp4','avi','flv','rmvb'];
+                const acceptTypes = ['doc','docx','jpg', 'jpeg', 'gif','png', 'txt', 'html', 'xml', 'java','sql','pdf','properties','mp3','mp4','avi','flv','rmvb'];
                 for (var i = 0; i < acceptTypes.length; i++) {
                     if (fileType === acceptTypes[i]) {
                         return true;
@@ -278,8 +278,8 @@
                 return false;
             },
             checkFileSize: function (fileSize) {
-                //2M
-                const MAX_SIZE = 2 * 1024 * 1024;
+                //100M
+                const MAX_SIZE = 100 * 1024 * 1024;
                 if (fileSize > MAX_SIZE) {
                     return false;
                 }
