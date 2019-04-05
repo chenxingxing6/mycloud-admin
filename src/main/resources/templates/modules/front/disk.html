@@ -8,7 +8,13 @@
     <link href="${request.contextPath}/statics/hplus/css/animate.min.css" rel="stylesheet">
     <link rel="stylesheet" href="${request.contextPath}/statics/css/font-awesome.min.css">
     <link href="${request.contextPath}/statics/hplus/css/style.min862f.css?v=4.1.0" rel="stylesheet">
-
+    <style>
+        .file-box {
+            float: left;
+            width: 25%;
+            display: inline-block;
+        }
+    </style>
 </head>
 <body class="gray-bg">
 <div class="wrapper wrapper-content" id="rrapp" v-cloak>
@@ -20,11 +26,11 @@
                         <div class="file-manager">
                             <h5>显示：<a class="file-control active">{{current.name}}</a></h5>
                             <div class="hr-line-dashed"></div>
-                            <button class="btn btn-primary btn-block" @click="uploadFileView()" id="uploadFile">上传文件</button>
+                            <button class="btn btn-primary btn-block" @click="goUploadFileView()" id="uploadFile">上传文件</button>
                             <div class="hr-line-dashed"></div>
-                            <button class="btn btn-primary btn-block" @click="createFile()" id="createFile">创建目录</button>
+                            <button class="btn btn-primary btn-block" @click="goCreateFileView()" id="createFile">创建目录</button>
                             <div class="hr-line-dashed"></div>
-                            <button class="btn btn-primary btn-block" @click="reNameDir()" id="reNameDir">重命名</button>
+                            <button class="btn btn-primary btn-block" @click="goReNameDirView()" id="reNameDir">重命名</button>
                             <div class="hr-line-dashed"></div>
                             <h5>文件夹</h5>
                             <ul class="folder-list" style="padding: 0">
@@ -51,12 +57,14 @@
                         </div>
                         <div class="file-box" v-for="file in files">
                             <div class="file">
-                                <a @click="see(file.id)">
+                                <a @click="seeFileView(file.id)">
                                     <span class="corner"></span>
                                     <div class="icon"><i class="fa fa-file"></i></div>
                                 </a>
-                                <a @click="delFile(file.id)">
-                                    <div class="file-name">{{file.originalName}}<br/>
+                                <a @click="goUpdateFileView(file.id,file.originalName)">
+                                    <div class="file-name">
+                                        <span style="display: block;overflow: hidden;text-overflow: ellipsis;white-space:nowrap;">{{file.originalName}}</span>
+                                        <br/>
                                         <small>{{file.opTime}}</small>&nbsp;&nbsp;
                                         <br>
                                         <small>文件大小：{{file.length}}</small>
@@ -82,6 +90,24 @@
             <div class="form-group">
                 <div class="col-sm-2 control-label"></div>
                 <input type="button" class="btn btn-primary" @click="saveOrUpdate" value="确定"/>
+                &nbsp;&nbsp;<input type="button" class="btn btn-warning" @click="reload" value="返回"/>
+            </div>
+        </form>
+    </div>
+    <div v-show="isUpdateFile" class="panel panel-default">
+        <div class="panel-heading">{{title}}</div>
+        <form class="form-horizontal">
+            <div class="form-group">
+                <input type="hidden" class="form-control" v-model="fe.id"/>
+                <div class="col-sm-2 control-label">文件名</div>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" v-model="fe.originalName" placeholder="文件名"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2 control-label"></div>
+                <input type="button" class="btn btn-primary" @click="updateFile" value="修改"/>
+                &nbsp;&nbsp;<input type="button" class="btn btn-warning" @click="delFile" value="删除"/>
                 &nbsp;&nbsp;<input type="button" class="btn btn-warning" @click="reload" value="返回"/>
             </div>
         </form>

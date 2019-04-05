@@ -35,4 +35,10 @@ public class DiskFileServiceImpl extends ServiceImpl<DiskFileDao, DiskFileEntity
         .eq("is_valid", 1)
         .orderBy("create_time", Boolean.FALSE));
     }
+
+    @Override
+    public void deleteByFileId(Long fileId) {
+        this.delete(new EntityWrapper<DiskFileEntity>()
+        .eq(fileId !=null, "file_id", fileId));
+    }
 }

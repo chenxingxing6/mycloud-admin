@@ -269,7 +269,7 @@
                 return this.formatFileSize(fileSize / 1024, ++idx);
             },
             checkFileType: function (fileType) {
-                const acceptTypes = ['doc','docx','jpg', 'jpeg', 'gif','png', 'txt', 'html', 'xml', 'java','sql','pdf','properties','mp3','mp4','avi','flv','rmvb'];
+                const acceptTypes = ['zip','doc','docx','jpg', 'jpeg', 'gif','png', 'txt', 'html', 'xml', 'java','sql','pdf','properties','mp3','mp4','avi','flv','rmvb'];
                 for (var i = 0; i < acceptTypes.length; i++) {
                     if (fileType === acceptTypes[i]) {
                         return true;

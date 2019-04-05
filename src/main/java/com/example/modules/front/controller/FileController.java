@@ -162,6 +162,22 @@ public class FileController extends AbstractController {
     }
 
     /**
+     * 修改文件名
+     */
+    @RequestMapping("/updateFileName")
+    public R updateFileName(@RequestParam("fileId") String fileId, @RequestParam("fileName") String fileName){
+        Assert.isBlank(fileId, "参数错误");
+        Assert.isBlank(fileName, "文件不能为空");
+        FileEntity file = new FileEntity();
+        file.setId(Long.valueOf(fileId));
+        file.setOpTime(System.currentTimeMillis());
+        file.setOpUser(getUserId().toString());
+        file.setOriginalName(fileName);
+        fileService.updateById(file);
+        return R.ok();
+    }
+
+    /**
      * 删除文件或者文件夹
      * @param ids
      * @return

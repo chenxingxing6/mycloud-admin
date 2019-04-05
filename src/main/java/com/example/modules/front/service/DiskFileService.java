@@ -24,5 +24,11 @@ public interface DiskFileService extends IService<DiskFileEntity> {
      * @return
      */
     List<DiskFileEntity> listDiskAllFile(Long diskId);
+
+    /**
+     * 删除
+     * @param fileId
+     */
+    void deleteByFileId(Long fileId);
 }
 

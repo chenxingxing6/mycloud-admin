@@ -119,13 +119,11 @@ public class SysDiskController extends AbstractController{
     }
 
     /**
-     * 删除
+     * 删除文件 （删除关系表）
      */
-    @RequestMapping("/delete")
-    @RequiresPermissions("sys:sysdisk:delete")
-    public R delete(@RequestBody Long[] ids){
-        sysDiskService.deleteBatchIds(Arrays.asList(ids));
-
+    @RequestMapping("/delFile")
+    public R delete(@RequestParam("fileId") String fileId){
+        diskFileService.deleteByFileId(Long.valueOf(fileId));
         return R.ok();
     }
 
