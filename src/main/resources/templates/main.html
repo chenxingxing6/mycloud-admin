@@ -229,9 +229,12 @@
             console.log("加载数据")
             this.getIndexInfo();
         },
+        mounted:function(){
+        },
         methods: {
             getIndexInfo: function(){
-                var _this = this
+                var _this = this;
+                var index = layer.load();
                 axios.get(baseURL +'sys/index/getInfo')
                     .then(function (res) {
                         console.log(res.data);
@@ -244,6 +247,7 @@
                         console.log(error);
                     })
                     .then(function () {
+                        layer.close(index);
                     });
             }
         }

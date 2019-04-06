@@ -1,6 +1,7 @@
 package com.example.modules.front.controller;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ import com.example.modules.sys.entity.SysDeptEntity;
 import com.example.modules.sys.entity.SysUserEntity;
 import com.example.modules.sys.service.ISysDeptService;
 import com.example.modules.sys.service.ISysUserService;
+import net.sf.json.JSONObject;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
@@ -43,6 +45,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 
 /**
@@ -310,6 +317,10 @@ public class SysDiskController extends AbstractController{
     @RequestMapping(value = "/downloadFile")
     public R download(@RequestParam("fileId")String fileId) {
         Assert.isBlank(fileId, "参数错误");
+        return innerDownLoadFile(fileId);
+    }
+
+    private R innerDownLoadFile(String fileId){
         FileEntity file = fileService.selectById(fileId);
         if (file == null){
             return R.error("文件不存在");
@@ -323,7 +334,7 @@ public class SysDiskController extends AbstractController{
         String localFilePath = fileDir + file.getOriginalName();
         File localFile = new File(localFilePath);
         if (!localFile.exists()){
-           File realPath = new File(fileDir);
+            File realPath = new File(fileDir);
             if(!realPath.exists()) {
                 realPath.mkdirs();
             }
@@ -334,6 +345,36 @@ public class SysDiskController extends AbstractController{
             }
         }else {
             return R.ok("文件已经存在").put("url", file.getOriginalName());
+        }
+    }
+
+
+    /**
+     * 用户下载文件
+     * @param response
+     * @param fileId
+     * @return
+     */
+    @RequestMapping("/userdown")
+    public void downloadFile(HttpServletResponse response, @RequestParam("fileId")String fileId) {
+        Assert.isBlank(fileId, "参数错误");
+        R r = innerDownLoadFile(fileId);
+        String originalName = r.get("url").toString();
+        try {
+            //下载的文件携带这个名称
+            response.setContentType("multipart/form-data");
+            response.setHeader("Content-Disposition", "attachment;fileName="+ new String(originalName.getBytes("GB2312"),"ISO-8859-1"));
+            String localFilePath = fileDir + originalName;
+            FileInputStream fis = new FileInputStream(localFilePath);
+            byte[] content = new byte[fis.available()];
+            fis.read(content);
+            fis.close();
+            ServletOutputStream sos = response.getOutputStream();
+            sos.write(content);
+            sos.flush();
+            sos.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

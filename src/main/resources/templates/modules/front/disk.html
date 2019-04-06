@@ -14,6 +14,10 @@
             width: 25%;
             display: inline-block;
         }
+        .image {
+            height: 150px !important;
+            overflow: hidden;
+        }
     </style>
 </head>
 <body class="gray-bg">
@@ -56,7 +60,61 @@
                             </div>
                         </div>
                         <div class="file-box" v-for="file in files">
-                            <div class="file">
+                            <div class="file" v-if="current.type == 2">
+                                <a @click="seeFileView(file.id)">
+                                    <span class="corner"></span>
+                                    <div class="image">
+                                        <img v-bind:src="'http://localhost:8012/disk/'+ file.originalName" alt="image" class="img-responsive" style="width: 100%;height: 100%;">
+                                    </div>
+                                </a>
+                                <a @click="goUpdateFileView(file.id,file.originalName)">
+                                    <div class="file-name">
+                                        <span style="display: block;overflow: hidden;text-overflow: ellipsis;white-space:nowrap;">{{file.originalName}}</span>
+                                        <br/>
+                                        <small>{{file.opTime}}</small>&nbsp;&nbsp;
+                                        <br>
+                                        <small>文件大小：{{file.length}}</small>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <div class="file" v-else-if="current.type == 3">
+                                <a @click="seeFileView(file.id)">
+                                    <span class="corner"></span>
+                                    <div class="icon">
+                                        <i class="img-responsive fa fa-film"></i>
+                                    </div>
+                                </a>
+                                <a @click="goUpdateFileView(file.id,file.originalName)">
+                                    <div class="file-name">
+                                        <span style="display: block;overflow: hidden;text-overflow: ellipsis;white-space:nowrap;">{{file.originalName}}</span>
+                                        <br/>
+                                        <small>{{file.opTime}}</small>&nbsp;&nbsp;
+                                        <br>
+                                        <small>文件大小：{{file.length}}</small>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <div class="file" v-else-if="current.type == 4">
+                                <a @click="seeFileView(file.id)">
+                                    <span class="corner"></span>
+                                    <div class="icon">
+                                        <i class="fa fa-music"></i>
+                                    </div>
+                                </a>
+                                <a @click="goUpdateFileView(file.id,file.originalName)">
+                                    <div class="file-name">
+                                        <span style="display: block;overflow: hidden;text-overflow: ellipsis;white-space:nowrap;">{{file.originalName}}</span>
+                                        <br/>
+                                        <small>{{file.opTime}}</small>&nbsp;&nbsp;
+                                        <br>
+                                        <small>文件大小：{{file.length}}</small>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <div class="file" v-else>
                                 <a @click="seeFileView(file.id)">
                                     <span class="corner"></span>
                                     <div class="icon"><i class="fa fa-file"></i></div>
@@ -108,6 +166,7 @@
                 <div class="col-sm-2 control-label"></div>
                 <input type="button" class="btn btn-primary" @click="updateFile" value="修改"/>
                 &nbsp;&nbsp;<input type="button" class="btn btn-warning" @click="delFile" value="删除"/>
+                &nbsp;&nbsp;<input type="button" class="btn btn-warning" @click="downFile" value="下载"/>
                 &nbsp;&nbsp;<input type="button" class="btn btn-warning" @click="reload" value="返回"/>
             </div>
         </form>

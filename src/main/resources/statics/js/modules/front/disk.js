@@ -45,6 +45,11 @@ var vm = new Vue({
                 .then(function () {
                 });
         },
+        downFile: function(){
+            console.log("下载文件"+this.fe.id);
+            window.location.href="  http://localhost:9000/front/disk/userdown?fileId="+this.fe.id;
+
+        },
         clickFile: function (type, name) {
             this.current.name = name;
             this.current.type = type;
