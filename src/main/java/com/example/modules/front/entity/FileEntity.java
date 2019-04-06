@@ -82,6 +82,11 @@ public class FileEntity implements Serializable {
 	private Integer lastVer;
 
 	/**
+	 * 下载数量
+	 */
+	private Integer downloadNum;
+
+	/**
 	 * 设置：文件ID
 	 */
 	public void setId(Long id) {
@@ -260,5 +265,13 @@ public class FileEntity implements Serializable {
 	 */
 	public Integer getLastVer() {
 		return lastVer;
+	}
+
+	public Integer getDownloadNum() {
+		return downloadNum;
+	}
+
+	public void setDownloadNum(Integer downloadNum) {
+		this.downloadNum = downloadNum;
 	}
 }

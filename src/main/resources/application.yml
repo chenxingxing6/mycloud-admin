@@ -23,10 +23,10 @@ spring:
       enabled: true
   redis:
     database: 0
-    host: localhost
+    host: 60.205.212.196
     port: 6379
     password:      # 密码（默认为空）
-    timeout: 6000  # 连接超时时长（毫秒）
+    timeout: 6000ms  # 连接超时时长（毫秒）
     jedis:
       pool:
         max-active: 1000  # 连接池最大连接数（使用负值表示没有限制）
@@ -54,7 +54,7 @@ spring:
 
 mycloud:
   redis:
-   open: false #是否开启redis缓存  true开启   false关闭
+   open: true    #是否开启redis缓存  true开启   false关闭
   cluster: false  #集群配置  true集群环境   false单机环境，还需打开pom.xml里的spring-session-data-redis注释
   globalSessionTimeout: 3600   #单机环境，session过期时间为60分钟
 
