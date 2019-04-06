@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>通知公告表</title>
+    <#include "/header.html">
+    <link href="${request.contextPath}/statics/hplus/css/plugins/iCheck/custom.css" rel="stylesheet">
+    <link href="${request.contextPath}/statics/hplus/css/plugins/summernote/summernote.css" rel="stylesheet">
+    <link href="${request.contextPath}/statics/hplus/css/plugins/summernote/summernote-bs3.css" rel="stylesheet">
+    <style>
+        .form-horizontal {
+            width: 80%;
+            padding-top: 20px;
+        }
+        .note-editor {
+            display: block;
+            height: 300px !important;
+            border: 1px gainsboro solid !important;
+            overflow: hidden !important;
+        }
+    </style>
+</head>
+<body class="gray-bg">
+<div id="rrapp" v-cloak>
+    <div v-show="showList">
+        <div class="grid-btn">
+            <div class="form-group col-sm-2">
+                <input type="text" class="form-control"placeholder="公告标题">
+            </div>
+            <div class="form-group col-sm-1">
+                <input type="text" class="form-control" placeholder="操作人">
+            </div>
+            <div class="form-group col-sm-1">
+                <select class="form-control">
+                    <option value="0">所有</option>
+                    <option value="1">通知</option>
+                    <option value="2">公告</option>
+                </select>
+            </div>
+            <a class="btn btn-primary" @click="add"><i class="fa fa-plus"></i>&nbsp;搜索</a>
+			<#if shiro.hasPermission("sys:sysnotice:save")>
+            <a class="btn btn-primary" @click="add"><i class="fa fa-plus"></i>&nbsp;新增</a>
+			</#if>
+			<#if shiro.hasPermission("sys:sysnotice:update")>
+            <a class="btn btn-primary" @click="update"><i class="fa fa-pencil-square-o"></i>&nbsp;修改</a>
+			</#if>
+			<#if shiro.hasPermission("sys:sysnotice:delete")>
+            <a class="btn btn-primary" @click="del"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
+			</#if>
+        </div>
+        <table id="jqGrid"></table>
+        <div id="jqGridPager"></div>
+    </div>
+
+    <div v-show="!showList" class="panel panel-default">
+        <div class="panel-heading">{{title}}</div>
+        <form class="form-horizontal" method="get">
+            <div class="form-group">
+                <div class="col-sm-1 control-label">公告标题:</div>
+                <div class="col-sm-11">
+                    <input type="text" class="form-control" v-model="sysNotice.noticeTitle" placeholder="公告标题"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-1 control-label">公告类型:</div>
+                <div class="col-sm-11">
+                    <select v-model="sysNotice.noticeType" class="form-control">
+                        <option value="1">通知</option>
+                        <option value="2">公告</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-1 control-label">公告状态:</div>
+                <div class="col-sm-11" style="display: inline-block">
+                    正常<input type="radio" v-model="sysNotice.status" value="0">&nbsp;&nbsp;&nbsp;
+                    关闭<input type="radio" v-model="sysNotice.status" value="1">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-1 control-label">公告内容:</div>
+                <div class="col-sm-11">
+                    <input id="noticeContent" name="noticeContent" type="hidden">
+                    <div class="summernote"></div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-1 control-label"></div>
+                <input type="button" class="btn btn-primary" @click="saveOrUpdate" value="确定"/>
+                &nbsp;&nbsp;<input type="button" class="btn btn-warning" @click="reload" value="返回"/>
+            </div>
+        </form>
+    </div>
+</div>
+<script src="${request.contextPath}/statics/hplus/js/plugins/iCheck/icheck.min.js"></script>
+<script src="${request.contextPath}/statics/hplus/js/plugins/summernote/summernote.min.js"></script>
+<script src="${request.contextPath}/statics/hplus/js/plugins/summernote/summernote-zh-CN.js"></script>
+<script>
+    $(document).ready(function(){$(".i-checks").iCheck({checkboxClass:"icheckbox_square-green",radioClass:"iradio_square-green",});$(".summernote").summernote({lang:"zh-CN"})});var edit=function(){$(".click2edit").summernote({focus:true})};var save=function(){var aHTML=$(".click2edit").code();$(".click2edit").destroy()};
+</script>
+<script src="${request.contextPath}/statics/js/modules/sys/sysnotice.js?_${.now?long}"></script>
+</body>
+</html>
