@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ECHarts</title>
+    <#include "/header.html">
     <link href="${request.contextPath}/statics/hplus/css/bootstrap.min14ed.css?v=3.3.6" rel="stylesheet">
     <link href="${request.contextPath}/statics/hplus/css/font-awesome.min93e3.css?v=4.4.0" rel="stylesheet">
     <link rel="stylesheet" href="${request.contextPath}/statics/css/font-awesome.min.css">
@@ -11,191 +12,177 @@
     <link href="${request.contextPath}/statics/hplus/css/style.min862f.css?v=4.1.0" rel="stylesheet">
 </head>
 <body class="gray-bg">
-<br>
-<div class="row">
-    <div class="col-md-6">
-        <div class="ibox-content text-center">
-            <h1>admin</h1>
-            <div class="m-b-sm">
-                <img alt="image" class="img-circle" src="https://chenxingxing6.github.io/img/header.jpg">
-            </div>
-            <p class="font-bold">杭州二维火可以有限公司</p>
+<div id="rrapp">
+    <br>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="ibox-content text-center">
+                <h1>{{indexvo.user.username}}</h1>
+                <div class="m-b-sm">
+                    <img alt="image" class="img-circle" src="https://chenxingxing6.github.io/img/header.jpg">
+                </div>
+                <p class="font-bold">{{indexvo.user.deptName}}</p>
 
-            <div class="text-center">
-              <i class="fa fa-phone" aria-hidden="true"></i> 18379643981
-            </div>
-        </div>
-    </div>
-    <div class="col-md-6">
-        <div class="ibox-content">
-            <div>
-                <br><br>
-                <div>
-                    <span>系统运行时长</span>
-                    <small class="pull-right">	0天0小时24分钟</small>
-                </div>
-                <div class="progress progress-small">
-                    <div style="width: 56.45%;" class="progress-bar"></div>
-                </div>
-                <div>
-                    <span>内存</span>
-                    <small class="pull-right">9.03G/16G GB</small>
-                </div>
-                <div class="progress progress-small">
-                    <div style="width: 56.45%;" class="progress-bar"></div>
-                </div>
-                <div>
-                    <span>JVM</span>
-                    <small class="pull-right">612.96MB/1123M</small>
-                </div>
-                <div class="progress progress-small">
-                    <div style="width: 55.58%;" class="progress-bar"></div>
-                </div>
-
-                <div>
-                    <span>CPU</span>
-                    <small class="pull-right">8核</small>
-                </div>
-                <div class="progress progress-small">
-                    <div style="width: 96.04%;" class="progress-bar"></div>
-                </div>
-
-
-                <div>
-                    <span>磁盘</span>
-                    <small class="pull-right">143.4GB/223.4GB</small>
-                </div>
-                <div class="progress progress-small">
-                    <div style="width: 64.21%;" class="progress-bar"></div>
+                <div class="text-center">
+                  <i class="fa fa-phone" aria-hidden="true"></i> {{indexvo.user.mobile}}
                 </div>
             </div>
         </div>
-    </div>
-</div>
-<br>
-<div class="row  border-bottom white-bg dashboard-header">
-    <div class="col-sm-12">
-        <h1>数据大盘</h1>
-    </div>
-</div>
-<br>
-<div class="row">
-    <div class="col-md-2">
-        <div class="ibox float-e-margins">
-            <div class="ibox-title">
-                <h5>浏览量</h5>
-            </div>
+        <div class="col-md-6">
             <div class="ibox-content">
-                <h1 class="no-margins">386,200</h1>
-                <div class="stat-percent font-bold text-success"><i class="fa fa-level-up"></i>
-                </div>
-                <small>总计浏览量</small>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-2">
-        <div class="ibox float-e-margins">
-            <div class="ibox-title">
-                <h5>用户数量</h5>
-            </div>
-            <div class="ibox-content">
-                <h1 class="no-margins">200</h1>
-                <div class="stat-percent font-bold text-success"><i class="fa fa-level-up"></i>
-                </div>
-                <small>杭州二维火科技有限公司</small>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="ibox float-e-margins">
-            <div class="ibox-title">
-                <span class="label label-primary pull-right">今天</span>
-                <h5>企业网盘文件数量</h5>
-            </div>
-            <div class="ibox-content">
+                <div>
+                    <br><br>
+                    <div>
+                        <span>系统运行时长</span>
+                        <small class="pull-right">{{indexvo.jvmRunTime}}</small>
+                    </div>
+                    <div class="progress progress-small">
+                        <div style="width: 20%;" class="progress-bar"></div>
+                    </div>
+                    <div>
+                        <span>内存</span>
+                        <small class="pull-right">{{indexvo.memory}}</small>
+                    </div>
+                    <div class="progress progress-small">
+                        <div :style="memstyle" class="progress-bar"></div>
+                    </div>
+                    <div>
+                        <span>JVM</span>
+                        <small class="pull-right">{{indexvo.jvm}}</small>
+                    </div>
+                    <div class="progress progress-small">
+                        <div :style="" style="width: 55.58%;" class="progress-bar"></div>
+                    </div>
 
-                <div class="row">
-                    <div class="col-md-6">
-                        <h1 class="no-margins">2</h1>
-                        <div class="font-bold text-navy"><i class="fa fa-level-up"></i> <small>增长较快</small>
+                    <div>
+                        <span>CPU</span>
+                        <small class="pull-right">{{indexvo.cpu}}</small>
+                    </div>
+                    <div class="progress progress-small">
+                        <div style="width: 96.04%;" class="progress-bar"></div>
+                    </div>
+
+
+                    <div>
+                        <span>磁盘</span>
+                        <small class="pull-right">{{indexvo.disk}}</small>
+                    </div>
+                    <div class="progress progress-small">
+                        <div style="width: 64.21%;" class="progress-bar"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="row  border-bottom white-bg dashboard-header">
+        <div class="col-sm-12">
+            <h1>数据大盘</h1>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-md-2">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>浏览量</h5>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins">{{indexvo.seeNum}}</h1>
+                    <div class="stat-percent font-bold text-success"><i class="fa fa-level-up"></i>
+                    </div>
+                    <small>总计浏览量</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>用户数量</h5>
+                </div>
+                <div class="ibox-content">
+                    <h1 class="no-margins">{{indexvo.userNum}}</h1>
+                    <div class="stat-percent font-bold text-success"><i class="fa fa-level-up"></i>
+                    </div>
+                    <small>{{indexvo.user.deptName}}</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <span class="label label-primary pull-right">今天</span>
+                    <h5>企业网盘文件数量</h5>
+                </div>
+                <div class="ibox-content">
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h1 class="no-margins">{{indexvo.todayDiskNum}}</h1>
+                            <div class="font-bold text-navy"><i class="fa fa-level-up"></i> <small>增长较快</small>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-6">
-                        <h1 class="no-margins">100</h1>
-                        <div class="font-bold text-navy"><small>总共数量</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="ibox float-e-margins">
-            <div class="ibox-title">
-                <h5>最佳活跃用户</h5>
-                <div class="ibox-tools">
-                    <span class="label label-primary">今天</span>
-                </div>
-            </div>
-            <div class="ibox-content">
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <h1 class="no-margins">蓝星花</h1>
-                        <br>
-                    </div>
-                    <div class="col-md-6">
-                        <h1 class="no-margins"></h1>
-                        <div class="font-bold text-navy"><small> </small>
+                        <div class="col-md-6">
+                            <h1 class="no-margins">{{indexvo.totalDiskNum}}</h1>
+                            <div class="font-bold text-navy"><small>总共数量</small>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+        <div class="col-md-4">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>最佳活跃用户</h5>
+                    <div class="ibox-tools">
+                        <span class="label label-primary">今天</span>
+                    </div>
+                </div>
+                <div class="ibox-content">
 
-    <div class="col-sm-12">
-        <div class="ibox float-e-margins">
-            <div class="ibox-title">
-                <h5>文件下载列表</h5>
-            </div>
-            <div class="ibox-content no-padding">
-                <ul class="list-group">
-                    <li class="list-group-item">
-                        <span class="badge badge-primary">16</span> lanxinghua.java
-                    </li>
-                    <li class="list-group-item ">
-                        <span class="badge badge-info">12</span> aa.html
-                    </li>
-                    <li class="list-group-item">
-                        <span class="badge badge-danger">10</span> 冯提莫.gif
-                    </li>
-                    <li class="list-group-item">
-                        <span class="badge badge-success">10</span> 接收函.pdf
-                    </li>
-                </ul>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h1 class="no-margins">蓝星花</h1>
+                            <br>
+                        </div>
+                        <div class="col-md-6">
+                            <h1 class="no-margins"></h1>
+                            <div class="font-bold text-navy"><small> </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="col-sm-12">
-        <div class="ibox float-e-margins">
-            <div class="ibox-title">
-                <h5>系统慢接口</h5>
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>文件下载列表</h5>
+                </div>
+                <div class="ibox-content no-padding">
+                    <ul class="list-group">
+                        <li class="list-group-item" v-for="item in indexvo.fileDownVos">
+                            <span class="badge badge-primary">{{item.downNum}}</span> {{item.name}}
+                        </li>
+                    </ul>
+                </div>
             </div>
-            <div class="ibox-content no-padding">
-                <ul class="list-group">
-                    <li class="list-group-item">
-                        <span class="badge badge-primary">10000毫秒</span> com.example.modules.sys.controller.SysMenuController.update()
-                    </li>
-                    <li class="list-group-item">
-                        <span class="badge badge-primary">100毫秒</span> com.example.modules.sys.controller.SysMenuController.update()
-                    </li> <li class="list-group-item">
-                    <span class="badge badge-primary">1045200毫秒</span> com.example.modules.sys.controller.SysMenuController.update()
-                </li> <li class="list-group-item">
-                    <span class="badge badge-primary">40000毫秒</span> com.example.modules.sys.controller.SysMenuController.update()
-                </li>
-                </ul>
+        </div>
+
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>系统慢接口</h5>
+                </div>
+                <div class="ibox-content no-padding">
+                    <ul class="list-group">
+                        <li class="list-group-item" v-for="item in indexvo.slowInterfaceVos">
+                            <span class="badge badge-primary">{{item.time}}毫秒</span> {{item.name}}
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
@@ -228,7 +215,40 @@
 <script src="${request.contextPath}/statics/hplus/js/jquery.min.js?v=2.1.4"></script>
 <script src="${request.contextPath}/statics/hplus/js/bootstrap.min.js?v=3.3.6"></script>
 <script src="${request.contextPath}/statics/hplus/js/echarts-all.js"></script>
+<script src="${request.contextPath}/statics/hplus/js/content.min.js?v=1.0.0"></script>
 <script src="${request.contextPath}/statics/hplus/js/echarts-demo.min.js"></script>
+<script src="${request.contextPath}/statics/hplus/js/echarts-all.js"></script>
+<script>
+    var vm = new Vue({
+        el:'#rrapp',
+        data:{
+            indexvo:{},
+            memstyle:{width: '55.58%'},
+        },
+        created: function () {
+            console.log("加载数据")
+            this.getIndexInfo();
+        },
+        methods: {
+            getIndexInfo: function(){
+                var _this = this
+                axios.get(baseURL +'sys/index/getInfo')
+                    .then(function (res) {
+                        console.log(res.data);
+                        if (res.data.indexvo !=null){
+                            _this.indexvo = res.data.indexvo;
+                            console.log(_this.indexvo);
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    })
+                    .then(function () {
+                    });
+            }
+        }
+    });
+</script>
 </body>
 </html>
 
