@@ -2,6 +2,7 @@ package com.example.common.aspect;
 
 
 import com.example.common.annotation.DataFilter;
+import com.example.common.constants.UserEnum;
 import com.example.common.exception.BizException;
 import com.example.common.utils.Constant;
 import com.example.modules.sys.entity.SysUserEntity;
@@ -45,10 +46,15 @@ public class DataFilterAspect {
     public void dataFilter(JoinPoint point) throws Throwable {
         Object params = point.getArgs()[0];
         if(params != null && params instanceof Map){
+            //如果是前台用户不进行过滤
+            Map map = (Map)params;
+            Object type = map.get("type");
+            if (type !=null && UserEnum.FRONT.getType().equals(type.toString())){
+                return;
+            }
             SysUserEntity user = ShiroUtils.getUserEntity();
             //如果不是超级管理员，则进行数据过滤
             if(user.getUserId() != Constant.SUPER_ADMIN){
-                Map map = (Map)params;
                 map.put(Constant.SQL_FILTER, getSQLFilter(user, point));
             }
             return ;

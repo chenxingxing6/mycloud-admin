@@ -50,15 +50,12 @@ public class SysNoticeController extends AbstractController{
     @RequiresPermissions("sys:sysnotice:list")
     public R list(@RequestParam Map<String, Object> params){
         Object optUserName = params.get("optuser");
-        Object noticeTitle = params.get("noticeTitle");
         if (optUserName !=null && StringUtils.isNotEmpty(optUserName.toString())){
             SysUserEntity user = sysUserService.queryByName(optUserName.toString());
-            params.put("createUser", user == null ? "" : user.getUserId());
-        }
-        if (noticeTitle == null || StringUtils.isEmpty(noticeTitle.toString())){
-            params.remove("noticeTitle");
-        }else {
-            params.put("noticeTitle", noticeTitle.toString());
+            if (user == null){
+                return R.ok();
+            }
+            params.put("createUser", user.getUserId());
         }
         PageUtils page = sysNoticeService.queryPage(params);
         //创建者姓名修改一下

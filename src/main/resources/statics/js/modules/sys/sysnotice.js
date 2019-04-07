@@ -178,7 +178,7 @@ var vm = new Vue({
             var optuser = vm.q.optuser;
             var page = $("#jqGrid").jqGrid('getGridParam','page');
             $("#jqGrid").jqGrid('setGridParam',{
-                postData:{'optuser': optuser, 'noticeTitle' : title},
+                postData:{'optuser': optuser},
                 page:page
             }).trigger("reloadGrid");
         }
