@@ -1,8 +1,11 @@
 package com.example.modules.sys.entity;
 
+import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -25,6 +28,8 @@ public class SysNoticeEntity implements Serializable {
 	/**
 	 * 公告标题
 	 */
+	@Size(max = 100, message = "公告标题长度超过默认范围")
+	@NotBlank(message = "公告标题不能为空")
 	private String noticeTitle;
 	/**
 	 * 公告类型（1通知 2公告）
@@ -33,6 +38,8 @@ public class SysNoticeEntity implements Serializable {
 	/**
 	 * 公告内容
 	 */
+	@Size(max = 500, message = "公告内容长度超过默认范围")
+	@NotBlank(message = "公告内容不能为空")
 	private String noticeContent;
 	/**
 	 * 公告状态（0正常 1关闭）
@@ -46,6 +53,9 @@ public class SysNoticeEntity implements Serializable {
 	 * 登录时间
 	 */
 	private Long createTime;
+
+	@TableField(exist=false)
+	private String newTime;
 	/**
 	 * 更新者
 	 */
@@ -194,5 +204,13 @@ public class SysNoticeEntity implements Serializable {
 	 */
 	public String getRemark() {
 		return remark;
+	}
+
+	public String getNewTime() {
+		return newTime;
+	}
+
+	public void setNewTime(String newTime) {
+		this.newTime = newTime;
 	}
 }
