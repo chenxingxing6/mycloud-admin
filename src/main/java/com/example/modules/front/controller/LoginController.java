@@ -17,10 +17,9 @@ public class LoginController {
     /**
      * 登录
      */
-    @ResponseBody
     @RequestMapping(value = "/login")
-    public R login(String username, String password) {
+    public String login(String username, String password) {
         System.out.println(username +"---" + password);
-        return R.ok();
+        return "aaaa";
     }
 }

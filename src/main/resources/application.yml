@@ -84,7 +84,6 @@ management:
 ## 微服务注册
 eureka:
   instance:
-    hostname: localhost
     instance-id: service
   client:
     fetch-registry: true
