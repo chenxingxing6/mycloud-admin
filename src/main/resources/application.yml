@@ -10,7 +10,7 @@ server:
 
 spring:
   application:
-    name: @pom.artifactId@
+    name: service
   profiles:
     active: dev
   jackson:
@@ -41,17 +41,6 @@ spring:
     restart:
       enabled: true
       additional-paths: statics/**,templates/**
-
-    #  cloud:
-    #    config:
-    #      discovery:
-    #        enabled: false      #开启配置服务发现
-    #      name: mycloud-admin  #文件前缀名称
-    #      profile: dev
-    #      uri: http://localhost:8888/
-    #label: master  #配置文件所在分支
-
-
 mycloud:
   redis:
    open: true    #是否开启redis缓存  true开启   false关闭
@@ -94,12 +83,14 @@ management:
 
 ## 微服务注册
 eureka:
- client:
-   fetch-registry: false
-   register-with-eureka: false
-#    service-url:
-#      defaultZone: http://localhost:8761/eureka/
-
+  instance:
+    hostname: localhost
+    instance-id: service
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
 
 #自定义
 file:

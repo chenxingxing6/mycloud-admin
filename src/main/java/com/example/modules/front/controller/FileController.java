@@ -53,7 +53,6 @@ public class FileController extends AbstractController {
      * 列表
      */
     @RequestMapping("/list")
-    @RequiresPermissions("front:file:list")
     public R list(@RequestParam Map<String, Object> params){
         //根据父ID,用户ID
         Long userId = getUserId();
@@ -77,7 +76,6 @@ public class FileController extends AbstractController {
      * 信息
      */
     @RequestMapping("/info/{id}")
-    @RequiresPermissions("front:file:info")
     public R info(@PathVariable("id") Long id){
         FileEntity file = fileService.selectById(id);
 

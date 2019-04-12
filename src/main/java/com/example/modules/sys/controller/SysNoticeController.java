@@ -28,7 +28,7 @@ import com.example.common.utils.R;
  */
 @RestController
 @RequestMapping("sys/sysnotice")
-public class SysNoticeController {
+public class SysNoticeController extends AbstractController{
     @Autowired
     private SysNoticeService sysNoticeService;
 
@@ -61,8 +61,10 @@ public class SysNoticeController {
     @RequestMapping("/save")
     @RequiresPermissions("sys:sysnotice:save")
     public R save(@RequestBody SysNoticeEntity sysNotice){
+        Long userId = getUserId();
+        sysNotice.setCreateUser(userId.toString());
+        sysNotice.setCreateTime(System.currentTimeMillis());
         sysNoticeService.insert(sysNotice);
-
         return R.ok();
     }
 
