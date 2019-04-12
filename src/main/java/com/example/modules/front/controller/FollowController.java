@@ -40,7 +40,6 @@ public class FollowController extends AbstractController {
      * 列表（已关注和未关注）
      */
     @RequestMapping("/list")
-    @RequiresPermissions("front:follow:list")
     public R list(@RequestParam Map<String, Object> params){
         Long userId = getUserId();
         List<FollowUser> follows = followService.listFollowUser(params, userId);
@@ -56,7 +55,6 @@ public class FollowController extends AbstractController {
      * 信息
      */
     @RequestMapping("/info/{id}")
-    @RequiresPermissions("front:follow:info")
     public R info(@PathVariable("id") Long id){
         FollowEntity follow = followService.selectById(id);
 
@@ -67,7 +65,6 @@ public class FollowController extends AbstractController {
      * 保存
      */
     @RequestMapping("/save")
-    @RequiresPermissions("front:follow:save")
     public R save(@RequestBody FollowEntity follow){
         followService.insert(follow);
 
@@ -78,7 +75,6 @@ public class FollowController extends AbstractController {
      * 修改
      */
     @RequestMapping("/update")
-    @RequiresPermissions("front:follow:update")
     public R update(@RequestBody FollowEntity follow){
         ValidatorUtils.validateEntity(follow);
         followService.updateAllColumnById(follow);//全部更新
@@ -90,7 +86,6 @@ public class FollowController extends AbstractController {
      * 删除
      */
     @RequestMapping("/delete")
-    @RequiresPermissions("front:follow:delete")
     public R delete(@RequestBody Long[] ids){
         followService.deleteBatchIds(Arrays.asList(ids));
 

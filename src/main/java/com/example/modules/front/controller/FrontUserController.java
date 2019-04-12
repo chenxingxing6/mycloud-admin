@@ -42,7 +42,6 @@ public class FrontUserController extends AbstractController {
 	 * 所有用户列表
 	 */
 	@RequestMapping("/list")
-	@RequiresPermissions("front:user:list")
 	public R list(@RequestParam Map<String, Object> params){
 		params.put("type", UserEnum.FRONT.getType());
 		PageUtils page = sysUserService.queryPage(params);
@@ -54,7 +53,6 @@ public class FrontUserController extends AbstractController {
 	 */
 	@SysLog("保存用户")
 	@RequestMapping("/save")
-	@RequiresPermissions("front:user:save")
 	public R save(@RequestBody SysUserEntity user){
 		ValidatorUtils.validateEntity(user, AddGroup.class);
 		user.setType(Integer.valueOf(UserEnum.FRONT.getType()));
@@ -67,7 +65,6 @@ public class FrontUserController extends AbstractController {
 	 */
 	@SysLog("修改用户")
 	@RequestMapping("/update")
-	@RequiresPermissions("front:user:update")
 	public R update(@RequestBody SysUserEntity user){
 		ValidatorUtils.validateEntity(user, UpdateGroup.class);
 		user.setType(Integer.valueOf(UserEnum.FRONT.getType()));
@@ -80,7 +77,6 @@ public class FrontUserController extends AbstractController {
 	 */
 	@SysLog("删除用户")
 	@RequestMapping("/delete")
-	@RequiresPermissions("front:user:delete")
 	public R delete(@RequestBody Long[] userIds){
 		if(ArrayUtils.contains(userIds, 1L)){
 			return R.error("系统管理员不能删除");
@@ -96,7 +92,6 @@ public class FrontUserController extends AbstractController {
 	 * 用户信息
 	 */
 	@RequestMapping("/info/{userId}")
-	@RequiresPermissions("front:user:info")
 	public R info(@PathVariable("userId") Long userId){
 		SysUserEntity user = sysUserService.selectById(userId);
 		return R.ok().put("user", user);
