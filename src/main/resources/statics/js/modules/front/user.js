@@ -64,12 +64,10 @@ var vm = new Vue({
         },
         showList: true,
         title:null,
-        roleList:{},
         user:{
             status:1,
             deptId:null,
             deptName:null,
-            roleIdList:[]
         }
     },
     methods: {
@@ -80,7 +78,6 @@ var vm = new Vue({
         add: function(){
             vm.showList = false;
             vm.title = "新增";
-            vm.roleList = {};
             vm.user = {deptName:null, deptId:null, status:1};
             vm.getDept();
         },
@@ -106,8 +103,6 @@ var vm = new Vue({
             vm.title = "修改";
 
             vm.getUser(userId);
-            //获取角色信息
-            this.getRoleList();
         },
         del: function () {
             var userIds = getSelectedRows();
@@ -152,16 +147,10 @@ var vm = new Vue({
             });
         },
         getUser: function(userId){
-            $.get(baseURL + "sys/user/info/"+userId, function(r){
+            $.get(baseURL + "front/user/info/"+userId, function(r){
                 vm.user = r.user;
                 vm.user.password = null;
-
                 vm.getDept();
-            });
-        },
-        getRoleList: function(){
-            $.get(baseURL + "sys/role/select", function(r){
-                vm.roleList = r.list;
             });
         },
         deptTree: function(){

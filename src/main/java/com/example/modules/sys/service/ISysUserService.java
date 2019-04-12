@@ -14,6 +14,8 @@ import java.util.Map;
 public interface ISysUserService extends IService<SysUserEntity> {
 
 	PageUtils queryPage(Map<String, Object> params);
+
+	SysUserEntity queryByName(String name);
 	
 	/**
 	 * 查询用户的所有菜单ID

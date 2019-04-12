@@ -15,6 +15,7 @@ import com.example.modules.sys.service.ISysDeptService;
 import com.example.modules.sys.service.ISysUserRoleService;
 import com.example.modules.sys.service.ISysUserService;
 import com.example.modules.sys.shiro.ShiroUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -59,6 +61,17 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUserEntity> i
 			sysUserEntity.setDeptName(deptName);
 		}
 		return new PageUtils(page);
+	}
+
+	@Override
+	public SysUserEntity queryByName(String name) {
+		Map<String, Object> map = new HashMap();
+		map.put("username", name);
+		List<SysUserEntity> userEntities = this.selectByMap(map);
+		if (CollectionUtils.isNotEmpty(userEntities)){
+			return userEntities.get(0);
+		}
+		return null;
 	}
 
 	@Override

@@ -91,4 +91,14 @@ public class FrontUserController extends AbstractController {
 		sysUserService.deleteBatchIds(Arrays.asList(userIds));
 		return R.ok();
 	}
+
+	/**
+	 * 用户信息
+	 */
+	@RequestMapping("/info/{userId}")
+	@RequiresPermissions("front:user:info")
+	public R info(@PathVariable("userId") Long userId){
+		SysUserEntity user = sysUserService.selectById(userId);
+		return R.ok().put("user", user);
+	}
 }
