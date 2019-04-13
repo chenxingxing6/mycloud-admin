@@ -146,7 +146,7 @@ public class AppDiskController{
         Assert.isBlank(userId, "参数错误");
         Assert.isBlank(diskId, "参数错误");
         List<Long> fileIds = listFileIds(diskId, userId);
-        return fileService.getFileTotalByIdsWithPage(fileIds);
+        return fileService.getFileTotalByIds(fileIds);
     }
 
 

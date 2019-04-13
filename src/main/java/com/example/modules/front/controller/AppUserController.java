@@ -32,7 +32,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/front/user")
-public class FrontUserController extends AbstractController {
+public class AppUserController extends AbstractController {
 	@Autowired
 	private ISysUserService sysUserService;
 	@Autowired

@@ -21,18 +21,16 @@ public interface FollowService extends IService<FollowEntity> {
 
     /**
      * 查询未关注的用户
-     * @param params
      * @param userId
      * @return
      */
-    List<FollowUser> listFollowUser(Map<String, Object> params, Long userId);
+    List<FollowUser> listFollowUser(Long userId);
 
     /**
      * 查询已关注的用户
-     * @param params
      * @param userId
      * @return
      */
-    List<FollowUser> listFollowedUser(Map<String, Object> params, Long userId);
+    List<FollowUser> listFollowedUser(Long userId);
 }
 

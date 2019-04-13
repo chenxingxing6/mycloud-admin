@@ -1,13 +1,14 @@
 package com.example.modules.front.controller;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import com.example.common.validator.Assert;
 import com.example.common.validator.ValidatorUtils;
 import com.example.modules.front.vo.FollowUser;
 import com.example.modules.sys.controller.AbstractController;
+import com.example.modules.sys.entity.SysUserEntity;
+import com.example.modules.sys.service.ISysUserService;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,25 +32,47 @@ import com.example.common.utils.R;
  * @date 2019-03-17 21:38:15
  */
 @RestController
-@RequestMapping("front/follow")
-public class FollowController extends AbstractController {
+@RequestMapping("front/app")
+public class AppFollowController extends AbstractController {
     @Autowired
     private FollowService followService;
+    @Autowired
+    private ISysUserService sysUserService;
 
+
+    /**
+     * 获取关注，未关注用户
+     * @param userId
+     * @param type   0：已关注  1：未关注
+     * @return
+     */
+    @RequestMapping(value = "/front/app/listFollowUser")
+    List<FollowUser> listFollowUser(@RequestParam("userId") String userId,
+                                       @RequestParam("type") String type){
+        Assert.isBlank(userId, "参数错误");
+        Assert.isBlank(type, "参数错误");
+        List<FollowUser> followUsers = new ArrayList<>();
+        if ("0".equals(type)){
+            followUsers = followService.listFollowedUser(Long.valueOf(userId));
+        }else if ("1".equals(type)){
+            followUsers = followService.listFollowUser(Long.valueOf(userId));
+        }
+        return followUsers;
+
+    }
     /**
      * 列表（已关注和未关注）
      */
     @RequestMapping("/list")
     public R list(@RequestParam Map<String, Object> params){
         Long userId = getUserId();
-        List<FollowUser> follows = followService.listFollowUser(params, userId);
-        List<FollowUser> followeds = followService.listFollowedUser(params, userId);
+        List<FollowUser> follows = followService.listFollowUser(userId);
+        List<FollowUser> followeds = followService.listFollowedUser(userId);
         R result = R.ok();
         result.put("follow", follows);
         result.put("followeds", followeds);
         return result;
     }
-
 
     /**
      * 信息

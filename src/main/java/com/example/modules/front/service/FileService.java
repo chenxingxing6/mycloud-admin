@@ -30,6 +30,17 @@ public interface FileService extends IService<FileEntity> {
      */
     public List<FileEntity> getFileList(long userId, long parentId);
 
+
+    /**
+     * 获取文件ids列表
+     *
+     * @param userId
+     * @param parentId
+     * @return
+     */
+    public List<Long> getFileIds(long userId, long parentId);
+
+
     /**
      * 获取文件列表,批量查询
      *
@@ -54,7 +65,7 @@ public interface FileService extends IService<FileEntity> {
      * @param ids
      * @return
      */
-    public int getFileTotalByIdsWithPage(List<Long> ids);
+    public int getFileTotalByIds(List<Long> ids);
 
 
     /**

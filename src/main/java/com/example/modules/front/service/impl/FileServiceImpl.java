@@ -56,6 +56,16 @@ public class FileServiceImpl extends ServiceImpl<FileDao, FileEntity> implements
     }
 
     @Override
+    public List<Long> getFileIds(long userId, long parentId) {
+        List<UserFileEntity> userFileEntities = userFileService.getFilesByUserId(userId);
+        if (CollectionUtils.isEmpty(userFileEntities)){
+            return new ArrayList<>();
+        }
+        List<Long> fileIds = userFileEntities.stream().map(e->e.getFileId()).collect(Collectors.toList());
+        return fileIds;
+    }
+
+    @Override
     public List<FileEntity> listFileByIds(List<Long> ids) {
         List<FileEntity> results = this.selectBatchIds(ids);
         if (CollectionUtils.isEmpty(results)){
@@ -70,7 +80,7 @@ public class FileServiceImpl extends ServiceImpl<FileDao, FileEntity> implements
     }
 
     @Override
-    public int getFileTotalByIdsWithPage(List<Long> ids) {
+    public int getFileTotalByIds(List<Long> ids) {
         return baseMapper.getFileTotalByIdsWithPage(ids);
     }
 

@@ -1,6 +1,8 @@
 package com.example.modules.front.service.impl;
 
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 import java.util.Map;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
@@ -22,8 +24,16 @@ public class ShareServiceImpl extends ServiceImpl<ShareDao, ShareEntity> impleme
                 new Query<ShareEntity>(params).getPage(),
                 new EntityWrapper<ShareEntity>()
         );
-
         return new PageUtils(page);
     }
 
+    @Override
+    public List<ShareEntity> listShareByUserIdWithPage(Long fromUserId, Long toUserId, int page, int limit) {
+        return baseMapper.listShareByUserIdWithPage(fromUserId, toUserId, page, limit);
+    }
+
+    @Override
+    public int getShareTotalByUserId(Long fromUserId, Long toUserId) {
+        return baseMapper.getShareTotalByUserId(fromUserId, toUserId);
+    }
 }

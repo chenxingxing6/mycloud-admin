@@ -40,9 +40,9 @@ public class FollowServiceImpl extends ServiceImpl<FollowDao, FollowEntity> impl
     }
 
     @Override
-    public List<FollowUser> listFollowUser(Map<String, Object> params, Long userId) {
+    public List<FollowUser> listFollowUser(Long userId) {
         List<FollowUser> resultList = new ArrayList<>();
-        List<FollowEntity> followEntities = innerListFollowEntity(params, userId);
+        List<FollowEntity> followEntities = innerListFollowEntity(userId);
         //已关注的用户
         List<Long> followedUserIds = followEntities.stream().map(e->e.getToUserId()).collect(Collectors.toList());
         if (CollectionUtils.isEmpty(followedUserIds)){
@@ -81,9 +81,9 @@ public class FollowServiceImpl extends ServiceImpl<FollowDao, FollowEntity> impl
     }
 
     @Override
-    public List<FollowUser> listFollowedUser(Map<String, Object> params, Long userId) {
+    public List<FollowUser> listFollowedUser(Long userId) {
         List<FollowUser> resultList = new ArrayList<>();
-        List<FollowEntity> followEntities = innerListFollowEntity(params, userId);
+        List<FollowEntity> followEntities = innerListFollowEntity(userId);
         if (CollectionUtils.isEmpty(followEntities)){
             return resultList;
         }
@@ -105,7 +105,7 @@ public class FollowServiceImpl extends ServiceImpl<FollowDao, FollowEntity> impl
     }
 
     //获取关注的用户
-    private List<FollowEntity> innerListFollowEntity(Map<String, Object> params, Long userId){
+    private List<FollowEntity> innerListFollowEntity(Long userId){
        return this.selectList(new EntityWrapper<FollowEntity>()
                .eq(userId !=null, "from_user_id", userId)
        );

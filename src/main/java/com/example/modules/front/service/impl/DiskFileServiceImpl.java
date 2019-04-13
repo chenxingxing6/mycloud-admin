@@ -31,7 +31,7 @@ public class DiskFileServiceImpl extends ServiceImpl<DiskFileDao, DiskFileEntity
     @Override
     public List<DiskFileEntity> listDiskAllFile(Long diskId) {
         return this.selectList(new EntityWrapper<DiskFileEntity>()
-        .eq(diskId !=null, "disk_id", diskId).and()
+        .eq(diskId !=null, "disk_id", diskId)
         .eq("is_valid", 1)
         .orderBy("create_time", Boolean.FALSE));
     }

@@ -4,22 +4,53 @@
 <mapper namespace="com.example.modules.front.dao.ShareDao">
 
 	<!-- 可根据自己的需求，是否要使用 -->
-    <resultMap type="com.example.modules.front.entity.ShareEntity" id="shareMap">
-        <result property="id" column="id"/>
-        <result property="fromUserId" column="from_user_id"/>
-        <result property="fromUserName" column="from_user_name"/>
-        <result property="toUserId" column="to_user_id"/>
-        <result property="toUserName" column="to_user_name"/>
-        <result property="fileId" column="file_id"/>
-        <result property="fileName" column="file_name"/>
-        <result property="expiredTime" column="expired_time"/>
-        <result property="isValid" column="is_valid"/>
-        <result property="createUser" column="create_user"/>
-        <result property="createTime" column="create_time"/>
-        <result property="opUser" column="op_user"/>
-        <result property="opTime" column="op_time"/>
-        <result property="lastVer" column="last_ver"/>
+    <resultMap id="BaseResultMap" type="com.example.modules.front.entity.ShareEntity">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="from_user_id" jdbcType="BIGINT" property="fromUserId" />
+        <result column="from_user_name" jdbcType="VARCHAR" property="fromUserName" />
+        <result column="to_user_id" jdbcType="BIGINT" property="toUserId" />
+        <result column="to_user_name" jdbcType="VARCHAR" property="toUserName" />
+        <result column="file_id" jdbcType="BIGINT" property="fileId" />
+        <result column="file_name" jdbcType="VARCHAR" property="fileName" />
+        <result column="expired_time" jdbcType="BIGINT" property="expiredTime" />
+        <result column="is_valid" jdbcType="TINYINT" property="isValid" />
+        <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+        <result column="create_time" jdbcType="BIGINT" property="createTime" />
+        <result column="op_user" jdbcType="VARCHAR" property="opUser" />
+        <result column="op_time" jdbcType="BIGINT" property="opTime" />
+        <result column="last_ver" jdbcType="SMALLINT" property="lastVer" />
     </resultMap>
 
+    <sql id="Base_Column_List">
+    id, from_user_id, from_user_name, to_user_id, to_user_name, file_id, file_name, expired_time,
+    is_valid, create_user, create_time, op_user, op_time, last_ver
+  </sql>
+
+    <select id="listShareByUserIdWithPage" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from tb_share
+        where is_valid = 1
+        <if test="fromUserId != null">
+            and from_user_id = #{fromUserId,jdbcType=BIGINT},
+        </if>
+        <if test="toUserId != null">
+            and to_user_id = #{toUserId,jdbcType=BIGINT},
+        </if>
+        ORDER BY create_time DESC
+        limit #{page}, #{pageSize}
+    </select>
+
+    <select id="getShareTotalByUserId" resultType="java.lang.Integer">
+        SELECT COUNT(1) as num
+        from tb_share
+        where is_valid = 1
+        <if test="fromUserId != null">
+            and from_user_id = #{fromUserId,jdbcType=BIGINT},
+        </if>
+        <if test="toUserId != null">
+            and to_user_id = #{toUserId,jdbcType=BIGINT},
+        </if>
+    </select>
 
 </mapper>
