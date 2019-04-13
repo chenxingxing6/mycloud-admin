@@ -105,47 +105,39 @@ public class AppDiskController{
 
     /**
      * 获取企业网盘资源
-     * @param userId
+     * @param deptId
      * @param diskId 为0的时候查所有
      * @param page
      * @param limit
      * @return
      */
     @RequestMapping(value = "/listDisk")
-    List<FileVo> listDisk(@RequestParam("userId") String userId,
+    List<FileEntity> listDisk(@RequestParam("deptId") String deptId,
                           @RequestParam("diskId") String diskId,
                           @RequestParam("page") Integer page,
                           @RequestParam("limit") Integer limit){
         List<FileVo> fileVos = new ArrayList<>();
-        Assert.isBlank(userId, "参数错误");
+        Assert.isBlank(deptId, "参数错误");
         Assert.isBlank(diskId, "参数错误");
         Assert.isNull(page, "参数错误");
         Assert.isNull(limit, "参数错误");
-        List<Long> fileIds = listFileIds(diskId, userId);
-        List<FileEntity> fileEntities = fileService.listFileByIdsWithPage(fileIds, page, limit);
-        for (FileEntity fileEntity : fileEntities) {
-            FileVo fileVo = new FileVo();
-            BeanUtils.copyProperties(fileEntity, fileVo);
-            fileVo.setOpTime(DateUtils.format(fileEntity.getOpTime(), DateUtils.DATE_TIME_PATTERN));
-            fileVo.setId(fileEntity.getId().toString());
-            fileVo.setParentId(fileEntity.getParentId().toString());
-            fileVos.add(fileVo);
-        }
-        return fileVos;
+        List<Long> fileIds = listFileIds(diskId, deptId);
+        return fileService.listFileByIdsWithPage(fileIds, page, limit);
+
     }
 
     /**
      * 获取总页数
-     * @param userId
+     * @param deptId
      * @param diskId 为0的时候查所有
      * @return
      */
     @RequestMapping(value = "/listDiskTotal")
-    int listDiskTotal(@RequestParam("userId") String userId,
+    int listDiskTotal(@RequestParam("deptId") String deptId,
                       @RequestParam("diskId") String diskId){
-        Assert.isBlank(userId, "参数错误");
+        Assert.isBlank(deptId, "参数错误");
         Assert.isBlank(diskId, "参数错误");
-        List<Long> fileIds = listFileIds(diskId, userId);
+        List<Long> fileIds = listFileIds(diskId, deptId);
         return fileService.getFileTotalByIds(fileIds);
     }
 
