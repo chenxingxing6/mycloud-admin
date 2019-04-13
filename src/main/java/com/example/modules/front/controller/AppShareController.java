@@ -77,10 +77,7 @@ public class AppShareController {
     }
 
 
-    /**
-     * 列表
-     */
-    @RequestMapping("/list")
+   /* @RequestMapping("/list")
     public R list(@RequestParam Map<String, Object> params){
         PageUtils page = shareService.queryPage(params);
 
@@ -88,9 +85,6 @@ public class AppShareController {
     }
 
 
-    /**
-     * 信息
-     */
     @RequestMapping("/info/{id}")
     public R info(@PathVariable("id") Long id){
         ShareEntity share = shareService.selectById(id);
@@ -98,9 +92,7 @@ public class AppShareController {
         return R.ok().put("share", share);
     }
 
-    /**
-     * 保存
-     */
+
     @RequestMapping("/save")
     public R save(@RequestBody ShareEntity share){
         shareService.insert(share);
@@ -108,9 +100,6 @@ public class AppShareController {
         return R.ok();
     }
 
-    /**
-     * 修改
-     */
     @RequestMapping("/update")
     public R update(@RequestBody ShareEntity share){
         ValidatorUtils.validateEntity(share);
@@ -119,13 +108,10 @@ public class AppShareController {
         return R.ok();
     }
 
-    /**
-     * 删除
-     */
     @RequestMapping("/delete")
     public R delete(@RequestBody Long[] ids){
         shareService.deleteBatchIds(Arrays.asList(ids));
         return R.ok();
-    }
+    }*/
 
 }

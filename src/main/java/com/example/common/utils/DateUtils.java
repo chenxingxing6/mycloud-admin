@@ -71,6 +71,20 @@ public class DateUtils {
     }
 
     /**
+     * 字符串转换成时间戳
+     * @param strDate 日期字符串
+     * @param pattern 日期的格式，如：DateUtils.DATE_TIME_PATTERN
+     */
+    public static Long stringToTimestamp(String strDate, String pattern) {
+        if (StringUtils.isBlank(strDate)){
+            return null;
+        }
+
+        DateTimeFormatter fmt = DateTimeFormat.forPattern(pattern);
+        return fmt.parseMillis(strDate);
+    }
+
+    /**
      * 根据周数，获取开始日期、结束日期
      * @param week  周期  0本周，-1上周，-2上上周，1下周，2下下周
      * @return  返回date[0]开始日期、date[1]结束日期

@@ -46,7 +46,7 @@ public class AppFollowController extends AbstractController {
      * @param type   0：已关注  1：未关注
      * @return
      */
-    @RequestMapping(value = "/front/app/listFollowUser")
+    @RequestMapping(value = "/listFollowUser")
     List<FollowUser> listFollowUser(@RequestParam("userId") String userId,
                                        @RequestParam("type") String type){
         Assert.isBlank(userId, "参数错误");
@@ -74,9 +74,7 @@ public class AppFollowController extends AbstractController {
         return result;
     }
 
-    /**
-     * 信息
-     */
+
     @RequestMapping("/info/{id}")
     public R info(@PathVariable("id") Long id){
         FollowEntity follow = followService.selectById(id);
@@ -84,9 +82,7 @@ public class AppFollowController extends AbstractController {
         return R.ok().put("follow", follow);
     }
 
-    /**
-     * 保存
-     */
+
     @RequestMapping("/save")
     public R save(@RequestBody FollowEntity follow){
         followService.insert(follow);
@@ -94,10 +90,7 @@ public class AppFollowController extends AbstractController {
         return R.ok();
     }
 
-    /**
-     * 修改
-     */
-    @RequestMapping("/update")
+    /*@RequestMapping("/update")
     public R update(@RequestBody FollowEntity follow){
         ValidatorUtils.validateEntity(follow);
         followService.updateAllColumnById(follow);//全部更新
@@ -105,14 +98,12 @@ public class AppFollowController extends AbstractController {
         return R.ok();
     }
 
-    /**
-     * 删除
-     */
+
     @RequestMapping("/delete")
     public R delete(@RequestBody Long[] ids){
         followService.deleteBatchIds(Arrays.asList(ids));
 
         return R.ok();
-    }
+    }*/
 
 }
