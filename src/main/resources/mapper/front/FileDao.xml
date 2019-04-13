@@ -33,6 +33,9 @@
         <include refid="Base_Column_List" />
         from tb_file
         where is_valid = 1
+        <if test="fileName != null">
+            AND original_name like concat('%'，#{fileName}，'%')
+        </if>
         <if test="ids != null and ids.size() > 0">
             AND id IN
             <foreach collection="ids" open="(" close=")" item="id" separator=",">
@@ -47,6 +50,9 @@
         SELECT COUNT(1) as num
         from tb_file
         where is_valid = 1
+        <if test="fileName != null">
+            AND original_name like concat('%'，#{fileName}，'%')
+        </if>
         <if test="ids != null and ids.size() > 0">
             AND id IN
             <foreach collection="ids" open="(" close=")" item="id" separator=",">

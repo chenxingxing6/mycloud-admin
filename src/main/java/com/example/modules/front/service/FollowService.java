@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.service.IService;
 import com.example.common.utils.PageUtils;
 import com.example.modules.front.entity.FollowEntity;
 import com.example.modules.front.vo.FollowUser;
+import com.example.modules.sys.entity.SysUserEntity;
 
 import java.util.List;
 import java.util.Map;
@@ -24,13 +25,13 @@ public interface FollowService extends IService<FollowEntity> {
      * @param userId
      * @return
      */
-    List<FollowUser> listFollowUser(Long userId);
+    List<SysUserEntity> listFollowUser(Long userId);
 
     /**
      * 查询已关注的用户
      * @param userId
      * @return
      */
-    List<FollowUser> listFollowedUser(Long userId);
+    List<SysUserEntity> listFollowedUser(Long userId);
 }
 

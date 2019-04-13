@@ -57,7 +57,7 @@ public interface FileService extends IService<FileEntity> {
      * @param limit
      * @return
      */
-    public List<FileEntity> listFileByIdsWithPage(List<Long> ids, int page, int limit);
+    public List<FileEntity> listFileByIdsWithPage(List<Long> ids, String fileName, int page, int limit);
 
 
     /**
@@ -65,7 +65,7 @@ public interface FileService extends IService<FileEntity> {
      * @param ids
      * @return
      */
-    public int getFileTotalByIds(List<Long> ids);
+    public int getFileTotalByIds(List<Long> ids, String fileName);
 
 
     /**

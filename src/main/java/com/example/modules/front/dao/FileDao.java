@@ -16,9 +16,11 @@ import java.util.List;
 public interface FileDao extends BaseMapper<FileEntity> {
 
     List<FileEntity> listFileByIdsWithPage(@Param("ids") List<Long> ids,
+                                           @Param(value = "fileName") String fileName,
                                            @Param(value = "page") Integer page,
                                            @Param(value = "pageSize") Integer pageSize);
 
 
-    int getFileTotalByIdsWithPage(@Param("ids") List<Long> ids);
+    int getFileTotalByIdsWithPage(@Param("ids") List<Long> ids,
+                                  @Param(value = "fileName") String fileName);
 }

@@ -1,12 +1,15 @@
 package com.example.modules.front.controller;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import com.example.common.validator.Assert;
 import com.example.common.validator.ValidatorUtils;
 import com.example.modules.front.vo.FollowUser;
 import com.example.modules.sys.controller.AbstractController;
+import com.example.modules.sys.entity.SysDeptEntity;
 import com.example.modules.sys.entity.SysUserEntity;
+import com.example.modules.sys.service.ISysDeptService;
 import com.example.modules.sys.service.ISysUserService;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -38,7 +41,8 @@ public class AppFollowController extends AbstractController {
     private FollowService followService;
     @Autowired
     private ISysUserService sysUserService;
-
+    @Autowired
+    private ISysDeptService sysDeptService;
 
     /**
      * 获取关注，未关注用户
@@ -47,15 +51,28 @@ public class AppFollowController extends AbstractController {
      * @return
      */
     @RequestMapping(value = "/listFollowUser")
-    List<FollowUser> listFollowUser(@RequestParam("userId") String userId,
+    List<SysUserEntity> listFollowUser(@RequestParam("userId") String userId,
                                        @RequestParam("type") String type){
         Assert.isBlank(userId, "参数错误");
         Assert.isBlank(type, "参数错误");
-        List<FollowUser> followUsers = new ArrayList<>();
+        List<SysUserEntity> followUsers = new ArrayList<>();
         if ("0".equals(type)){
             followUsers = followService.listFollowedUser(Long.valueOf(userId));
         }else if ("1".equals(type)){
             followUsers = followService.listFollowUser(Long.valueOf(userId));
+        }
+        if (CollectionUtils.isEmpty(followUsers)){
+            return followUsers;
+        }
+        List<Long> allDeptIds = followUsers.stream().map(e->e.getDeptId()).collect(Collectors.toList());
+        List<SysDeptEntity> deptEntities = sysDeptService.selectBatchIds(allDeptIds);
+        if (CollectionUtils.isEmpty(deptEntities)){
+            return followUsers;
+        }
+        Map<Long, SysDeptEntity> map = deptEntities.stream().collect(Collectors.toMap(e->e.getDeptId(), e->e));
+        for (SysUserEntity followUser : followUsers) {
+            SysDeptEntity deptEntity = map.get(followUser.getDeptId());
+            followUser.setDeptName(deptEntity == null ? "" : deptEntity.getName());
         }
         return followUsers;
 
@@ -66,8 +83,8 @@ public class AppFollowController extends AbstractController {
     @RequestMapping("/list")
     public R list(@RequestParam Map<String, Object> params){
         Long userId = getUserId();
-        List<FollowUser> follows = followService.listFollowUser(userId);
-        List<FollowUser> followeds = followService.listFollowedUser(userId);
+        List<SysUserEntity> follows = followService.listFollowUser(userId);
+        List<SysUserEntity> followeds = followService.listFollowedUser(userId);
         R result = R.ok();
         result.put("follow", follows);
         result.put("followeds", followeds);

@@ -114,6 +114,7 @@ public class AppDiskController{
     @RequestMapping(value = "/listDisk")
     List<FileEntity> listDisk(@RequestParam("deptId") String deptId,
                           @RequestParam("diskId") String diskId,
+                          @RequestParam("fileName") String fileName,
                           @RequestParam("page") Integer page,
                           @RequestParam("limit") Integer limit){
         List<FileVo> fileVos = new ArrayList<>();
@@ -122,7 +123,8 @@ public class AppDiskController{
         Assert.isNull(page, "参数错误");
         Assert.isNull(limit, "参数错误");
         List<Long> fileIds = listFileIds(diskId, deptId);
-        return fileService.listFileByIdsWithPage(fileIds, page, limit);
+        fileName = StringUtils.isEmpty(fileName) ? null : fileName;
+        return fileService.listFileByIdsWithPage(fileIds, fileName, page, limit);
 
     }
 
@@ -134,11 +136,13 @@ public class AppDiskController{
      */
     @RequestMapping(value = "/listDiskTotal")
     int listDiskTotal(@RequestParam("deptId") String deptId,
-                      @RequestParam("diskId") String diskId){
+                      @RequestParam("diskId") String diskId,
+                      @RequestParam("fileName") String fileName){
         Assert.isBlank(deptId, "参数错误");
         Assert.isBlank(diskId, "参数错误");
+        fileName = StringUtils.isEmpty(fileName) ? null : fileName;
         List<Long> fileIds = listFileIds(diskId, deptId);
-        return fileService.getFileTotalByIds(fileIds);
+        return fileService.getFileTotalByIds(fileIds, fileName);
     }
 
 

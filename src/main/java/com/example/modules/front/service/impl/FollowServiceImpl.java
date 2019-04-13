@@ -40,8 +40,8 @@ public class FollowServiceImpl extends ServiceImpl<FollowDao, FollowEntity> impl
     }
 
     @Override
-    public List<FollowUser> listFollowUser(Long userId) {
-        List<FollowUser> resultList = new ArrayList<>();
+    public List<SysUserEntity> listFollowUser(Long userId) {
+        List<SysUserEntity> resultList = new ArrayList<>();
         List<FollowEntity> followEntities = innerListFollowEntity(userId);
         //已关注的用户
         List<Long> followedUserIds = followEntities.stream().map(e->e.getToUserId()).collect(Collectors.toList());
@@ -71,43 +71,28 @@ public class FollowServiceImpl extends ServiceImpl<FollowDao, FollowEntity> impl
                 continue;
             }
             SysUserEntity sysUserEntity = map.get(id);
-            FollowUser followUser = new FollowUser();
-            followUser.setFollowUserId(id);
-            followUser.setUserName(sysUserEntity.getUsername());
-            followUser.setImgPath(sysUserEntity.getImgPath());
-            resultList.add(followUser);
+            resultList.add(sysUserEntity);
         }
         return resultList;
     }
 
     @Override
-    public List<FollowUser> listFollowedUser(Long userId) {
-        List<FollowUser> resultList = new ArrayList<>();
+    public List<SysUserEntity> listFollowedUser(Long userId) {
+        List<SysUserEntity> resultList = new ArrayList<>();
         List<FollowEntity> followEntities = innerListFollowEntity(userId);
         if (CollectionUtils.isEmpty(followEntities)){
             return resultList;
         }
         List<Long> ids = followEntities.stream().map(e -> e.getToUserId()).collect(Collectors.toList());
-        List<SysUserEntity> sysUserEntities = sysUserDao.selectBatchIds(ids);
-        Map<Long, SysUserEntity> map = sysUserEntities.stream().collect(Collectors.toMap(SysUserEntity::getUserId, e-> e));
-        for (Long id : ids) {
-            if (map.get(id) == null) {
-                continue;
-            }
-            SysUserEntity sysUserEntity = map.get(id);
-            FollowUser followUser = new FollowUser();
-            followUser.setFollowUserId(id);
-            followUser.setUserName(sysUserEntity.getUsername());
-            followUser.setImgPath(sysUserEntity.getImgPath());
-            resultList.add(followUser);
-        }
-        return resultList;
+        return sysUserDao.selectBatchIds(ids);
     }
 
     //获取关注的用户
     private List<FollowEntity> innerListFollowEntity(Long userId){
        return this.selectList(new EntityWrapper<FollowEntity>()
                .eq(userId !=null, "from_user_id", userId)
+               .eq("is_valid", 1)
+               .orderBy("create_time", false)
        );
     }
 }

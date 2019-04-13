@@ -75,13 +75,14 @@ public class FileServiceImpl extends ServiceImpl<FileDao, FileEntity> implements
     }
 
     @Override
-    public List<FileEntity> listFileByIdsWithPage(List<Long> ids, int page, int limit) {
-        return baseMapper.listFileByIdsWithPage(ids, page, limit);
+    public List<FileEntity> listFileByIdsWithPage(List<Long> ids, String fileName, int page, int limit) {
+        page = page>0 ? page -1 : 0;
+        return baseMapper.listFileByIdsWithPage(ids,fileName, page, limit);
     }
 
     @Override
-    public int getFileTotalByIds(List<Long> ids) {
-        return baseMapper.getFileTotalByIdsWithPage(ids);
+    public int getFileTotalByIds(List<Long> ids, String fileName) {
+        return baseMapper.getFileTotalByIdsWithPage(ids, fileName);
     }
 
     @Override

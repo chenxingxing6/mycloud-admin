@@ -77,7 +77,7 @@ public class AppFileController {
         Assert.isNull(limit, "参数错误");
         fileParentId = StringUtils.isEmpty(fileParentId) ? "0" : fileParentId;
         List<Long> ids = fileService.getFileIds(Long.valueOf(userId), Long.valueOf(fileParentId));
-        List<FileEntity> fileEntities = fileService.listFileByIdsWithPage(ids, page, limit);
+        List<FileEntity> fileEntities = fileService.listFileByIdsWithPage(ids, null, page, limit);
         for (FileEntity fileEntity : fileEntities) {
             FileVo fileVo = new FileVo();
             BeanUtils.copyProperties(fileEntity, fileVo);
@@ -102,7 +102,7 @@ public class AppFileController {
         Assert.isBlank(userId, "参数错误");
         fileParentId = StringUtils.isEmpty(fileParentId) ? "0" : fileParentId;
         List<Long> ids = fileService.getFileIds(Long.valueOf(userId), Long.valueOf(fileParentId));
-        return fileService.getFileTotalByIds(ids);
+        return fileService.getFileTotalByIds(ids, null);
     }
 
     /**
