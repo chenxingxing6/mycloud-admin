@@ -18,8 +18,8 @@ import java.util.Map;
  * Desc: 前台用户登录
  */
 @RestController
-@RequestMapping("/front")
-public class LoginController {
+@RequestMapping("/front/app")
+public class AppLoginController {
     @Autowired
     private ISysUserService userService;
 

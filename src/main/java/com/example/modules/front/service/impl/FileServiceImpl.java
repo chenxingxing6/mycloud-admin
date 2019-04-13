@@ -11,10 +11,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
@@ -65,6 +62,16 @@ public class FileServiceImpl extends ServiceImpl<FileDao, FileEntity> implements
             return new ArrayList<FileEntity>();
         }
         return results.stream().filter(e->e.getIsValid() == 1).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<FileEntity> listFileByIdsWithPage(List<Long> ids, int page, int limit) {
+        return baseMapper.listFileByIdsWithPage(ids, page, limit);
+    }
+
+    @Override
+    public int getFileTotalByIdsWithPage(List<Long> ids) {
+        return baseMapper.getFileTotalByIdsWithPage(ids);
     }
 
     @Override

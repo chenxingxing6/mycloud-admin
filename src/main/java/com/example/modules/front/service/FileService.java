@@ -40,6 +40,24 @@ public interface FileService extends IService<FileEntity> {
 
 
     /**
+     * 获取文件列表,分页
+     * @param ids
+     * @param page
+     * @param limit
+     * @return
+     */
+    public List<FileEntity> listFileByIdsWithPage(List<Long> ids, int page, int limit);
+
+
+    /**
+     * 获取文件列表总条数
+     * @param ids
+     * @return
+     */
+    public int getFileTotalByIdsWithPage(List<Long> ids);
+
+
+    /**
      * 创建文件夹
      * @param file
      * @param user

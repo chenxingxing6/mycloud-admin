@@ -4,23 +4,56 @@
 <mapper namespace="com.example.modules.front.dao.FileDao">
 
 	<!-- 可根据自己的需求，是否要使用 -->
-    <resultMap type="com.example.modules.front.entity.FileEntity" id="fileMap">
-        <result property="id" column="id"/>
-        <result property="parentId" column="parent_id"/>
-        <result property="originalName" column="original_name"/>
-        <result property="name" column="name"/>
-        <result property="originalPath" column="original_path"/>
-        <result property="path" column="path"/>
-        <result property="length" column="length"/>
-        <result property="type" column="type"/>
-        <result property="viewFlag" column="view_flag"/>
-        <result property="isValid" column="is_valid"/>
-        <result property="createUser" column="create_user"/>
-        <result property="createTime" column="create_time"/>
-        <result property="opUser" column="op_user"/>
-        <result property="opTime" column="op_time"/>
-        <result property="lastVer" column="last_ver"/>
+    <resultMap id="BaseResultMap" type="com.example.modules.front.entity.FileEntity">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="parent_id" jdbcType="BIGINT" property="parentId" />
+        <result column="original_name" jdbcType="VARCHAR" property="originalName" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="original_path" jdbcType="VARCHAR" property="originalPath" />
+        <result column="path" jdbcType="VARCHAR" property="path" />
+        <result column="length" jdbcType="VARCHAR" property="length" />
+        <result column="type" jdbcType="TINYINT" property="type" />
+        <result column="view_flag" jdbcType="TINYINT" property="viewFlag" />
+        <result column="is_valid" jdbcType="TINYINT" property="isValid" />
+        <result column="create_user" jdbcType="VARCHAR" property="createUser" />
+        <result column="create_time" jdbcType="BIGINT" property="createTime" />
+        <result column="op_user" jdbcType="VARCHAR" property="opUser" />
+        <result column="op_time" jdbcType="BIGINT" property="opTime" />
+        <result column="last_ver" jdbcType="SMALLINT" property="lastVer" />
+        <result column="download_num" jdbcType="INTEGER" property="downloadNum" />
     </resultMap>
+
+    <sql id="Base_Column_List">
+    id, parent_id, original_name, name, original_path, path, length, type, view_flag,
+    is_valid, create_user, create_time, op_user, op_time, last_ver, download_num
+  </sql>
+
+    <select id="listFileByIdsWithPage" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from tb_file
+        where is_valid = 1
+        <if test="ids != null and ids.size() > 0">
+            AND id IN
+            <foreach collection="ids" open="(" close=")" item="id" separator=",">
+                #{id,jdbcType=BIGINT}
+            </foreach>
+        </if>
+        ORDER BY create_time DESC
+        limit #{page}, #{pageSize}
+    </select>
+
+    <select id="getFileTotalByIdsWithPage" resultType="java.lang.Integer">
+        SELECT COUNT(1) as num
+        from tb_file
+        where is_valid = 1
+        <if test="ids != null and ids.size() > 0">
+            AND id IN
+            <foreach collection="ids" open="(" close=")" item="id" separator=",">
+                #{id,jdbcType=BIGINT}
+            </foreach>
+        </if>
+    </select>
 
 
 </mapper>
