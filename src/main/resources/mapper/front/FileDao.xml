@@ -34,7 +34,7 @@
         from tb_file
         where is_valid = 1
         <if test="fileName != null">
-            AND original_name like concat('%'，#{fileName}，'%')
+            AND original_name LIKE concat('%',#{fileName},'%')
         </if>
         <if test="ids != null and ids.size() > 0">
             AND id IN
@@ -51,7 +51,7 @@
         from tb_file
         where is_valid = 1
         <if test="fileName != null">
-            AND original_name like concat('%'，#{fileName}，'%')
+            AND original_name LIKE concat('%',#{fileName},'%')
         </if>
         <if test="ids != null and ids.size() > 0">
             AND id IN

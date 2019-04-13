@@ -2,6 +2,7 @@ package com.example.modules.front.controller;
 
 import com.example.common.utils.DateUtils;
 import com.example.common.utils.IdGen;
+import com.example.common.utils.R;
 import com.example.common.validator.Assert;
 import com.example.modules.front.entity.DiskFileEntity;
 import com.example.modules.front.entity.FileEntity;
@@ -11,6 +12,7 @@ import com.example.modules.front.service.FileService;
 import com.example.modules.front.service.SysDiskService;
 import com.example.modules.front.vo.DiskDirVo;
 import com.example.modules.front.vo.FileVo;
+import com.example.modules.sys.entity.SysUserEntity;
 import com.example.modules.sys.service.ISysDeptService;
 import com.example.modules.sys.service.ISysUserService;
 import org.apache.commons.collections.CollectionUtils;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -67,26 +70,16 @@ public class AppFileController {
      * @return
      */
     @RequestMapping(value = "/listFileByPage")
-    List<FileVo> listFileByPage(@RequestParam("userId") String userId,
+    List<FileEntity> listFileByPage(@RequestParam("userId") String userId,
                                 @RequestParam("fileParentId") String fileParentId,
                                 @RequestParam("page") Integer page,
                                 @RequestParam("limit") Integer limit){
-        List<FileVo> fileVos = new ArrayList<>();
         Assert.isBlank(userId, "参数错误");
         Assert.isNull(page, "参数错误");
         Assert.isNull(limit, "参数错误");
         fileParentId = StringUtils.isEmpty(fileParentId) ? "0" : fileParentId;
         List<Long> ids = fileService.getFileIds(Long.valueOf(userId), Long.valueOf(fileParentId));
-        List<FileEntity> fileEntities = fileService.listFileByIdsWithPage(ids, null, page, limit);
-        for (FileEntity fileEntity : fileEntities) {
-            FileVo fileVo = new FileVo();
-            BeanUtils.copyProperties(fileEntity, fileVo);
-            fileVo.setOpTime(DateUtils.format(fileEntity.getOpTime(), DateUtils.DATE_TIME_PATTERN));
-            fileVo.setId(fileEntity.getId().toString());
-            fileVo.setParentId(fileEntity.getParentId().toString());
-            fileVos.add(fileVo);
-        }
-        return fileVos;
+        return fileService.listFileByIdsWithPage(ids, null, page, limit);
     }
 
 
@@ -126,4 +119,42 @@ public class AppFileController {
         return Boolean.TRUE;
     }
 
+
+    /**
+     * 下载文件
+     *
+     * @param fileId
+     * @return
+     */
+    @RequestMapping(value = "/downloadFile")
+    public String downloadLocal(String fileId) {
+        Assert.isBlank(fileId, "参数错误");
+        return innerDownLoadFile(fileId);
+    }
+
+    private String innerDownLoadFile(String fileId){
+        FileEntity file = fileService.selectById(fileId);
+        if (file == null){
+            return null;
+        }
+        String createUserId = file.getCreateUser();
+        Assert.isBlank(createUserId, "文件上传没有用户ID");
+        SysUserEntity createUser = sysUserService.selectById(createUserId);
+        Assert.isNull(createUser, "上传用户不存在");
+        String localFilePath = fileDir + file.getOriginalName();
+        File localFile = new File(localFilePath);
+        if (!localFile.exists()){
+            File realPath = new File(fileDir);
+            if(!realPath.exists()) {
+                realPath.mkdirs();
+            }
+            if(fileService.downloadFile(createUser, file, localFilePath)) {
+                return localFilePath;
+            }else {
+                return null;
+            }
+        }else {
+            return localFilePath;
+        }
+    }
 }
