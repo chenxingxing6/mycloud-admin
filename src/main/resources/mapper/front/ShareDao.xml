@@ -32,10 +32,10 @@
         from tb_share
         where is_valid = 1
         <if test="fromUserId != null">
-            and from_user_id = #{fromUserId,jdbcType=BIGINT},
+            and from_user_id = #{fromUserId,jdbcType=BIGINT}
         </if>
         <if test="toUserId != null">
-            and to_user_id = #{toUserId,jdbcType=BIGINT},
+            and to_user_id = #{toUserId,jdbcType=BIGINT}
         </if>
         ORDER BY create_time DESC
         limit #{page}, #{pageSize}
@@ -46,10 +46,10 @@
         from tb_share
         where is_valid = 1
         <if test="fromUserId != null">
-            and from_user_id = #{fromUserId,jdbcType=BIGINT},
+            and from_user_id = #{fromUserId,jdbcType=BIGINT}
         </if>
         <if test="toUserId != null">
-            and to_user_id = #{toUserId,jdbcType=BIGINT},
+            and to_user_id = #{toUserId,jdbcType=BIGINT}
         </if>
     </select>
 

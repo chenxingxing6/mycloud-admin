@@ -29,6 +29,7 @@ public class ShareServiceImpl extends ServiceImpl<ShareDao, ShareEntity> impleme
 
     @Override
     public List<ShareEntity> listShareByUserIdWithPage(Long fromUserId, Long toUserId, int page, int limit) {
+        page = page >0 ? page -1 : 0;
         return baseMapper.listShareByUserIdWithPage(fromUserId, toUserId, page, limit);
     }
 
