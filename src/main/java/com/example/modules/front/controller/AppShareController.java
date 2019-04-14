@@ -96,6 +96,7 @@ public class AppShareController {
     void toShare(@RequestParam("fromUserId") String fromUserId,
                 @RequestParam("toUserId") String toUserId,
                 @RequestParam("fileId") String fileId){
+        Assert.isBlank(fileId, "参数错误");
         ShareEntity entity = new ShareEntity();
         entity.setId(idGen.nextId());
         entity.setFromUserId(Long.valueOf(fromUserId));

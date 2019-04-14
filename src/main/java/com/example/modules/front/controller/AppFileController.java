@@ -30,7 +30,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 
@@ -81,7 +83,20 @@ public class AppFileController {
         Assert.isNull(limit, "参数错误");
         fileParentId = StringUtils.isEmpty(fileParentId) ? "0" : fileParentId;
         List<Long> ids = fileService.getFileIds(Long.valueOf(userId), Long.valueOf(fileParentId));
-        return fileService.listFileByIdsWithPage(ids, null, page, limit);
+        if (CollectionUtils.isEmpty(ids)){
+            return new ArrayList<FileEntity>();
+        }
+        List<FileEntity> fileEntities = fileService.listFileByIdsWithPage(ids, null, page, limit);
+        //createUser 改为用户名
+        List<Long> userIds = fileEntities.stream().map(e->Long.valueOf(e.getCreateUser())).collect(Collectors.toList());
+        Map<Long, SysUserEntity> map = sysUserService.selectBatchIds(userIds).stream().collect(Collectors.toMap(e->e.getUserId(), e->e));
+        for (FileEntity fileEntity : fileEntities) {
+            SysUserEntity user = map.get(Long.valueOf(fileEntity.getCreateUser()));
+            if (user !=null){
+                fileEntity.setCreateUser(user.getUsername());
+            }
+        }
+        return fileEntities;
     }
 
 
@@ -182,7 +197,7 @@ public class AppFileController {
      * @param fileId
      * @return
      */
-    @RequestMapping(value = "//addDisk")
+    @RequestMapping(value = "/addDisk")
     void addDisk(@RequestParam("userId") String userId,
                  @RequestParam("fileId") String fileId){
 
@@ -192,6 +207,23 @@ public class AppFileController {
         diskFileEntity.setDiskId(Long.valueOf(1));
         diskFileEntity.setFileId(Long.valueOf(fileId));
         diskFileService.insert(diskFileEntity);
+    }
+
+
+    /**
+     * @param fileId
+     * @return
+     */
+    @RequestMapping(value = "/getDiskFileByFileId")
+    DiskFileEntity getDiskFileByFileId(@RequestParam("fileId") String fileId){
+        Map<String, Object> map = new HashMap<>();
+        map.put("file_id", fileId);
+        map.put("is_valid", 1);
+        List<DiskFileEntity> entities = diskFileService.selectByMap(map);
+        if (CollectionUtils.isEmpty(entities)){
+            return null;
+        }
+        return entities.get(0);
     }
 
 }
