@@ -10,9 +10,11 @@ import com.example.common.validator.Assert;
 import com.example.modules.front.entity.DiskFileEntity;
 import com.example.modules.front.entity.FileEntity;
 import com.example.modules.front.entity.SysDiskEntity;
+import com.example.modules.front.entity.UserFileEntity;
 import com.example.modules.front.service.DiskFileService;
 import com.example.modules.front.service.FileService;
 import com.example.modules.front.service.SysDiskService;
+import com.example.modules.front.service.UserFileService;
 import com.example.modules.front.vo.DiskDirVo;
 import com.example.modules.front.vo.FileVo;
 import com.example.modules.oss.cloud.OSSFactory;
@@ -61,6 +63,8 @@ public class AppFileController {
     private DiskFileService diskFileService;
     @Autowired
     private ISysUserService sysUserService;
+    @Autowired
+    private UserFileService userFileService;
 
     //文件下载路径
     @Value("${file.dir}")
@@ -229,6 +233,23 @@ public class AppFileController {
     }
 
 
+    /**
+     * @param fileId
+     * @return
+     */
+    @RequestMapping(value = "/getFileByFileId")
+    FileEntity getFileByFileId(@RequestParam("fileId") String fileId){
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", fileId);
+        map.put("is_valid", 1);
+        List<FileEntity> fileEntities = fileService.selectByMap(map);
+        if (CollectionUtils.isEmpty(fileEntities)){
+            return null;
+        }
+        return fileEntities.get(0);
+    }
+
+
 
     /**
      * 上传文件
@@ -273,15 +294,13 @@ public class AppFileController {
         fileEntity.setOpUser(userId);
         fileEntity.setCreateTime(System.currentTimeMillis());
         fileEntity.setOpTime(System.currentTimeMillis());
-
-        //fileService.uploadFile(is, fileEntity, userEntity);
+        SysUserEntity userEntity = sysUserService.selectById(Long.valueOf(userId));
+        fileService.uploadFile(is, fileEntity, userEntity);
         //关系表添加数据
-     /*   DiskFileEntity diskFileEntity = new DiskFileEntity();
-        diskFileEntity.setCreateUser(userEntity.getUserId().toString());
-        diskFileEntity.setCreateTime(System.currentTimeMillis());
-        diskFileEntity.setDiskId(Long.valueOf(diskId));
-        diskFileEntity.setFileId(fileId);
-        diskFileService.insert(diskFileEntity);*/
+        UserFileEntity userFileEntity = new UserFileEntity();
+        userFileEntity.setId(idGen.nextId());
+        userFileEntity.setUserId(Long.valueOf(userId));
+        userFileEntity.setFileId(fileId);
+        userFileService.insert(userFileEntity);
     }
-
 }
