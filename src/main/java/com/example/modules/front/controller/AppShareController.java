@@ -92,7 +92,7 @@ public class AppShareController {
      * @param fileId
      * @return
      */
-    @RequestMapping(value = "/front/app/toShare")
+    @RequestMapping(value = "/toShare")
     void toShare(@RequestParam("fromUserId") String fromUserId,
                 @RequestParam("toUserId") String toUserId,
                 @RequestParam("fileId") String fileId){
@@ -117,4 +117,14 @@ public class AppShareController {
         shareService.insert(entity);
     }
 
+    /**
+     * 删除分享
+     * @param shareId
+     * @return
+     */
+    @RequestMapping(value = "/delByShareId")
+    void delByShareId(@RequestParam("shareId") String shareId){
+        Assert.isBlank(shareId, "参数错误");
+        shareService.deleteById(Long.valueOf(shareId));
+    }
 }
