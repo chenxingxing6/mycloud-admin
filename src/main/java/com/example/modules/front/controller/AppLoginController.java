@@ -2,7 +2,12 @@ package com.example.modules.front.controller;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.example.common.constants.UserEnum;
+import com.example.common.exception.BizException;
+import com.example.common.utils.R;
 import com.example.common.validator.Assert;
+import com.example.modules.oss.cloud.OSSFactory;
+import com.example.modules.oss.entity.SysOssEntity;
+import com.example.modules.oss.service.ISysOssService;
 import com.example.modules.sys.entity.SysDeptEntity;
 import com.example.modules.sys.entity.SysUserEntity;
 import com.example.modules.sys.service.ISysDeptService;
@@ -10,13 +15,11 @@ import com.example.modules.sys.service.ISysUserService;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * User: lanxinghua
@@ -30,6 +33,8 @@ public class AppLoginController {
     private ISysUserService userService;
     @Autowired
     private ISysDeptService sysDeptService;
+    @Autowired
+    private ISysOssService sysOssService;
 
     @RequestMapping(value = "/getUserByAccount")
     public SysUserEntity getUserByAccount(String username, String password){
@@ -87,5 +92,42 @@ public class AppLoginController {
         .eq("status", 1).and()
         .like("username", username)
         .orderBy("create_time", false));
+    }
+
+
+    /**
+     * 更新头像
+     * @param avatar
+     * @return
+     */
+    @PostMapping(value = "/updateImg", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    R updateImg(@RequestPart("avatar") MultipartFile avatar){
+        if (avatar.isEmpty()) {
+            return R.error("上传文件不能为空");
+        }
+        try {
+            //上传文件
+            String suffix = avatar.getOriginalFilename().substring(avatar.getOriginalFilename().lastIndexOf("."));
+            String url = OSSFactory.build().uploadSuffix(avatar.getBytes(), suffix);
+            //保存文件信息
+            SysOssEntity ossEntity = new SysOssEntity();
+            ossEntity.setUrl(url);
+            ossEntity.setCreateDate(new Date());
+            sysOssService.insert(ossEntity);
+            return R.ok().put("url", url);
+        }catch (Exception e){
+            return R.error(e.getMessage());
+        }
+    }
+
+
+    /**
+     * 更新用户
+     * @param user
+     * @return
+     */
+    @RequestMapping(value = "/updateUser")
+    void updateUser(@RequestBody SysUserEntity user){
+        userService.update(user);
     }
 }

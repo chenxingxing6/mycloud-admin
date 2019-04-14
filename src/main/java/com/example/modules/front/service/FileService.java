@@ -90,6 +90,13 @@ public interface FileService extends IService<FileEntity> {
      */
     public void deleteFileRecursion(SysUserEntity user, FileEntity file);
 
+    /**
+     * 删除用户文件
+     * @param userId
+     * @param fileId
+     */
+    public void deleteFile(Long userId, Long fileId);
+
 
     /**
      * 上传文件 (tb_file  hdfs)

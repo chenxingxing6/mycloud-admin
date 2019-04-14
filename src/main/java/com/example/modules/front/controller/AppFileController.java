@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -89,7 +90,7 @@ public class AppFileController {
      * @param fileParentId
      * @return
      */
-    @RequestMapping(value = "/front/app/listFileTotal")
+    @RequestMapping(value = "/listFileTotal")
     int listFileTotal(@RequestParam("userId") String userId,
                       @RequestParam("fileParentId") String fileParentId){
         Assert.isBlank(userId, "参数错误");
@@ -104,7 +105,7 @@ public class AppFileController {
      * @param fileName
      * @return
      */
-    @RequestMapping(value = "/front/app/fileRename")
+    @RequestMapping(value = "/fileRename")
     boolean fileRename(@RequestParam("fileId") String fileId,
                        @RequestParam("fileName") String fileName,
                        @RequestParam("optUserId") String optUserId){
@@ -157,4 +158,39 @@ public class AppFileController {
             return localFilePath;
         }
     }
+
+
+
+    /**
+     * 删除文件
+     * @param fileId
+     * @return
+     */
+    @RequestMapping(value = "/delFileById")
+    void delFileById(@RequestParam("userId") String userId,
+                     @RequestParam("fileId") String fileId){
+        if (StringUtils.isEmpty(userId) || StringUtils.isEmpty(fileId)){
+            return;
+        }
+        fileService.deleteFile(Long.valueOf(userId), Long.valueOf(fileId));
+    }
+
+
+    /**
+     * 添加到企业网盘
+     * @param fileId
+     * @return
+     */
+    @RequestMapping(value = "//addDisk")
+    void addDisk(@RequestParam("userId") String userId,
+                 @RequestParam("fileId") String fileId){
+
+        DiskFileEntity diskFileEntity = new DiskFileEntity();
+        diskFileEntity.setCreateUser(userId);
+        diskFileEntity.setCreateTime(System.currentTimeMillis());
+        diskFileEntity.setDiskId(Long.valueOf(1));
+        diskFileEntity.setFileId(Long.valueOf(fileId));
+        diskFileService.insert(diskFileEntity);
+    }
+
 }

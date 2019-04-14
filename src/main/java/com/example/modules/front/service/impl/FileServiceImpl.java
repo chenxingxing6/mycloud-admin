@@ -135,6 +135,13 @@ public class FileServiceImpl extends ServiceImpl<FileDao, FileEntity> implements
     }
 
     @Override
+    public void deleteFile(Long userId, Long fileId) {
+        this.deleteById(fileId);
+        userFileService.delete(new EntityWrapper<UserFileEntity>().eq("user_id", userId).and().eq("file_id", fileId));
+        return;
+    }
+
+    @Override
     public void uploadFile(InputStream inputStream, FileEntity file, SysUserEntity user) {
         //hdfs上传文件
         hdfsDao.put(inputStream, file, user);

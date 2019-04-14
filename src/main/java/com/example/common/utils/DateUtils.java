@@ -229,4 +229,17 @@ public class DateUtils {
     }
 
 
+    /**
+     * 获取过期时间（当前时间加1天）
+     */
+    public static long getExpireTime(Date date, int day)
+    {
+        Date date1 = addDateDays(date, day);
+        return date1.getTime();
+    }
+
+    public static void main(String[] args) {
+        System.out.println(getExpireTime(new Date(), 1));
+    }
+
 }
