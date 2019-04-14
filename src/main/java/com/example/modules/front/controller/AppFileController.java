@@ -1,6 +1,9 @@
 package com.example.modules.front.controller;
 
+import com.example.common.constants.FileEnum;
+import com.example.common.constants.ViewEnum;
 import com.example.common.utils.DateUtils;
+import com.example.common.utils.FilesUtil;
 import com.example.common.utils.IdGen;
 import com.example.common.utils.R;
 import com.example.common.validator.Assert;
@@ -12,6 +15,8 @@ import com.example.modules.front.service.FileService;
 import com.example.modules.front.service.SysDiskService;
 import com.example.modules.front.vo.DiskDirVo;
 import com.example.modules.front.vo.FileVo;
+import com.example.modules.oss.cloud.OSSFactory;
+import com.example.modules.oss.entity.SysOssEntity;
 import com.example.modules.sys.entity.SysUserEntity;
 import com.example.modules.sys.service.ISysDeptService;
 import com.example.modules.sys.service.ISysUserService;
@@ -22,17 +27,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.InputStream;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -224,6 +226,62 @@ public class AppFileController {
             return null;
         }
         return entities.get(0);
+    }
+
+
+
+    /**
+     * 上传文件
+     * @param file
+     * @return
+     */
+    @PostMapping(value = "/uploadFile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    R uploadFile(@RequestPart("file") MultipartFile file, @RequestHeader("userId") String userId){
+        if (file.isEmpty()) {
+            return R.error("上传文件不能为空");
+        }
+        Assert.isBlank(userId, "用户信息缺失");
+        try {
+            InputStream is = file.getInputStream();
+            uploadFile(is, file, userId);
+            return R.ok();
+        }catch (Exception e){
+            return R.error(e.getMessage());
+        }
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void uploadFile(InputStream is, MultipartFile file, String userId){
+        // 获取文件名
+        String fileName = file.getOriginalFilename();
+        // 获取文件的后缀名
+        String suffixName = FilesUtil.getFileSufix(fileName);
+        //创建文件
+        FileEntity fileEntity = new FileEntity();
+        fileEntity.setType(FileEnum.FILE.getType());
+        fileEntity.setLength(FilesUtil.FormetFileSize(file.getSize()));
+        fileEntity.setOriginalName(fileName);
+        int splitIndex = file.getOriginalFilename().lastIndexOf(".");
+        String name1 = System.nanoTime() + "." + suffixName;
+        Long fileId = idGen.nextId();
+        fileEntity.setId(fileId);
+        fileEntity.setName(name1);
+        fileEntity.setPath("/"+name1);
+        fileEntity.setOriginalPath("/");
+        fileEntity.setViewFlag(ViewEnum.Y.getType());
+        fileEntity.setCreateUser(userId);
+        fileEntity.setOpUser(userId);
+        fileEntity.setCreateTime(System.currentTimeMillis());
+        fileEntity.setOpTime(System.currentTimeMillis());
+
+        //fileService.uploadFile(is, fileEntity, userEntity);
+        //关系表添加数据
+     /*   DiskFileEntity diskFileEntity = new DiskFileEntity();
+        diskFileEntity.setCreateUser(userEntity.getUserId().toString());
+        diskFileEntity.setCreateTime(System.currentTimeMillis());
+        diskFileEntity.setDiskId(Long.valueOf(diskId));
+        diskFileEntity.setFileId(fileId);
+        diskFileService.insert(diskFileEntity);*/
     }
 
 }
