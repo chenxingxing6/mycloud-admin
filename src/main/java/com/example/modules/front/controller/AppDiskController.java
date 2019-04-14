@@ -124,8 +124,17 @@ public class AppDiskController{
         Assert.isNull(limit, "参数错误");
         List<Long> fileIds = listFileIds(diskId, deptId);
         fileName = StringUtils.isEmpty(fileName) ? null : fileName;
-        return fileService.listFileByIdsWithPage(fileIds, fileName, page, limit);
-
+        List<FileEntity> fileEntities = fileService.listFileByIdsWithPage(fileIds, fileName, page, limit);
+        //createUser 改为用户名
+        List<Long> userIds = fileEntities.stream().map(e->Long.valueOf(e.getCreateUser())).collect(Collectors.toList());
+        Map<Long, SysUserEntity> map = sysUserService.selectBatchIds(userIds).stream().collect(Collectors.toMap(e->e.getUserId(), e->e));
+        for (FileEntity fileEntity : fileEntities) {
+            SysUserEntity user = map.get(Long.valueOf(fileEntity.getCreateUser()));
+            if (user !=null){
+                fileEntity.setCreateUser(user.getUsername());
+            }
+        }
+        return fileEntities;
     }
 
     /**

@@ -91,9 +91,6 @@ eureka:
     service-url:
       defaultZone: http://localhost:8761/eureka/
 
-#自定义
-file:
-  dir: /Users/cxx/openoffice/disk/
 
 
 

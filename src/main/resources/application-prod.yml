@@ -32,3 +32,8 @@ spring:
         wall:
           config:
             multi-statement-allow: true
+
+
+#自定义
+file:
+  dir: /Users/cxx/openoffice/disk/

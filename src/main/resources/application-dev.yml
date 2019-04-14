@@ -35,3 +35,8 @@ spring:
   devtools:
     restart:
       enabled: true
+
+
+#自定义
+file:
+  dir: /Users/cxx/openoffice/disk/
