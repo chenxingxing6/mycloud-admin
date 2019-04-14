@@ -75,7 +75,11 @@ public class AppLoginController {
     @RequestMapping(value = "/getUserByUserId")
     SysUserEntity getUserByUserId(String userId){
         Assert.isBlank(userId, "参数错误");
-        return userService.selectById(Long.valueOf(userId));
+        SysUserEntity sysUserEntity = userService.selectById(Long.valueOf(userId));
+        //添加部门
+        SysDeptEntity deptEntity = sysDeptService.selectById(Long.valueOf(sysUserEntity.getDeptId()));
+        sysUserEntity.setDeptName(deptEntity == null ? "" : deptEntity.getName());
+        return sysUserEntity;
     }
 
     /**

@@ -3,6 +3,7 @@ package com.example.modules.front.controller;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.example.common.utils.IdGen;
 import com.example.common.validator.Assert;
 import com.example.common.validator.ValidatorUtils;
 import com.example.modules.front.vo.FollowUser;
@@ -37,6 +38,7 @@ import com.example.common.utils.R;
 @RestController
 @RequestMapping("front/app")
 public class AppFollowController extends AbstractController {
+    final static IdGen idGen = IdGen.get();
     @Autowired
     private FollowService followService;
     @Autowired
@@ -77,50 +79,41 @@ public class AppFollowController extends AbstractController {
         return followUsers;
 
     }
+
+
+
     /**
-     * 列表（已关注和未关注）
+     * 关注或取消关注
+     * @param fromUserId
+     * @param toUserId
+     * @param type   0: 关注  1:取消关注
+     * @return
      */
-    @RequestMapping("/list")
-    public R list(@RequestParam Map<String, Object> params){
-        Long userId = getUserId();
-        List<SysUserEntity> follows = followService.listFollowUser(userId);
-        List<SysUserEntity> followeds = followService.listFollowedUser(userId);
-        R result = R.ok();
-        result.put("follow", follows);
-        result.put("followeds", followeds);
-        return result;
+    @RequestMapping(value = "/addOrCancleUser")
+    void addOrCancleUser(@RequestParam("fromUserId") String fromUserId,
+                         @RequestParam("toUserId") String toUserId,
+                         @RequestParam("type") String type){
+        Assert.isBlank(fromUserId, "参数错误");
+        Assert.isBlank(toUserId, "参数错误");
+        Assert.isBlank(type, "参数错误");
+        //关注
+        if ("0".equals(type)){
+            FollowEntity entity = new FollowEntity();
+            entity.setId(idGen.nextId());
+            entity.setFromUserId(Long.valueOf(fromUserId));
+            entity.setToUserId(Long.valueOf(toUserId));
+            entity.setCreateUser(fromUserId);
+            entity.setCreateTime(System.currentTimeMillis());
+            entity.setOpUser(fromUserId);
+            entity.setOpTime(System.currentTimeMillis());
+            followService.insert(entity);
+        }
+        //取消关注
+        else if ("1".equals(type)){
+            Map<String, Object> map = new HashMap<>();
+            map.put("from_user_id", fromUserId);
+            map.put("to_user_id", toUserId);
+            followService.deleteByMap(map);
+        }
     }
-
-
-    @RequestMapping("/info/{id}")
-    public R info(@PathVariable("id") Long id){
-        FollowEntity follow = followService.selectById(id);
-
-        return R.ok().put("follow", follow);
-    }
-
-
-    @RequestMapping("/save")
-    public R save(@RequestBody FollowEntity follow){
-        followService.insert(follow);
-
-        return R.ok();
-    }
-
-    /*@RequestMapping("/update")
-    public R update(@RequestBody FollowEntity follow){
-        ValidatorUtils.validateEntity(follow);
-        followService.updateAllColumnById(follow);//全部更新
-
-        return R.ok();
-    }
-
-
-    @RequestMapping("/delete")
-    public R delete(@RequestBody Long[] ids){
-        followService.deleteBatchIds(Arrays.asList(ids));
-
-        return R.ok();
-    }*/
-
 }
