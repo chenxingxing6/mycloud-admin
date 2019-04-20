@@ -247,7 +247,7 @@
                     item.uploadPercentage = completeProgress;
                 }
                 };
-                axios.post('http://localhost:9000/front/disk/uploadFile', param, config).then(function (response) {
+                axios.post('http://193.112.27.123:9000/front/disk/uploadFile', param, config).then(function (response) {
                     if (response.data.code == 0){
                         item.uploadStatus = 2;
                     } else{

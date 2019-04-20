@@ -47,7 +47,7 @@ var vm = new Vue({
         },
         downFile: function(){
             console.log("下载文件"+this.fe.id);
-            window.location.href="  http://localhost:9000/front/disk/userdown?fileId="+this.fe.id;
+            window.location.href="  http://193.112.27.123:9000/front/disk/userdown?fileId="+this.fe.id;
 
         },
         clickFile: function (type, name) {
@@ -57,11 +57,11 @@ var vm = new Vue({
         },
         seeFileView: function (id) {
             console.log("查看文件");
-            var url = 'http://localhost:8012/onlinePreview?url=';
+            var url = 'http://http://193.112.27.123:8012/onlinePreview?url=';
             axios.get(baseURL +'front/disk/downloadFile?fileId='+ id)
                 .then(function (res) {
                     if (res.data.code == 0){
-                        url = url + "http://localhost:8012/disk/"+ res.data.url;
+                        url = url + "http://193.112.27.123:8012/disk/"+ res.data.url;
                         console.log(res.data)
                     }
                 })
