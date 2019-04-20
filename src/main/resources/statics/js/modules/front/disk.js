@@ -57,7 +57,7 @@ var vm = new Vue({
         },
         seeFileView: function (id) {
             console.log("查看文件");
-            var url = 'http://http://193.112.27.123:8012/onlinePreview?url=';
+            var url = 'http://193.112.27.123:8012/onlinePreview?url=';
             axios.get(baseURL +'front/disk/downloadFile?fileId='+ id)
                 .then(function (res) {
                     if (res.data.code == 0){
