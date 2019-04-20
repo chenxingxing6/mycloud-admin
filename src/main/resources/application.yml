@@ -92,6 +92,6 @@ eureka:
       defaultZone: http://193.112.27.123:8761/eureka/
 
 
-
-
-
+ribbon:
+  ReadTimeout: 60000
+  ConnectTimeout: 60000
