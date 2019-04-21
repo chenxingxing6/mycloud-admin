@@ -23,10 +23,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
+import java.util.*;
 
 
 /**
@@ -177,10 +174,11 @@ public class SysServerController extends AbstractController {
 	 */
 	private void getManyData(IndexVo vo){
 		// TODO: 2019/4/6
-		vo.setSeeNum(386200);
-		vo.setUserNum(200);
-		vo.setTodayDiskNum(2);
-		vo.setTotalDiskNum(100);
+		Random r = new Random();
+		vo.setSeeNum(r.nextInt(100));
+		vo.setUserNum(r.nextInt(10));
+		vo.setTodayDiskNum(r.nextInt(5));
+		vo.setTotalDiskNum(r.nextInt(20));
 		vo.setUserName("蓝星花");
 	}
 
@@ -191,7 +189,8 @@ public class SysServerController extends AbstractController {
 	@SysLog("获取首页信息")
 	@RequestMapping("/index/getInfo")
 	public R getIndexInfo(){
-		IndexVo indexVo = redisUtils.get(RedisKeys.INDEX_INFO_KEY, IndexVo.class);
+		SysUserEntity user = getUser();
+		IndexVo indexVo = redisUtils.get(RedisKeys.INDEX_INFO_KEY + user.getUserId(), IndexVo.class);
 		if (indexVo !=null){
 			return R.ok().put("indexvo", indexVo);
 		}
@@ -216,7 +215,7 @@ public class SysServerController extends AbstractController {
 
 		//获取数据
 		getManyData(indexVo);
-		redisUtils.set(RedisKeys.INDEX_INFO_KEY, indexVo, RedisKeys.INDEX_INFO_TIME);
+		redisUtils.set(RedisKeys.INDEX_INFO_KEY + user.getUserId(), indexVo, RedisKeys.INDEX_INFO_TIME);
 		return R.ok().put("indexvo", indexVo);
 	}
 
