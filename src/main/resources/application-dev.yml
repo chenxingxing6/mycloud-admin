@@ -39,4 +39,4 @@ spring:
 
 #自定义
 file:
-  dir: /Users/cxx/openoffice/disk/
+  dir: D:\\file\\disk
