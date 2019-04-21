@@ -39,4 +39,4 @@ spring:
 
 #自定义
 file:
-  dir: D:\\file\\disk
+  dir: E:\\disk\\
