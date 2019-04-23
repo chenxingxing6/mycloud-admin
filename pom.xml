@@ -10,7 +10,7 @@
 
 	<groupId>com.example</groupId>
 	<artifactId>mycloud-admin</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>mycloud-admin</name>
 	<packaging>war</packaging>
 	<description>Demo project for Spring Boot</description>
