@@ -38,6 +38,10 @@ public class HdfsDao {
         return basePath + user.getUsername() + file.getPath();
     }
 
+    public String formatPathMethodByUserName(String userName, String filePath) {
+        return basePath + userName + filePath;
+    }
+
 
     /**
      * 上传文件
@@ -126,6 +130,31 @@ public class HdfsDao {
         }
     }
 
+
+    /**
+     * 下载文件
+     *
+     * @param userName
+     * @param filePath
+     * @param local
+     */
+    public boolean downloadByUserNameAndFilePath(String userName, String filePath, String local) {
+        try {
+            String formatPath = formatPathMethodByUserName(userName, filePath);
+            if (HdfsConn.getFileSystem().exists(new Path(formatPath))) {
+                FSDataInputStream inputStream = HdfsConn.getFileSystem().open(new Path(formatPath));
+                OutputStream outputStream = new FileOutputStream(local);
+                IOUtils.copyBytes(inputStream, outputStream, 4096, true);
+                System.out.println(local);
+                return true;
+            }
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 
     /**
      * 下载文件

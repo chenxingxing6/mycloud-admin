@@ -121,7 +121,7 @@ var vm = new Vue({
             localStorage.setItem('diskId', this.current.type);
             layer.open({
                 type: 2,
-                area: ['700px', '550px'],
+                area: ['600px', '450px'],
                 fixed: false, //不固定
                 maxmin: true,
                 content: 'upload.html',

@@ -30,6 +30,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -302,5 +303,22 @@ public class AppFileController {
         userFileEntity.setUserId(Long.valueOf(userId));
         userFileEntity.setFileId(fileId);
         userFileService.insert(userFileEntity);
+
+        innerDownLoadFileByAsyn(userEntity, fileEntity);
+    }
+
+    @Async
+    public void innerDownLoadFileByAsyn(SysUserEntity userEntity, FileEntity fileEntity){
+        System.out.println("线程名称："+Thread.currentThread().getName() + " 下载文件!"+fileEntity.getOriginalName());
+        //文件下载
+        String localFilePath = fileDir + fileEntity.getOriginalName();
+        File localFile = new File(localFilePath);
+        if (!localFile.exists()) {
+            File realPath = new File(fileDir);
+            if (!realPath.exists()) {
+                realPath.mkdirs();
+            }
+        }
+        fileService.downloadFile(userEntity, fileEntity, localFilePath);
     }
 }

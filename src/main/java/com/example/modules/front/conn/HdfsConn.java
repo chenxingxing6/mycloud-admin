@@ -15,7 +15,7 @@ public class HdfsConn {
     private FileSystem fileSystem = null;
     private Configuration configuration = null;
     private static final String serverUrl = "hdfs://60.205.212.196:9000/";
-    private static final String HADOOP_HOME = "/Users/cxx/hadoop";
+    private static final String HADOOP_HOME = "E:\\hadoop-2.8.3";
 
     //创建单例
     private static class SingletonHolder{
