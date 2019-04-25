@@ -43,7 +43,7 @@
 		<swagger.version>2.7.0</swagger.version>
 		<oshi.version>3.9.1</oshi.version>
 		<spring-cloud.version>Edgware.RELEASE</spring-cloud.version>
-		<!--<spring-cloud.version>Finchley.M7</spring-cloud.version>-->
+	<!--	<spring-cloud.version>Finchley.M7</spring-cloud.version>-->
 	</properties>
 
 	<dependencies>

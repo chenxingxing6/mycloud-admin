@@ -65,6 +65,11 @@ public class SysUserEntity implements Serializable {
 	private String mobile;
 
 	/**
+	 * qq openId
+	 */
+	private String openId;
+
+	/**
 	 * 状态  0：禁用   1：正常
 	 */
 	private Integer status;
@@ -255,5 +260,13 @@ public class SysUserEntity implements Serializable {
 
 	public void setType(Integer type) {
 		this.type = type;
+	}
+
+	public String getOpenId() {
+		return openId;
+	}
+
+	public void setOpenId(String openId) {
+		this.openId = openId;
 	}
 }
