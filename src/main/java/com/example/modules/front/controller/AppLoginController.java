@@ -51,6 +51,26 @@ public class AppLoginController {
         return getUser(map);
     }
 
+    @RequestMapping(value = "/getUserByOpenId")
+    SysUserEntity getUserByOpenId(@RequestParam("openId") String openId){
+        Assert.isBlank(openId, "参数错误");
+        Map<String, Object> map = new HashMap<>();
+        //用户状态
+        map.put("status", 1);
+        //前台用户
+        map.put("type", UserEnum.FRONT.getType());
+        map.put("open_id", openId);
+        List<SysUserEntity> userEntityList = userService.selectByMap(map);
+        if (CollectionUtils.isEmpty(userEntityList)){
+            return null;
+        }
+        SysUserEntity sysUserEntity = userEntityList.get(0);
+        //添加部门
+        SysDeptEntity deptEntity = sysDeptService.selectById(Long.valueOf(sysUserEntity.getDeptId()));
+        sysUserEntity.setDeptName(deptEntity == null ? "" : deptEntity.getName());
+        return sysUserEntity;
+    }
+
     private SysUserEntity getUser(Map<String, Object> map){
         //用户状态
         map.put("status", 1);
