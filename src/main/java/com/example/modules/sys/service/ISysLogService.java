@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.service.IService;
 import com.example.modules.sys.entity.SysLogEntity;
 import com.example.common.utils.PageUtils;
 
+import java.util.List;
 import java.util.Map;
 
 
@@ -15,4 +16,6 @@ public interface ISysLogService extends IService<SysLogEntity> {
     PageUtils queryPage(Map<String, Object> params);
 
     boolean deleteAll();
+
+    List<SysLogEntity> getIndexInterfaces();
 }

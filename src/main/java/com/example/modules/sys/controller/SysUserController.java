@@ -136,9 +136,7 @@ public class SysUserController extends AbstractController {
 		if(ArrayUtils.contains(userIds, getUserId())){
 			return R.error("当前用户不能删除");
 		}
-
 		sysUserService.deleteBatchIds(Arrays.asList(userIds));
-
 		return R.ok();
 	}
 }

@@ -121,4 +121,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUserEntity> i
                 new EntityWrapper<SysUserEntity>().eq("user_id", userId).eq("password", password));
     }
 
+	@Override
+	public int getAllUserNum() {
+		return this.selectCount(new EntityWrapper<SysUserEntity>()
+		.eq("type", 1));
+	}
 }

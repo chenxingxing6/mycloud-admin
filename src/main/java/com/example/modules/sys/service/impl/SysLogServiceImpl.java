@@ -12,6 +12,7 @@ import com.example.modules.sys.service.ISysLogService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 @Service("sysLogService")
@@ -37,5 +38,12 @@ public class SysLogServiceImpl extends ServiceImpl<SysLogDao, SysLogEntity> impl
             }
         });
         return true;
+    }
+
+    @Override
+    public List<SysLogEntity> getIndexInterfaces() {
+        return this.selectList(new EntityWrapper<SysLogEntity>()
+        .orderBy("time", false)
+        .last("limit 5"));
     }
 }

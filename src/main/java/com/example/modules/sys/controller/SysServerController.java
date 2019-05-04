@@ -7,10 +7,16 @@ import com.example.common.utils.Arith;
 import com.example.common.utils.R;
 import com.example.common.utils.RedisKeys;
 import com.example.common.utils.RedisUtils;
+import com.example.modules.front.entity.FileEntity;
+import com.example.modules.front.service.FileService;
+import com.example.modules.front.service.impl.FileServiceImpl;
 import com.example.modules.sys.entity.SysDeptEntity;
+import com.example.modules.sys.entity.SysLogEntity;
 import com.example.modules.sys.entity.SysUserEntity;
 import com.example.modules.sys.entity.server.*;
 import com.example.modules.sys.service.ISysDeptService;
+import com.example.modules.sys.service.ISysLogService;
+import com.example.modules.sys.service.ISysUserService;
 import com.example.modules.sys.vo.FileDownVo;
 import com.example.modules.sys.vo.IndexVo;
 import com.example.modules.sys.vo.SlowInterfaceVo;
@@ -37,6 +43,12 @@ public class SysServerController extends AbstractController {
 	private RedisUtils redisUtils;
 	@Autowired
 	private ISysDeptService sysDeptService;
+	@Autowired
+	private FileService fileService;
+	@Autowired
+	private ISysLogService sysLogService;
+	@Autowired
+	private ISysUserService sysUserService;
 
 	private static final String DEFAULT_IMG_PATH = "https://chenxingxing6.github.io/img/header.jpg";
 
@@ -104,12 +116,12 @@ public class SysServerController extends AbstractController {
 	 */
 	@Async
 	public List<FileDownVo> getFileDowns(){
-		// TODO: 2019/4/6
+		List<FileEntity> fileDowns = fileService.getFileDowns();
 		List<FileDownVo> vos = new ArrayList<>();
-		for (int i = 0; i < 5; i++) {
+		for (FileEntity fileDown : fileDowns) {
 			FileDownVo vo = new FileDownVo();
-			vo.setName("蓝星花"+i+".java");
-			vo.setDownNum(i*5);
+			vo.setName(fileDown.getOriginalName());
+			vo.setDownNum(fileDown.getDownloadNum());
 			vos.add(vo);
 		}
 		return vos;
@@ -122,12 +134,12 @@ public class SysServerController extends AbstractController {
 	 */
 	@Async
 	public List<SlowInterfaceVo> getSlowInterfaceVos(){
-		// TODO: 2019/4/6
+		List<SysLogEntity> indexInterfaces = sysLogService.getIndexInterfaces();
 		List<SlowInterfaceVo> vos = new ArrayList<>();
-		for (int i = 0; i < 5; i++) {
+		for (SysLogEntity indexInterface : indexInterfaces) {
 			SlowInterfaceVo vo = new SlowInterfaceVo();
-			vo.setName("com.example.modules.sys.controller.SysMenuController.update"+i+"()");
-			vo.setTime(String.valueOf(i*1000));
+			vo.setName(indexInterface.getMethod());
+			vo.setTime(indexInterface.getTime() +"毫秒");
 			vos.add(vo);
 		}
 		return vos;
@@ -173,12 +185,15 @@ public class SysServerController extends AbstractController {
 	 * @return
 	 */
 	private void getManyData(IndexVo vo){
-		// TODO: 2019/4/6
+		int totalUserNum = sysUserService.getAllUserNum();
+		int todayDiskNum = fileService.getTodayDiskNum();
+		int totalDiskNum = fileService.getTotalDiskNum();
+
 		Random r = new Random();
+		vo.setUserNum(totalUserNum);
 		vo.setSeeNum(r.nextInt(100));
-		vo.setUserNum(r.nextInt(10));
-		vo.setTodayDiskNum(r.nextInt(5));
-		vo.setTotalDiskNum(r.nextInt(20));
+		vo.setTodayDiskNum(todayDiskNum);
+		vo.setTotalDiskNum(totalDiskNum);
 		vo.setUserName("蓝星花");
 	}
 
@@ -190,13 +205,13 @@ public class SysServerController extends AbstractController {
 	@RequestMapping("/index/getInfo")
 	public R getIndexInfo(){
 		SysUserEntity user = getUser();
-		IndexVo indexVo = redisUtils.get(RedisKeys.INDEX_INFO_KEY + user.getUserId(), IndexVo.class);
+		/*IndexVo indexVo = redisUtils.get(RedisKeys.INDEX_INFO_KEY + user.getUserId(), IndexVo.class);
 		if (indexVo !=null){
 			return R.ok().put("indexvo", indexVo);
-		}
-		indexVo = new IndexVo();
+		}*/
+		IndexVo indexVo = new IndexVo();
 		//获取服务器信息
-		Server server = getServerInfo();
+		Server server = (Server)map.get("server");
 
 		//获取登陆用户信息
 		SysUserEntity loginUser = getLoginUserInfo();
@@ -215,12 +230,13 @@ public class SysServerController extends AbstractController {
 
 		//获取数据
 		getManyData(indexVo);
-		redisUtils.set(RedisKeys.INDEX_INFO_KEY + user.getUserId(), indexVo, RedisKeys.INDEX_INFO_TIME);
+		//redisUtils.set(RedisKeys.INDEX_INFO_KEY + user.getUserId(), indexVo, RedisKeys.INDEX_INFO_TIME);
 		return R.ok().put("indexvo", indexVo);
 	}
 
 	public static void main(String[] args) {
-
 		System.out.println("223.4 GB");
+		List<Integer> list = Arrays.asList(1, 2, 3, 4, 5, 6, 7);
+		System.out.println(list.subList(0, 5));
 	}
 }

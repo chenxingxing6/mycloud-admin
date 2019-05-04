@@ -39,4 +39,11 @@ public interface ISysUserService extends IService<SysUserEntity> {
 	 * @param newPassword  新密码
 	 */
 	boolean updatePassword(Long userId, String password, String newPassword);
+
+
+	/**
+	 * 获取所有用户
+	 * @return
+	 */
+	int getAllUserNum();
 }

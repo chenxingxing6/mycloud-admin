@@ -117,5 +117,17 @@ public interface FileService extends IService<FileEntity> {
      */
     public boolean downloadFile(SysUserEntity user, FileEntity file, String localPath);
 
+
+    /**
+     * 获取文件下载列表，首页使用
+     * @return
+     */
+    public List<FileEntity> getFileDowns();
+
+
+    public int getTodayDiskNum();
+
+    public int getTotalDiskNum();
+
 }
 

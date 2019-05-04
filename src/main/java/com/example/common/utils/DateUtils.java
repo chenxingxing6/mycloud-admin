@@ -6,8 +6,11 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.management.ManagementFactory;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -18,6 +21,8 @@ import java.util.Date;
  * @Date: 2019/1/1 16:30
  */
 public class DateUtils {
+    private static Logger logger = LoggerFactory.getLogger(DateUtils.class);
+
 	/** 时间格式(yyyy-MM-dd) */
 	public final static String DATE_PATTERN = "yyyy-MM-dd";
 	/** 时间格式(yyyy-MM-dd HH:mm:ss) */
@@ -45,6 +50,23 @@ public class DateUtils {
         }
         return null;
     }
+
+
+    /*
+    * 将时间转换为时间戳
+    */
+    public static long dateToStamp(String s, String pattern){
+        try {
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+            Date date = simpleDateFormat.parse(s);
+            long ts = date.getTime();
+            return ts;
+        }catch (Exception e){
+            logger.warn("时间戳转换错误："+e.getMessage());
+        }
+        return 0;
+    }
+
 
     public static String format(Long timeStamp, String pattern) {
         try {

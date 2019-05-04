@@ -1,6 +1,7 @@
 package com.example.modules.front.service.impl;
 
 import com.example.common.constants.FileEnum;
+import com.example.common.utils.DateUtils;
 import com.example.common.utils.IdGen;
 import com.example.modules.front.dao.HdfsDao;
 import com.example.modules.front.entity.UserFileEntity;
@@ -152,5 +153,36 @@ public class FileServiceImpl extends ServiceImpl<FileDao, FileEntity> implements
     @Override
     public boolean downloadFile(SysUserEntity user, FileEntity file, String localPath) {
         return hdfsDao.download(user, file, localPath);
+    }
+
+    @Override
+    public List<FileEntity> getFileDowns() {
+        return this.selectList(new EntityWrapper<FileEntity>()
+        .eq("type", 1)
+        .orderBy("download_num", false)
+        .orderBy("create_time", false)
+        .last("limit 5"));
+    }
+
+    @Override
+    public int getTodayDiskNum() {
+        long time = DateUtils.dateToStamp(DateUtils.format(new Date(), "yyyyMMdd"), "yyyyMMdd");
+        return this.selectCount(new EntityWrapper<FileEntity>()
+                .eq("type", 1)
+                .eq("is_valid", 1)
+                .gt("create_time",time)
+        );
+    }
+
+    @Override
+    public int getTotalDiskNum() {
+        return this.selectCount(new EntityWrapper<FileEntity>()
+        .eq("type", 1)
+        .eq("is_valid", 1));
+    }
+
+    public static void main(String[] args) {
+        System.out.println(DateUtils.format(new Date(), "yyyyMMdd"));
+        System.out.println(DateUtils.dateToStamp(DateUtils.format(new Date(), "yyyyMMdd"), "yyyyMMdd"));
     }
 }
