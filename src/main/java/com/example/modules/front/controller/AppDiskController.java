@@ -127,6 +127,9 @@ public class AppDiskController{
         List<FileEntity> fileEntities = fileService.listFileByIdsWithPage(fileIds, fileName, page, limit);
         //createUser 改为用户名
         List<Long> userIds = fileEntities.stream().map(e->Long.valueOf(e.getCreateUser())).collect(Collectors.toList());
+        if (CollectionUtils.isEmpty(userIds)){
+            return new ArrayList<FileEntity>();
+        }
         Map<Long, SysUserEntity> map = sysUserService.selectBatchIds(userIds).stream().collect(Collectors.toMap(e->e.getUserId(), e->e));
         for (FileEntity fileEntity : fileEntities) {
             SysUserEntity user = map.get(Long.valueOf(fileEntity.getCreateUser()));
