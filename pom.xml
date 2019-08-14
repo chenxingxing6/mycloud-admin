@@ -45,6 +45,17 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>toolkit.common</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.alibaba.toolkit</groupId>
+			<artifactId>toolkit-common-convert</artifactId>
+			<version>1.0</version>
+		</dependency>
+
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>${junit.version}</version>
