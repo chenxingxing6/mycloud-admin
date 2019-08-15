@@ -279,6 +279,7 @@
 					<skipTests>true</skipTests>
 				</configuration>
 			</plugin>
+			<!-- docker插件 -->
 			<plugin>
 				<groupId>com.spotify</groupId>
 				<artifactId>docker-maven-plugin</artifactId>
