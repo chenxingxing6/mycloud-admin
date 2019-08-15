@@ -172,7 +172,7 @@
         <appender-ref ref="ALERT_MONITOR"/>
     </logger>
 
-    <!-- 解决getLogger(xx.class) -->
+    <!-- 解决getLogger(xx.class) additivity:默认true 如果为false，则不会将日志流反馈到root中-->
     <logger name="com.example.common" additivity="false">
         <level value="INFO"/>
         <appender-ref ref="CONSOLE"/>
