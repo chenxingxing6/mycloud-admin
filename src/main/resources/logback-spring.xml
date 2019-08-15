@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration>
-
+<!--<configuration>
     <include resource="org/springframework/boot/logging/logback/defaults.xml" />
     <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
-
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <File>${LOG_PATH}${LOG_FILE}</File>
         <encoder>
@@ -11,7 +9,7 @@
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>${LOG_PATH}daily/${LOG_FILE}.%d{yyyy-MM-dd}.gz</fileNamePattern>
-            <maxHistory>180</maxHistory> <!-- 保留180天 -->
+            <maxHistory>180</maxHistory> &lt;!&ndash; 保留180天 &ndash;&gt;
         </rollingPolicy>
     </appender>
 
@@ -19,4 +17,62 @@
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="FILE"/>
     </root>
+</configuration>-->
+<configuration debug="false" scan="true" scanPeriod="60 seconds">
+    <substitutionProperty name="log.dir" value="/opt/logs/spring-boot/mycloud"/>
+    <jmxConfigurator/>
+    <timestamp key="byDay" datePattern="yyyy-MM-dd"/>
+    <property name="PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %level [%t] %marker %msg%n"/>
+    <property name="ALERT_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level marker: %marker。 %message%n%xException%n"/>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </layout>
+    </appender>
+
+    <!-- 业务告警 -->
+    <appender name="ALERT_MONITOR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>/opt/logs/spring-boot/alert_monitor.log</file>
+        <Append>true</Append>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>/opt/logs/spring-boot/bak/alert_monitor.%d{yyyy-MM-dd}.log.zip</fileNamePattern>
+            <maxHistory>5</maxHistory>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <charset>UTF-8</charset>
+            <pattern>${ALERT_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!--页面拆分-->
+    <appender name="PAGE_SPLIT" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.dir}/page_split.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log.dir}/bak/page_split.%d{yyyy-MM-dd}.log.zip</fileNamePattern>
+            <!-- keep 5 days worth of history -->
+            <maxHistory>5</maxHistory>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+
+    <!-- 页面拆分 -->
+    <logger name="PAGE_SPLIT" level="INFO" additivity="false">
+        <appender-ref ref="PAGE_SPLIT"/>
+        <appender-ref ref="ALERT_MONITOR"/>
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+
+    <logger name="java.sql.ResultSet" level="INFO"/>
+    <logger name="org.apache.ibatis" level="INFO"/>
+    <logger name="java.sql.PreparedStatement" level="INFO"/>
+    <logger name="java.sql.Connection" level="INFO"/>
+    <logger name="org.mybatis.spring" level="ERROR"/>
 </configuration>
