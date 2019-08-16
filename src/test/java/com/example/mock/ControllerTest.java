@@ -25,6 +25,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
  * Date: 2019/8/16 11:00
  * Desc: MockMvc对系统Controller进行测试，对数据库增删改查结束后会还原数据库
  * spring-test
+ * 1.创建mockMvc
+ * 2.添加断言
+ * 3.添加结果处理器
+ * 4.得到MvcResult进行自定义断言
  */
 public class ControllerTest extends BaseTest {
     @Resource
