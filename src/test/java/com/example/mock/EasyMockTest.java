@@ -16,6 +16,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockServletContext;
 
@@ -85,6 +86,12 @@ public class EasyMockTest extends EasyMockSupport {
 
         System.out.println(JSON.toJSONString(result));
         Assert.assertNotNull(result);
+    }
+
+    @Test
+    public void test02(){
+        SysLogEntity entity = Mockito.mock(SysLogEntity.class);
+        System.out.println(JSON.toJSONString(entity));
     }
 
 }
