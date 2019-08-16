@@ -1,7 +1,7 @@
 ## 系统配置文件
 log.path: /opt/logs/spring-boot/mycloud/
 log.immediate.flush: true
-log.root.level: DEBUG
+log.root.level: INFO
 log.business.level: DEBUG
 log.sql.level: DEBUG
 
