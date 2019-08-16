@@ -14,9 +14,23 @@ public class LogUtil {
     //异常拆分符号
     private static final String EXCEPTION_SPLIT = " ==> ";
 
+    public static void trace(Logger log, Marker marker, String format, Object... arguments) {
+        log.trace(marker, format, arguments);
+    }
+
+    public static void debug(Logger log, Marker marker, String format, Object... arguments){
+        log.debug(marker, format, arguments);
+    }
+
     public static void info(Logger log, Marker marker, String format, Object... arguments) {
         log.info(marker, format, arguments);
     }
 
+    public static void warn(Logger log, Marker marker, String format, Object... arguments) {
+        log.warn(marker, format, arguments);
+    }
 
+    public static void error(Logger log, Marker marker, String format, Object... arguments) {
+        log.error(marker, format, arguments);
+    }
 }
