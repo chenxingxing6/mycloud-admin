@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
@@ -16,6 +17,7 @@ import java.util.concurrent.TimeUnit;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@ActiveProfiles("dev")
 public class BaseTest {
 	private static final IMyLogger logger = LoggerFactory.getLogger(LoggerFactory.class);
 	// MQ日志
@@ -35,7 +37,7 @@ public class BaseTest {
 
 
 	@Resource
-	IdGen idGen;
+	protected IdGen idGen;
 
 	@Value("${mycloud.env}")
 	private String env;

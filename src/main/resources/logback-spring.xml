@@ -191,5 +191,6 @@
     <logger name="${log.sql.name}" additivity="false">
         <level value="${log.sql.level}"/>
         <appender-ref ref="SQL"/>
+        <appender-ref ref="CONSOLE"/>
     </logger>
 </configuration>

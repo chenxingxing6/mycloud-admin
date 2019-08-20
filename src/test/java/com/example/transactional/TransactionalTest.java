@@ -1,10 +1,14 @@
 package com.example.transactional;
 
 import com.example.BaseTest;
+import com.example.modules.sys.entity.SysConfigEntity;
 import com.example.modules.sys.entity.SysUserEntity;
 import com.example.modules.sys.service.ISysConfigService;
 import com.example.modules.sys.service.ISysUserService;
 import com.google.common.util.concurrent.UncheckedTimeoutException;
+import org.junit.Test;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 
@@ -16,6 +20,8 @@ import javax.annotation.Resource;
 public class TransactionalTest extends BaseTest {
     @Resource
     private ISysUserService sysUserService;
+    @Resource
+    private ISysConfigService configService;
 
 
     public void a(){
