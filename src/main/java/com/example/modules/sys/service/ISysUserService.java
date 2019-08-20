@@ -13,18 +13,20 @@ import java.util.Map;
  */
 public interface ISysUserService extends IService<SysUserEntity> {
 
+	public void rollbackTest();
+
 	PageUtils queryPage(Map<String, Object> params);
-	
+
 	/**
 	 * 查询用户的所有菜单ID
 	 */
 	List<Long> queryAllMenuId(Long userId);
-	
+
 	/**
 	 * 保存用户
 	 */
 	void save(SysUserEntity user);
-	
+
 	/**
 	 * 修改用户
 	 */

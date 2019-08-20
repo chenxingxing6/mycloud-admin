@@ -20,20 +20,82 @@ import javax.annotation.Resource;
 public class TransactionalTest extends BaseTest {
     @Resource
     private ISysUserService sysUserService;
-    @Resource
-    private ISysConfigService configService;
 
 
-    public void a(){
-        SysUserEntity user = sysUserService.selectById(1);
-        user.setStatus(0);
-        sysUserService.update(user);
-        System.out.println("");
+    /**
+     *  1.都会回滚
+     *  @Transactional(rollbackFor = Exception.class)
+     * 	@Override
+     * 	public void rollbackTest() {
+     * 		SysUserEntity user = sysUserService.selectById(1);
+     * 		user.setStatus(0);
+     * 		sysUserService.update(user);
+     * 		System.out.println("a ok ......");
+     * 		b();
+     * 	}
+     *
+     * 	private void b(){
+     * 		SysUserEntity user = sysUserService.selectById(2);
+     * 		user.setStatus(0);
+     * 		sysUserService.update(user);
+     * 		System.out.println("b ok ......");
+     * 		int i = 1/0;
+     * 	}
+     */
+    @Test
+    public void test01(){
+        sysUserService.rollbackTest();
     }
 
-    public void b(){
-        SysUserEntity user = sysUserService.selectById(2);
-        user.setStatus(0);
-        sysUserService.update(user);
+
+    /**
+     *  2.都不回滚
+     *  @Override
+     * 	public void rollbackTest() {
+     * 		SysUserEntity user = sysUserService.selectById(1);
+     * 		user.setStatus(0);
+     * 		sysUserService.update(user);
+     * 		System.out.println("a ok ......");
+     * 		b();
+     * 	}
+     *
+     * 	@Transactional(rollbackFor = Exception.class)
+     * 	protected void b(){
+     * 		SysUserEntity user = sysUserService.selectById(2);
+     * 		user.setStatus(0);
+     * 		sysUserService.update(user);
+     * 		System.out.println("b ok ......");
+     * 		int i = 1/0;
+     * 	}
+     */
+    @Test
+    public void test02(){
+        sysUserService.rollbackTest();
+    }
+
+    /**
+     *  3.b方法回滚
+     *  @Override
+     * 	public void rollbackTest() {
+     * 		SysUserEntity user = sysUserService.selectById(1);
+     * 		user.setStatus(0);
+     * 		sysUserService.update(user);
+     * 		System.out.println("a ok ......");
+     * 		SysUserServiceImpl sysUserService = new SysUserServiceImpl();
+     * 		sysUserService.b();
+     * 	}
+     *
+     * 	@Transactional(rollbackFor = Exception.class)
+     * 	protected void b(){
+     * 		SysUserEntity user = sysUserService.selectById(2);
+     * 		user.setStatus(0);
+     * 		sysUserService.update(user);
+     * 		System.out.println("b ok ......");
+     * 		int i = 1/0;
+     * 	}
+     */
+    @Test
+    public void test03(){
+        sysUserService.rollbackTest();
     }
 }

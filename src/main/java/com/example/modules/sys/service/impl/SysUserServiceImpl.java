@@ -35,6 +35,28 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUserEntity> i
 	private ISysUserRoleService sysUserRoleService;
 	@Autowired
 	private ISysDeptService sysDeptService;
+	@Autowired
+	private ISysUserService sysUserService;
+
+
+	@Override
+	public void rollbackTest() {
+		SysUserEntity user = sysUserService.selectById(1);
+		user.setStatus(0);
+		sysUserService.update(user);
+		System.out.println("a ok ......");
+		SysUserServiceImpl sysUserService = new SysUserServiceImpl();
+		sysUserService.b();
+	}
+
+	@Transactional(rollbackFor = Exception.class)
+	protected void b(){
+		SysUserEntity user = sysUserService.selectById(2);
+		user.setStatus(0);
+		sysUserService.update(user);
+		System.out.println("b ok ......");
+		int i = 1/0;
+	}
 
 	@Override
 	public List<Long> queryAllMenuId(Long userId) {
