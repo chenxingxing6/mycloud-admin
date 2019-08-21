@@ -26,6 +26,8 @@ public class VavrTest extends TestCase {
     }
 
 
+
+
     // 2.元组Tuple java中没有与元组相对应的结构，Tuple是函数式编程中一种常见的概念，不可变，最多保存8个元素
     // 当需要考虑多个对象可以考虑使用Tuple
     @Test
@@ -36,6 +38,8 @@ public class VavrTest extends TestCase {
         System.out.println("element1:" + element1);
         System.out.println("element2:" + element2);
     }
+
+
 
 
     // 3.Try是一个容器，包装一段可能产生异常的代码，不用显示的用try_cache来处理异常
@@ -51,6 +55,8 @@ public class VavrTest extends TestCase {
         }
     }
 
+
+
     // 4.函数式接口
     @Test
     public void test04(){
@@ -62,6 +68,8 @@ public class VavrTest extends TestCase {
         System.out.println(fun2.apply("hello", "world"));
         System.out.println(fun3.apply(1, 2, 3));
     }
+
+
 
     private int sum(int a, int b, int c){
         return a + b + c;
@@ -86,6 +94,8 @@ public class VavrTest extends TestCase {
     }
 
 
+
+
     // 6.延迟计算Lazy
     @Test
     public void test06(){
@@ -96,6 +106,8 @@ public class VavrTest extends TestCase {
         double v2 = lazy.get();
         System.out.println(v2);
     }
+
+
 
 
     // 7.模式匹配Pattern Matching
