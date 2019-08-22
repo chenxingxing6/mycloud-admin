@@ -79,6 +79,10 @@ public class SysUserController extends AbstractController {
 		return R.ok();
 	}
 
+	public static void main(String[] args) {
+		System.out.println(ShiroUtils.sha256("admin", "YzcmCZNvbXocrsz9dm8e"));
+	}
+
 	/**
 	 * 用户信息
 	 */
