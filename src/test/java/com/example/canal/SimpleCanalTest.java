@@ -35,7 +35,7 @@ public class SimpleCanalTest {
 
             int batchSize = 1000;
             try {
-                System.out.println("监听......");
+                System.out.println("开始监听......");
                 connector.connect();
                 connector.subscribe(".*\\..*");
                 connector.rollback();
@@ -64,7 +64,7 @@ public class SimpleCanalTest {
             if (entry.getEntryType() == CanalEntry.EntryType.TRANSACTIONBEGIN || entry.getEntryType() == CanalEntry.EntryType.TRANSACTIONEND) {
                 continue;
             }
-            System.out.println(entry.toString());
+            // System.out.println(entry.toString());
 
             CanalEntry.RowChange rowChage = null;  // 执行事件信息
             String database = null; // 数据库
@@ -86,18 +86,18 @@ public class SimpleCanalTest {
                 }
                 // 新增
                 else if (eventType == CanalEntry.EventType.INSERT) {
-                    insert(rowData.getBeforeColumnsList(), database, table);
+                    insert(rowData.getAfterColumnsList(), database, table);
                 }
                 // 修改
                 else if (eventType == CanalEntry.EventType.UPDATE){
-                    update(rowData.getBeforeColumnsList(), database, table);
+                    update(rowData.getAfterColumnsList(), database, table);
                 }
                 // 改表结构
                 else if (eventType == CanalEntry.EventType.ALTER){
                     System.out.println("修改表结构");
                 }
                 else {
-
+                    System.out.println("类型不匹配");
                 }
             }
         }
@@ -114,7 +114,7 @@ public class SimpleCanalTest {
         for (CanalEntry.Column column : columns) {
             json.put(column.getName(), column.getValue());
         }
-        System.out.println("数据库："+database+"==>表："+table+"==>添加数据："+JSON.toJSONString(json));
+        System.out.println("数据库："+database+"==>表："+table+"==>添加数据："+JSON.toJSONString(json) + "\n\n");
     }
 
     /**
