@@ -284,6 +284,13 @@
 			<artifactId>vavr</artifactId>
 			<version>0.9.0</version>
 		</dependency>
+
+		<!-- canal -->
+		<dependency>
+			<groupId>com.alibaba.otter</groupId>
+			<artifactId>canal.client</artifactId>
+			<version>1.0.25</version>
+		</dependency>
 	</dependencies>
 
 	<build>
