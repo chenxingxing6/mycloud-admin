@@ -34,6 +34,5 @@ public class PairTest {
         // apache
         ImmutablePair<String, String> apachePair = new ImmutablePair<>("1", "1");
         System.out.println(apachePair.getLeft() + ":" +apachePair.getRight());
-
     }
 }

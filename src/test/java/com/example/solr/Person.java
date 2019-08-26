@@ -3,6 +3,7 @@ package com.example.solr;
 import org.apache.solr.client.solrj.beans.Field;
 
 import java.io.Serializable;
+import java.util.HashSet;
 
 /**
  * User: lanxinghua
