@@ -22,6 +22,10 @@
 </head>
 <body class="hold-transition login-page">
 <div class="login-box" id="rrapp" v-cloak>
+  <!--  <div>
+        <input type="file" accept="image/*" id="fileUpload" name="fileUpload" style="position:absolute; clip:rect(0 0 0 0);"  @change="uploadVideo($event)">
+    </div>-->
+
   <div class="login-logo">
     <b>星云网盘后台</b>
   </div>
@@ -55,8 +59,10 @@
           </div>
         </div>
         <!-- /.col -->
-        <div class="col-xs-4">
-          <button type="button" class="btn btn-primary btn-block btn-flat" @click="login">登录</button>
+        <div class="col-xs-8">
+            <input type="file" accept="image/*" id="fileUpload" name="fileUpload" @change="uploadVideo($event)">
+           <!-- <button type="button" class="btn btn-primary btn-flat" @click="facelogin">人脸识别</button>-->&nbsp;
+            <button type="button" class="btn btn-primary btn-flat" @click="login">登录</button>
         </div>
         <!-- /.col -->
       </div>
@@ -92,6 +98,72 @@ var vm = new Vue({
 		refreshCode: function(){
 			this.src = "captcha.jpg?t=" + $.now();
 		},
+        uploadVideo: function(e) {
+            var file = $("#fileUpload")[0].files[0];
+            console.log(file);
+            if(file == null){
+                vm.error = true;
+                vm.errorMsg = "请上传文件";
+                return;
+            }
+            var size = file.size;
+            if(size > 10240000){
+                vm.error = true;
+                vm.errorMsg = "文件不能大于10M";
+                return;
+            }
+            var formData = new FormData();
+            formData.append('file', "666");
+            console.log('正在上传...');
+            $.ajax({
+                url:'sys/facelogin',
+                dataType:'json',
+                type:'POST',
+                async: false,
+                data: formData,
+                processData : false, // 使数据不做处理
+                contentType : false, // 不要设置Content-Type请求头
+                success: function(data){
+                    console.log("***"+data);
+                    if (data.status == 'ok') {
+                        alert('上传成功！');
+                    }
+                },
+                error:function(response){
+                    console.log("error:"+response);
+                }
+            });
+        },
+        facelogin: function () {
+            var inputObj=document.getElementById('fileUpload')
+            inputObj.click();
+            this.stop();
+            var file = $("#fileUpload")[0].files[0];
+            if(file == null){
+                this.stop();
+            }
+            var formData = new FormData();
+            formData.append('file', $("#fileUpload")[0].files[0]);
+            console.log('正在上传...');
+            $.ajax({
+                url:'sys/facelogin',
+                dataType:'json',
+                type:'POST',
+                async: false,
+                data: formData,
+                processData : false, // 使数据不做处理
+                contentType : false, // 不要设置Content-Type请求头
+                success: function(data){
+                    console.log("***"+data);
+                    if (data.status == 'ok') {
+                        alert('上传成功！');
+                    }
+                },
+                error:function(response){
+                    console.log("error:"+response);
+                }
+            });
+        },
 		login: function (event) {
 			var data = "username="+vm.username+"&password="+vm.password+"&captcha="+vm.captcha;
 			$.ajax({

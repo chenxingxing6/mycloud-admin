@@ -293,11 +293,11 @@
 		</dependency>
 
 		<!-- solr -->
-		<dependency>
+	<!--	<dependency>
 			<groupId>org.apache.solr</groupId>
 			<artifactId>solr-solrj</artifactId>
 			<version>5.3.0 </version>
-		</dependency>
+		</dependency>-->
 
 		<!-- 人脸识别 jdk-->
 		<dependency>

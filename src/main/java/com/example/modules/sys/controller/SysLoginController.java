@@ -11,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletOutputStream;
@@ -66,7 +68,22 @@ public class SysLoginController {
 		}
 		return R.ok();
 	}
-	
+
+
+	/**
+	 * 登录
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/sys/facelogin", method = RequestMethod.POST)
+	public R facelogin(@RequestParam("file") MultipartFile file) {
+		String fileName = file.getOriginalFilename();
+		if (fileName.indexOf("\\") != -1) {
+			fileName = fileName.substring(fileName.lastIndexOf("\\"));
+		}
+		System.out.println("文件名"+fileName);
+		return R.ok();
+	}
+
 	/**
 	 * 退出
 	 */

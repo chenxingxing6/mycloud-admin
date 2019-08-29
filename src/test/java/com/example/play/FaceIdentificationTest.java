@@ -265,7 +265,7 @@ public class FaceIdentificationTest {
         options.put("face_field", "age");
         options.put("max_face_num", "2");
         options.put("face_type", "LIVE");
-        options.put("liveness_control", "LOW");
+        //options.put("liveness_control", "LOW");
 
         String image = "https://download.2dfire.com/mis/permanent/img1.jpg";
         String imageType = "URL";
@@ -283,14 +283,13 @@ public class FaceIdentificationTest {
     @Test
     public void test14() throws Exception{
         HashMap<String, String> options = new HashMap<String, String>();
-        options.put("max_face_num", "3");
-        options.put("match_threshold", "70");
-        options.put("quality_control", "NORMAL");
+        options.put("max_face_num", "1");
+        options.put("quality_control", "LOW");
         options.put("liveness_control", "NONE");
-        options.put("user_id", "6030");
         options.put("max_user_num", "3");
 
-        String image = "https://download.2dfire.com/mis/permanent/img1.jpg";
+        //String image = "https://download.2dfire.com/mis/permanent/img2.jpg";
+        String image = "https://console.bce.baidu.com/ai/s/facelib/face?appId=733341&groupId=group1&uid=6028&faceId=8c77dcb6be991cb1eeee298df719c187";
         String imageType = "URL";
         String groupIdList = "group1,group2";
 

@@ -1,3 +1,4 @@
+/*
 package com.example.solr;
 
 import org.apache.solr.client.solrj.beans.Field;
@@ -5,11 +6,13 @@ import org.apache.solr.client.solrj.beans.Field;
 import java.io.Serializable;
 import java.util.HashSet;
 
+*/
 /**
  * User: lanxinghua
  * Date: 2019/8/23 18:23
  * Desc:
- */
+ *//*
+
 public class Person implements Serializable {
     @Field
     private String id;
@@ -63,3 +66,4 @@ public class Person implements Serializable {
         this.address = address;
     }
 }
+*/

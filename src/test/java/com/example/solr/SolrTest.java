@@ -1,3 +1,4 @@
+/*
 package com.example.solr;
 
 import com.alibaba.fastjson.JSON;
@@ -17,11 +18,13 @@ import org.testng.collections.Maps;
 
 import java.util.*;
 
+*/
 /**
  * User: lanxinghua
  * Date: 2019/8/23 18:20
  * Desc: solr测试
- */
+ *//*
+
 public class SolrTest {
     private static final Logger logger = LoggerFactory.getLogger("Solr");
     private static final String SOLR_URL = "http://localhost:8983/solr/";
@@ -72,11 +75,13 @@ public class SolrTest {
         getSpell(SOLR_CORE);
     }
 
-    /**
+    */
+/**
      * 添加文档
      * @param map
      * @param core
-     */
+     *//*
+
     private static void addDocument(Map<String, String> map, String core){
         try {
             SolrInputDocument sid = new SolrInputDocument();
@@ -93,10 +98,12 @@ public class SolrTest {
         }
     }
 
-    /**
+    */
+/**
      * 添加文档
      * @param core
-     */
+     *//*
+
     private static void addDocumentByBean(List<Person> peoples, String core){
         try {
             HttpSolrClient solrClient = getSolrClient(core);
@@ -110,11 +117,13 @@ public class SolrTest {
     }
 
 
-    /**
+    */
+/**
      * 根据id删除索引
      * @param ids
      * @param core
-     */
+     *//*
+
     private static void deleteDocumentByIds(List<String> ids, String core){
         try {
             HttpSolrClient solrClient = getSolrClient(core);
@@ -128,10 +137,12 @@ public class SolrTest {
     }
 
 
-    /**
+    */
+/**
      * 获取文档
      * @param core
-     */
+     *//*
+
     private static void getDocument(String core){
         try {
             HttpSolrClient solrClient = getSolrClient(core);
@@ -185,10 +196,12 @@ public class SolrTest {
     }
 
 
-    /**
+    */
+/**
      * 查询使用spell接口，输入错误，solr可以给出建议词
      * @param core
-     */
+     *//*
+
     private static void getSpell(String core){
         try {
             HttpSolrClient solrClient = getSolrClient(core);
@@ -232,19 +245,23 @@ public class SolrTest {
         }
     }
 
-    /**
+    */
+/**
      * 获取Solr服务
      * @param core
      * @return
-     */
+     *//*
+
     private static HttpSolrClient getSolrClient(String core){
         return new HttpSolrClient(SOLR_URL + core);
     }
 
-    /**
+    */
+/**
      * 提交并关闭服务
      * @param client
-     */
+     *//*
+
     private static void commitAndCloseSolr(HttpSolrClient client){
         try {
             client.commit();
@@ -256,3 +273,4 @@ public class SolrTest {
 
 
 }
+*/
