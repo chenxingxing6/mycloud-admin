@@ -140,20 +140,24 @@ var vm = new Vue({
                         vm.error = true;
                         vm.errorMsg = result.msg;
                         vm.refreshCode();
-                        this.showUploadFace = true;
-                        this.showFaceLogin = false;
-                        this.showLogin = true;
+                        vm.showUploadFace = true;
+                        vm.showFaceLogin = false;
+                        vm.showLogin = true;
                     }
                 }
             })
         },
 		login: function (event) {
 			var data = "username="+vm.username+"&password="+vm.password+"&captcha="+vm.captcha;
+            var ii = null;
 			$.ajax({
 				type: "POST",
 			    url: "sys/login",
 			    data: data,
 			    dataType: "json",
+                beforeSend: function(){
+                    ii = layer.load();
+                },
 			    success: function(result){
 					if(result.code == 0){//登录成功
 						parent.location.href ='index.html';
@@ -162,7 +166,10 @@ var vm = new Vue({
 						vm.errorMsg = result.msg;
 						vm.refreshCode();
 					}
-				}
+				},
+                complete: function(){
+                   layer.close(ii);
+                }
 			});
 		}
 	}

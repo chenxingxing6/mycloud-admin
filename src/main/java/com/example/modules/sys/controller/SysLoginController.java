@@ -98,9 +98,9 @@ public class SysLoginController {
 			throw new BizException("上传文件不能为空");
 		}
 		//上传文件到oss
-		String suffix = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
-		String url = OSSFactory.build().uploadSuffix(file.getBytes(), suffix);
-		System.out.println("用户上传图片：" + url);
+		// String suffix = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
+		// String url = OSSFactory.build().uploadSuffix(file.getBytes(), suffix);
+		// System.out.println("用户上传图片：" + url);
 		String groupIds = "group1";
 		String data = FaceUtil.encodeBase64(file.getBytes());
 		ImageU imageU = ImageU.builder().data(data).imageTypeEnum(ImageTypeEnum.BASE64).build();
@@ -119,7 +119,7 @@ public class SysLoginController {
 		if (score >= FaceConstant.MATCH_SCORE){
 			return R.error("登录成功");
 		}
-		return R.error("登录失败");
+		return R.error("用户不存在");
 	}
 
 	/**
