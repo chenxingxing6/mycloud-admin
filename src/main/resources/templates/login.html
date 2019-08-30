@@ -140,6 +140,9 @@ var vm = new Vue({
                         vm.error = true;
                         vm.errorMsg = result.msg;
                         vm.refreshCode();
+                        this.showUploadFace = true;
+                        this.showFaceLogin = false;
+                        this.showLogin = true;
                     }
                 }
             })

@@ -30,5 +30,4 @@ public class FaceConstant {
     public static final String USER_ID_LIST = "user_id_list";
     public static final String GROUP_ID_LIST = "group_id_list";
     public static final String USER_LIST = "user_list";
-
 }

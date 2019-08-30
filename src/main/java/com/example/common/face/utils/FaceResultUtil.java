@@ -1,6 +1,8 @@
 package com.example.common.face.utils;
 
+import com.alibaba.fastjson.JSON;
 import com.example.common.exception.BizException;
+import com.example.common.face.constant.ErrorEnum;
 import com.example.common.face.constant.FaceConstant;
 import com.example.common.face.dto.FaceResult;
 import org.json.JSONObject;
@@ -19,7 +21,13 @@ public class FaceResultUtil {
     public static FaceResult isSuccess(JSONObject res){
         FaceResult result = parseJsonObject(res);
         if (!result.isSuccess()){
-            throw new BizException("百度接口请求失败");
+            // 对错误进行分类
+            ErrorEnum errorEnum = ErrorEnum.getInstance(result.getErrorCode());
+            if (errorEnum == null){
+                throw new BizException("百度接口请求失败" + result.getErrorMsg());
+            }else {
+                throw new BizException(errorEnum.getCnDesc());
+            }
         }
         return result;
     }
@@ -32,14 +40,16 @@ public class FaceResultUtil {
     private static FaceResult parseJsonObject(JSONObject res){
         FaceResult faceResult = FaceResult.builder().build();
         try {
-            String logId = res.has(FaceConstant.LOG_ID) ? res.getString(FaceConstant.LOG_ID) : "0";
+            String logId = res.has(FaceConstant.LOG_ID) ? res.get(FaceConstant.LOG_ID).toString() : "0";
             int errorCode = res.has(FaceConstant.ERROR_CODE) ? res.getInt(FaceConstant.ERROR_CODE) : 0;
             String errorMsg = res.has(FaceConstant.ERROR_MSG) ? res.getString(FaceConstant.ERROR_MSG) : "";
             int cached = res.has(FaceConstant.CACHED) ? res.getInt(FaceConstant.CACHED) : 0;
             long timestamp = res.has(FaceConstant.TIMESTAMP) ? res.getLong(FaceConstant.TIMESTAMP) : 0;
-            String dataString = res.has(FaceConstant.RESULT) ? res.getString(FaceConstant.RESULT) : "";
-            com.alibaba.fastjson.JSONObject data = com.alibaba.fastjson.JSONObject.parseObject(dataString);
-
+            Object dataString = res.has(FaceConstant.RESULT) ? res.get(FaceConstant.RESULT) : "";
+            com.alibaba.fastjson.JSONObject data = null;
+            if (dataString != null) {
+                 data = com.alibaba.fastjson.JSONObject.parseObject(dataString.toString());
+            }
             faceResult.setLogId(logId);
             faceResult.setErrorCode(errorCode);
             faceResult.setErrorMsg(errorMsg);

@@ -101,7 +101,7 @@ public class SysLoginController {
 		String suffix = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
 		String url = OSSFactory.build().uploadSuffix(file.getBytes(), suffix);
 		System.out.println("用户上传图片：" + url);
-		String groupIds = "group2";
+		String groupIds = "group1";
 		String data = FaceUtil.encodeBase64(file.getBytes());
 		ImageU imageU = ImageU.builder().data(data).imageTypeEnum(ImageTypeEnum.BASE64).build();
 		FaceResult result = FaceManage.faceSearch(groupIds, imageU);
@@ -109,6 +109,7 @@ public class SysLoginController {
 		if (StringUtils.isEmpty(users)){
 			return R.error("用户不存在");
 		}
+		System.out.println("result: " + users);
 		JSONArray array = JSONObject.parseArray(users);
 		JSONObject object = JSONObject.parseObject(array.get(0).toString());
 		Integer score = object.getInteger(FaceConstant.SCORE);
