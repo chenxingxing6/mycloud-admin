@@ -2,13 +2,17 @@ package com.example.play;
 
 import com.alibaba.fastjson.JSON;
 import com.baidu.aip.face.AipFace;
-import com.baidu.aip.face.MatchRequest;
+import com.example.common.face.FaceManage;
+import com.example.common.face.constant.FaceConstant;
+import com.example.common.face.constant.ImageTypeEnum;
+import com.example.common.face.dto.FaceResult;
+import com.example.common.face.dto.FaceUserDTO;
+import com.example.common.face.dto.ImageU;
 import org.json.JSONObject;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * User: lanxinghua
@@ -16,43 +20,20 @@ import java.util.Map;
  * Desc: 人脸识别测试
  */
 public class FaceIdentificationTest {
-    private static final String APP_ID = "15303677";
-    private static final String APP_KEY = "OoOqVhksdmc3k6ZRNId8Apjd";
-    private static final String SECRET_KEY = "unjW6yGDd2B50KQZfulCWfNAgwA75wLI";
-    static AipFace client = null;
-    static {
-        client = new AipFace(APP_ID, APP_KEY, SECRET_KEY);
-    }
-
-    public static void main(String[] args) {
-
-    }
+    private AipFace client;
 
     /**
      * 人脸注册
      */
     @Test
-    public void test01() throws Exception{
-        // 传入可选参数调用接口
-        HashMap<String, String> options = new HashMap<String, String>();
-        // 用户资料
-        options.put("user_info", "img1");
-        // 图片质量
-        options.put("quality_control", "LOW");
-        // 活体检测控制
-        options.put("liveness_control", "NONE");
-        // 操作方式
-        options.put("action_type", "REPLACE");
-
-        String image = "https://download.2dfire.com/mis/permanent/img1.jpg";
-        String imageType = "URL";
-        String groupId = "group1";
-        String userId = "6030";
-
-        // 人脸注册
-        JSONObject res = client.addUser(image, imageType, groupId, userId, options);
-        System.out.println(res.toString(2));
-        System.out.println("注册成功");
+    public void test01() {
+        FaceUserDTO<String> userDTO = new FaceUserDTO<>();
+        userDTO.setGroupId("group1");
+        userDTO.setUserId("6031");
+        String image = "https://download.2dfire.com/mis/permanent/img2.jpg";
+        ImageU imageU = ImageU.builder().data(image).imageTypeEnum(ImageTypeEnum.URL).build();
+        userDTO.setUser("用户信息1");
+        FaceManage.faceRegister(userDTO, imageU);
     }
 
 
@@ -60,219 +41,154 @@ public class FaceIdentificationTest {
      * 人脸更新
      */
     @Test
-    public void test02() throws Exception{
-        // 传入可选参数调用接口
-        HashMap<String, String> options = new HashMap<String, String>();
-        // 用户资料
-        options.put("user_info", "小学生");
-        // 图片质量
-        options.put("quality_control", "LOW");
-        // 活体检测控制
-        options.put("liveness_control", "NONE");
-        // 操作方式
-        options.put("action_type", "REPLACE");
-
+    public void test02() {
+        FaceUserDTO<String> userDTO = new FaceUserDTO();
+        userDTO.setGroupId("group1");
+        userDTO.setUserId("6031");
         String image = "https://download.2dfire.com/mis/permanent/img2.jpg";
-        String imageType = "URL";
-        String groupId = "group1";
-        String userId = "6030";
+        ImageU imageU = ImageU.builder().data(image).imageTypeEnum(ImageTypeEnum.URL).build();
+        userDTO.setUser("用户信息1");
         // 人脸更新
-        JSONObject res = client.updateUser(image, imageType, groupId, userId, options);
-        System.out.println(res.toString(2));
-        System.out.println("人脸更新成功");
+        FaceManage.faceUpdate(userDTO, imageU);
     }
 
 
     /**
      * 人脸删除接口
-     * @throws Exception
      */
     @Test
-    public void test03() throws Exception{
-        // 传入可选参数调用接口
-        HashMap<String, String> options = new HashMap<String, String>();
+    public void test03() {
         String userId = "6030";
         String groupId = "group1";
         String faceToken = "5a1a8c17c40ea41264e8830017134972";
-
-        // 人脸删除
-        JSONObject res = client.faceDelete(userId, groupId, faceToken, options);
-        System.out.println(res.toString(2));
-        System.out.println("人脸删除成功");
+        FaceManage.faceDelete(userId, groupId, faceToken);
     }
 
 
     /**
      * 用户信息查询
-     * @throws Exception
      */
     @Test
-    public void test04() throws Exception{
+    public void test04() {
         HashMap<String, String> options = new HashMap<>();
         String userId = "6030";
         String groupId = "group1";
-
         // 用户信息查询
-        JSONObject res = client.getUser(userId, groupId, options);
-        System.out.println(res.toString());
-        com.alibaba.fastjson.JSONObject object = JSON.parseObject(res.toString());
-        System.out.println("用户信息：" + object.getString("result"));
+        FaceUserDTO<String> userDTO = FaceManage.findUser(userId, groupId);
+        System.out.println("用户信息：" + JSON.toJSONString(userDTO));
     }
 
 
     /**
      * 获取用户人脸列表
-     * @throws Exception
      */
     @Test
-    public void test05() throws Exception{
-        HashMap<String, String> options = new HashMap<String, String>();
+    public void test05() {
         String userId = "6030";
         String groupId = "group1";
-
         // 获取用户人脸列表
-        JSONObject res = client.faceGetlist(userId, groupId, options);
-        System.out.println(res.toString(2));
+        FaceResult result = FaceManage.faceGetList(userId, groupId);
+        String data = result.getData().getString(FaceConstant.FACE_LIST);
+        System.out.println("人脸列表"+data);
     }
 
 
     /**
      * 获取用户列表
-     * @throws Exception
      */
     @Test
-    public void test06() throws Exception{
-        HashMap<String, String> options = new HashMap<String, String>();
-        options.put("start", "0");
-        options.put("length", "50");
-
+    public void test06() {
         String groupId = "group1";
-
+        FaceResult result = FaceManage.listUserByGroupId(groupId);
         // 获取用户列表
-        JSONObject res = client.getGroupUsers(groupId, options);
-        System.out.println(res.toString(2));
+        String userIds = result.getData().getString(FaceConstant.USER_ID_LIST);
+        System.out.println("userIds" + userIds);
     }
 
 
     /**
      * 删除用户
-     * @throws Exception
      */
     @Test
-    public void test07() throws Exception{
+    public void test07() {
         HashMap<String, String> options = new HashMap<String, String>();
         String groupId = "group1";
         String userId = "6031";
-
         // 删除用户
-        JSONObject res = client.deleteUser(groupId, userId, options);
-        System.out.println(res.toString(2));
+        FaceManage.deleteUser(userId, groupId);
     }
 
 
     /**
      * 创建用户组
-     * @throws Exception
      */
     @Test
-    public void test08() throws Exception{
-        HashMap<String, String> options = new HashMap<String, String>();
+    public void test08() {
         String groupId = "group2";
-        // 创建用户组
-        JSONObject res = client.groupAdd(groupId, options);
-        System.out.println(res.toString(2));
+        FaceManage.addGroup(groupId);
     }
 
 
     /**
      * 删除用户组
-     * @throws Exception
      */
     @Test
-    public void test09() throws Exception{
-        HashMap<String, String> options = new HashMap<String, String>();
-
+    public void test09() {
         String groupId = "group2";
-
-        // 删除用户组
-        JSONObject res = client.groupDelete(groupId, options);
-        System.out.println(res.toString(2));
+        FaceManage.deleteGroup(groupId);
     }
+
 
     /**
      * 组列表查询
-     * @throws Exception
      */
     @Test
-    public void test10() throws Exception{
-        HashMap<String, String> options = new HashMap<String, String>();
-        options.put("start", "0");
-        options.put("length", "50");
-        // 组列表查询
-        JSONObject res = client.getGroupList(options);
-        System.out.println(res.toString(2));
+    public void test10() {
+        FaceResult result = FaceManage.listGroup();
+        String groupIds = result.getData().getString(FaceConstant.GROUP_ID_LIST);
+        System.out.println(groupIds);
     }
 
 
     /**
      * 身份验证（没权限使用）
-     * @throws Exception
      */
     @Test
-    public void test11() throws Exception{
-        HashMap<String, String> options = new HashMap<String, String>();
-        options.put("quality_control", "LOW");
-        options.put("liveness_control", "NONE");
-
+    public void test11() {
         String image = "https://download.2dfire.com/mis/permanent/img1.jpg";
-        String imageType = "URL";
+        ImageU imageU = ImageU.builder().data(image).imageTypeEnum(ImageTypeEnum.URL).build();
         String idCardNumber = "235151251";
         String name = "陈星星";
-
-        // 身份验证
-        JSONObject res = client.personVerify(image, imageType, idCardNumber, name, options);
-        System.out.println(res.toString(2));
+        FaceManage.personVerify(idCardNumber, name, imageU);
     }
 
 
     /**
      * 人脸对比
-     * @throws Exception
      */
     @Test
-    public void test12() throws Exception{
+    public void test12() {
         String image1 = "https://download.2dfire.com/mis/permanent/img1.jpg";
         String image2 = "https://download.2dfire.com/mis/permanent/img2.jpg";
+        ImageU imageU1 = ImageU.builder().data(image1).imageTypeEnum(ImageTypeEnum.URL).build();
+        ImageU imageU2 = ImageU.builder().data(image2).imageTypeEnum(ImageTypeEnum.URL).build();
 
-        // image1/image2也可以为url或facetoken, 相应的imageType参数需要与之对应。
-        MatchRequest req1 = new MatchRequest(image1, "URL");
-        MatchRequest req2 = new MatchRequest(image2, "URL");
-        ArrayList<MatchRequest> requests = new ArrayList<MatchRequest>();
-        requests.add(req1);
-        requests.add(req2);
-
-        JSONObject res = client.match(requests);
-        System.out.println(res.toString(2));
+        boolean match = FaceManage.isfaceMatch(imageU2, imageU1, 80);
+        int matchScore = FaceManage.faceMatchScore(imageU2, imageU1);
+        System.out.println("是否匹配：" + match);
+        System.out.println("匹配等分：" + matchScore);
     }
 
     /**
      * 人脸检测
-     * @throws Exception
      */
     @Test
-    public void test13() throws Exception{
-        HashMap<String, String> options = new HashMap<String, String>();
-        options.put("face_field", "age");
-        options.put("max_face_num", "2");
-        options.put("face_type", "LIVE");
-        //options.put("liveness_control", "LOW");
-
+    public void test13() {
         String image = "https://download.2dfire.com/mis/permanent/img1.jpg";
-        String imageType = "URL";
-
-        // 人脸检测
-        JSONObject res = client.detect(image, imageType, options);
-        System.out.println(res.toString(2));
+        ImageU imageU = ImageU.builder().data(image).imageTypeEnum(ImageTypeEnum.URL).build();
+        FaceResult result = FaceManage.faceDetect(imageU);
+        String data = result.getData().getString(FaceConstant.FACE_LIST);
+        System.out.println(data);
     }
 
 
@@ -282,21 +198,12 @@ public class FaceIdentificationTest {
      */
     @Test
     public void test14() throws Exception{
-        HashMap<String, String> options = new HashMap<String, String>();
-        options.put("max_face_num", "1");
-        options.put("quality_control", "LOW");
-        options.put("liveness_control", "NONE");
-        options.put("max_user_num", "3");
-
-        //String image = "https://download.2dfire.com/mis/permanent/img2.jpg";
-        String image = "https://console.bce.baidu.com/ai/s/facelib/face?appId=733341&groupId=group1&uid=6028&faceId=8c77dcb6be991cb1eeee298df719c187";
-        String imageType = "URL";
-        String groupIdList = "group1,group2";
-
-        // 人脸搜索
-        JSONObject res = client.search(image, imageType, groupIdList, options);
-        System.out.println(res.toString(2));
+        String image = "https://download.2dfire.com/mis/permanent/img1.jpg";
+        ImageU imageU = ImageU.builder().data(image).imageTypeEnum(ImageTypeEnum.URL).build();
+        String groupIds = "group1,group2";
+        FaceResult result = FaceManage.faceSearch(groupIds, imageU);
+        String users = result.getData().getString(FaceConstant.USER_LIST);
+        System.out.println(users);
     }
-
 
 }

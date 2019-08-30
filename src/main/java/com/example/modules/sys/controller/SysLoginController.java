@@ -1,6 +1,10 @@
 package com.example.modules.sys.controller;
 
 
+import com.example.common.exception.BizException;
+import com.example.modules.oss.cloud.OSSFactory;
+import com.example.modules.oss.entity.SysOssEntity;
+import com.example.modules.oss.service.ISysOssService;
 import com.google.code.kaptcha.Constants;
 import com.google.code.kaptcha.Producer;
 import com.example.common.utils.R;
@@ -17,9 +21,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.Date;
 
 /**
  * 登录相关
@@ -28,7 +34,9 @@ import java.io.IOException;
 public class SysLoginController {
 	@Autowired
 	private Producer producer;
-	
+	@Autowired
+	private ISysOssService sysOssService;
+
 	@RequestMapping("captcha.jpg")
 	public void captcha(HttpServletResponse response)throws IOException {
         response.setHeader("Cache-Control", "no-store, no-cache");
@@ -42,7 +50,7 @@ public class SysLoginController {
         ServletOutputStream out = response.getOutputStream();
         ImageIO.write(image, "jpg", out);
 	}
-	
+
 	/**
 	 * 登录
 	 */
@@ -74,14 +82,21 @@ public class SysLoginController {
 	 * 登录
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/sys/facelogin", method = RequestMethod.POST)
-	public R facelogin(@RequestParam("file") MultipartFile file) {
-		String fileName = file.getOriginalFilename();
-		if (fileName.indexOf("\\") != -1) {
-			fileName = fileName.substring(fileName.lastIndexOf("\\"));
+	@RequestMapping(value = "/sys/loginface", method = RequestMethod.POST)
+	public R facelogin(@RequestParam("file") MultipartFile file) throws Exception {
+		if (file.isEmpty()) {
+			throw new BizException("上传文件不能为空");
 		}
-		System.out.println("文件名"+fileName);
-		return R.ok();
+		//上传文件
+		String suffix = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
+		String url = OSSFactory.build().uploadSuffix(file.getBytes(), suffix);
+		//保存文件信息
+		SysOssEntity ossEntity = new SysOssEntity();
+		ossEntity.setUrl(url);
+		ossEntity.setCreateDate(new Date());
+		sysOssService.insert(ossEntity);
+		System.out.println("文件url" + url);
+		return R.error("登录失败");
 	}
 
 	/**
@@ -92,5 +107,5 @@ public class SysLoginController {
 		ShiroUtils.logout();
 		return "redirect:login.html";
 	}
-	
+
 }

@@ -27,7 +27,7 @@
     </div>-->
 
   <div class="login-logo">
-    <b>星云网盘后台</b>
+    <b>星云网盘平台</b>
   </div>
   <!-- /.login-logo -->
   <div class="login-box-body">
@@ -60,9 +60,10 @@
         </div>
         <!-- /.col -->
         <div class="col-xs-8">
-            <input type="file" accept="image/*" id="fileUpload" name="fileUpload" @change="uploadVideo($event)">
-           <!-- <button type="button" class="btn btn-primary btn-flat" @click="facelogin">人脸识别</button>-->&nbsp;
-            <button type="button" class="btn btn-primary btn-flat" @click="login">登录</button>
+            <input type="file" accept="image/*" id="fileUpload" style="display: none;">
+            <button type="button" class="btn btn-primary btn-flat" @click="uploadFace" v-if="showUploadFace">人脸识别</button>&nbsp;
+            <button type="button" class="btn btn-primary btn-flat" @click="faceLogin" v-if="showFaceLogin">人脸登录</button>&nbsp;
+            <button type="button" class="btn btn-primary btn-flat" @click="login" v-if="showLogin">登录</button>
         </div>
         <!-- /.col -->
       </div>
@@ -87,7 +88,10 @@ var vm = new Vue({
 		captcha: '',
 		error: false,
 		errorMsg: '',
-		src: 'captcha.jpg'
+		src: 'captcha.jpg',
+        showUploadFace: true,
+        showFaceLogin: false,
+        showLogin: true
 	},
 	beforeCreate: function(){
 		if(self != top){
@@ -98,9 +102,14 @@ var vm = new Vue({
 		refreshCode: function(){
 			this.src = "captcha.jpg?t=" + $.now();
 		},
-        uploadVideo: function(e) {
+        uploadFace: function(){
+            $('#fileUpload').click();
+            this.showUploadFace = false;
+            this.showFaceLogin = true;
+            this.showLogin = false;
+        },
+        faceLogin: function() {
             var file = $("#fileUpload")[0].files[0];
-            console.log(file);
             if(file == null){
                 vm.error = true;
                 vm.errorMsg = "请上传文件";
@@ -113,56 +122,27 @@ var vm = new Vue({
                 return;
             }
             var formData = new FormData();
-            formData.append('file', "666");
+            formData.append("file", file);
             console.log('正在上传...');
+            console.log(formData);
             $.ajax({
-                url:'sys/facelogin',
-                dataType:'json',
+                url:'/sys/loginface',
                 type:'POST',
-                async: false,
-                data: formData,
-                processData : false, // 使数据不做处理
-                contentType : false, // 不要设置Content-Type请求头
-                success: function(data){
-                    console.log("***"+data);
-                    if (data.status == 'ok') {
-                        alert('上传成功！');
+                data:formData,
+                async: false,
+                cache: false,
+                contentType: false, //不设置内容类型
+                processData: false, //不处理数据
+                success: function(result){
+                    if(result.code == 0){//登录成功
+                        parent.location.href ='index.html';
+                    }else{
+                        vm.error = true;
+                        vm.errorMsg = result.msg;
+                        vm.refreshCode();
                     }
-                },
-                error:function(response){
-                    console.log("error:"+response);
                 }
-            });
-        },
-        facelogin: function () {
-            var inputObj=document.getElementById('fileUpload')
-            inputObj.click();
-            this.stop();
-            var file = $("#fileUpload")[0].files[0];
-            if(file == null){
-                this.stop();
-            }
-            var formData = new FormData();
-            formData.append('file', $("#fileUpload")[0].files[0]);
-            console.log('正在上传...');
-            $.ajax({
-                url:'sys/facelogin',
-                dataType:'json',
-                type:'POST',
-                async: false,
-                data: formData,
-                processData : false, // 使数据不做处理
-                contentType : false, // 不要设置Content-Type请求头
-                success: function(data){
-                    console.log("***"+data);
-                    if (data.status == 'ok') {
-                        alert('上传成功！');
-                    }
-                },
-                error:function(response){
-                    console.log("error:"+response);
-                }
-            });
+            })
         },
 		login: function (event) {
 			var data = "username="+vm.username+"&password="+vm.password+"&captcha="+vm.captcha;
