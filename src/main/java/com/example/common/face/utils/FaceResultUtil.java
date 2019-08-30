@@ -1,12 +1,12 @@
 package com.example.common.face.utils;
 
-import com.alibaba.fastjson.JSON;
 import com.example.common.exception.BizException;
 import com.example.common.face.constant.FaceConstant;
 import com.example.common.face.dto.FaceResult;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 /**
  * User: lanxinghua
@@ -32,12 +32,12 @@ public class FaceResultUtil {
     private static FaceResult parseJsonObject(JSONObject res){
         FaceResult faceResult = FaceResult.builder().build();
         try {
-            String logId = res.getString(FaceConstant.LOG_ID);
-            int errorCode = res.getInt(FaceConstant.ERROR_CODE);
-            String errorMsg = res.getString(FaceConstant.ERROR_MSG);
-            int cached = res.getInt(FaceConstant.CACHED);
-            long timestamp = res.getLong(FaceConstant.TIMESTAMP);
-            String dataString = res.getString(FaceConstant.RESULT);
+            String logId = res.has(FaceConstant.LOG_ID) ? res.getString(FaceConstant.LOG_ID) : "0";
+            int errorCode = res.has(FaceConstant.ERROR_CODE) ? res.getInt(FaceConstant.ERROR_CODE) : 0;
+            String errorMsg = res.has(FaceConstant.ERROR_MSG) ? res.getString(FaceConstant.ERROR_MSG) : "";
+            int cached = res.has(FaceConstant.CACHED) ? res.getInt(FaceConstant.CACHED) : 0;
+            long timestamp = res.has(FaceConstant.TIMESTAMP) ? res.getLong(FaceConstant.TIMESTAMP) : 0;
+            String dataString = res.has(FaceConstant.RESULT) ? res.getString(FaceConstant.RESULT) : "";
             com.alibaba.fastjson.JSONObject data = com.alibaba.fastjson.JSONObject.parseObject(dataString);
 
             faceResult.setLogId(logId);

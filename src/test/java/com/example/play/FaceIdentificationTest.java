@@ -1,17 +1,20 @@
 package com.example.play;
 
 import com.alibaba.fastjson.JSON;
-import com.baidu.aip.face.AipFace;
 import com.example.common.face.FaceManage;
 import com.example.common.face.constant.FaceConstant;
 import com.example.common.face.constant.ImageTypeEnum;
 import com.example.common.face.dto.FaceResult;
 import com.example.common.face.dto.FaceUserDTO;
 import com.example.common.face.dto.ImageU;
-import org.json.JSONObject;
+import com.example.common.face.utils.FaceUtil;
+import com.example.common.utils.FilesUtil;
+import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 
-import java.util.ArrayList;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.HashMap;
 
 /**
@@ -20,7 +23,34 @@ import java.util.HashMap;
  * Desc: 人脸识别测试
  */
 public class FaceIdentificationTest {
-    private AipFace client;
+    /**
+     * 人脸注册,导入数据100张人脸图片
+     */
+    @Test
+    public void test00() throws Exception{
+        FaceUserDTO<String> userDTO = new FaceUserDTO<>();
+        userDTO.setGroupId("group2");
+        String filePath = "/Users/cxx/Downloads/entryPhoto/";
+        File[] files = FilesUtil.listFile(filePath);
+        int j = 0;
+        for (File file : files) {
+            int id = 7000 + j;
+            j++;
+            userDTO.setUserId(String.valueOf(id));
+            InputStream is = new FileInputStream(new File(filePath + file.getName()));
+            byte[] bytes = IOUtils.toByteArray(is);
+            String data = FaceUtil.encodeBase64(bytes);
+            ImageU imageU = ImageU.builder().data(data).imageTypeEnum(ImageTypeEnum.BASE64).build();
+            userDTO.setUser("用户信息 group1 - " + id);
+            try {
+                FaceManage.faceRegister(userDTO, imageU);
+            }catch (Exception e){
+                System.out.println("注册失败 msg:" + e.getMessage());
+                continue;
+            }
+
+        }
+    }
 
     /**
      * 人脸注册
@@ -194,15 +224,26 @@ public class FaceIdentificationTest {
 
     /**
      * 人脸搜索
-     * @throws Exception
      */
     @Test
-    public void test14() throws Exception{
+    public void test14() {
         String image = "https://download.2dfire.com/mis/permanent/img1.jpg";
         ImageU imageU = ImageU.builder().data(image).imageTypeEnum(ImageTypeEnum.URL).build();
         String groupIds = "group1,group2";
         FaceResult result = FaceManage.faceSearch(groupIds, imageU);
         String users = result.getData().getString(FaceConstant.USER_LIST);
+        System.out.println(users);
+    }
+
+    /**
+     * 活体检测
+     */
+    @Test
+    public void test15() {
+        String image = "https://download.2dfire.com/mis/permanent/img1.jpg";
+        ImageU imageU = ImageU.builder().data(image).imageTypeEnum(ImageTypeEnum.URL).build();
+        FaceResult result = FaceManage.faceverify(imageU);
+        String users = result.getData().toJSONString();
         System.out.println(users);
     }
 

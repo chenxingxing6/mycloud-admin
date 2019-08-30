@@ -1,7 +1,16 @@
 package com.example.modules.sys.controller;
 
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.example.common.exception.BizException;
+import com.example.common.face.FaceManage;
+import com.example.common.face.constant.FaceConstant;
+import com.example.common.face.constant.ImageTypeEnum;
+import com.example.common.face.dto.FaceResult;
+import com.example.common.face.dto.FaceUserDTO;
+import com.example.common.face.dto.ImageU;
+import com.example.common.face.utils.FaceUtil;
 import com.example.modules.oss.cloud.OSSFactory;
 import com.example.modules.oss.entity.SysOssEntity;
 import com.example.modules.oss.service.ISysOssService;
@@ -9,6 +18,7 @@ import com.google.code.kaptcha.Constants;
 import com.google.code.kaptcha.Producer;
 import com.example.common.utils.R;
 import com.example.modules.sys.shiro.ShiroUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,7 +89,7 @@ public class SysLoginController {
 
 
 	/**
-	 * 登录
+	 * 人脸登录
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/sys/loginface", method = RequestMethod.POST)
@@ -87,16 +97,46 @@ public class SysLoginController {
 		if (file.isEmpty()) {
 			throw new BizException("上传文件不能为空");
 		}
-		//上传文件
+		//上传文件到oss
 		String suffix = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
 		String url = OSSFactory.build().uploadSuffix(file.getBytes(), suffix);
-		//保存文件信息
-		SysOssEntity ossEntity = new SysOssEntity();
-		ossEntity.setUrl(url);
-		ossEntity.setCreateDate(new Date());
-		sysOssService.insert(ossEntity);
-		System.out.println("文件url" + url);
+		System.out.println("用户上传图片：" + url);
+		String groupIds = "group2";
+		String data = FaceUtil.encodeBase64(file.getBytes());
+		ImageU imageU = ImageU.builder().data(data).imageTypeEnum(ImageTypeEnum.BASE64).build();
+		FaceResult result = FaceManage.faceSearch(groupIds, imageU);
+		String users = result.getData().getString(FaceConstant.USER_LIST);
+		if (StringUtils.isEmpty(users)){
+			return R.error("用户不存在");
+		}
+		JSONArray array = JSONObject.parseArray(users);
+		JSONObject object = JSONObject.parseObject(array.get(0).toString());
+		Integer score = object.getInteger(FaceConstant.SCORE);
+		if (score == null){
+			return R.error("登录失败");
+		}
+		if (score >= FaceConstant.MATCH_SCORE){
+			return R.error("登录成功");
+		}
 		return R.error("登录失败");
+	}
+
+	/**
+	 * 人脸注册
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/sys/registerface", method = RequestMethod.POST)
+	public R faceRegister(@RequestParam("file") MultipartFile file) throws Exception {
+		if (file.isEmpty()) {
+			throw new BizException("上传文件不能为空");
+		}
+		FaceUserDTO<String> userDTO = new FaceUserDTO<>();
+		userDTO.setGroupId("group2");
+		String data = FaceUtil.encodeBase64(file.getBytes());
+		ImageU imageU = ImageU.builder().data(data).imageTypeEnum(ImageTypeEnum.BASE64).build();
+		userDTO.setUser("用户信息 group2");
+		FaceManage.faceRegister(userDTO, imageU);
+		return R.ok("注册成功");
 	}
 
 	/**

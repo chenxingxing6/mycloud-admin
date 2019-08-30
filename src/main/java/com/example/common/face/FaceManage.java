@@ -1,6 +1,7 @@
 package com.example.common.face;
 
 import com.alibaba.fastjson.JSON;
+import com.baidu.aip.face.FaceVerifyRequest;
 import com.baidu.aip.face.MatchRequest;
 import com.example.common.face.constant.ActionTypeEnum;
 import com.example.common.face.constant.FaceConstant;
@@ -50,7 +51,7 @@ public class FaceManage {
         // 人脸注册
         JSONObject res = FaceUtil.getClient().addUser(image, imageType, groupId, userId, options);
         FaceResultUtil.isSuccess(res);
-        logger.info("人脸注册成功 {}", res.toString(2));
+        logger.info("人脸注册成功");
     }
 
 
@@ -247,6 +248,18 @@ public class FaceManage {
         options.put("liveness_control", LivenessControlEnum.NONE.name());
         // 人脸搜索
         JSONObject res = FaceUtil.getClient().search(imageU.getData(), imageU.getImageTypeEnum().name(), groupIds, options);
+        return FaceResultUtil.isSuccess(res);
+    }
+
+
+    /**
+     * 活体检测
+     */
+    public static FaceResult faceverify(ImageU imageU) {
+        FaceVerifyRequest req = new FaceVerifyRequest(imageU.getData(), imageU.getImageTypeEnum().name());
+        ArrayList<FaceVerifyRequest> list = new ArrayList<FaceVerifyRequest>();
+        list.add(req);
+        JSONObject res = FaceUtil.getClient().faceverify(list);
         return FaceResultUtil.isSuccess(res);
     }
 
