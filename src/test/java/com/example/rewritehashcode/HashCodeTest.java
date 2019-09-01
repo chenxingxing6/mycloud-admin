@@ -31,6 +31,8 @@ public class HashCodeTest {
         map.put(user2, 1);
         System.out.println(map.size());
 
+
+
     }
 
 }
