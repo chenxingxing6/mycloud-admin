@@ -1,7 +1,10 @@
 package com.example.modules.sys.controller;
 
 
+import com.alibaba.fastjson.JSON;
 import com.example.common.annotation.SysLog;
+import com.example.common.constants.RequestHolder;
+import com.example.common.constants.SessionHolder;
 import com.example.common.constants.UserEnum;
 import com.example.common.utils.PageUtils;
 import com.example.common.utils.R;
@@ -14,7 +17,6 @@ import com.example.modules.sys.service.ISysUserRoleService;
 import com.example.modules.sys.service.ISysUserService;
 import com.example.modules.sys.shiro.ShiroUtils;
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -44,6 +46,9 @@ public class SysUserController extends AbstractController {
 	@RequestMapping("/list")
 	@RequiresPermissions("sys:user:list")
 	public R list(@RequestParam Map<String, Object> params){
+		// 测试 ThreadLocal,保存登陆信息
+		SysUserEntity sysUserEntity = SessionHolder.getSsoSession();
+		System.out.println("测试：" + Thread.currentThread().getName() + JSON.toJSONString(sysUserEntity));
 		params.put("type", UserEnum.BACK.getType());
 		PageUtils page = sysUserService.queryPage(params);
 		return R.ok().put("page", page);

@@ -155,9 +155,6 @@ var vm = new Vue({
 			    url: "sys/login",
 			    data: data,
 			    dataType: "json",
-                beforeSend: function(){
-                    ii = layer.load();
-                },
 			    success: function(result){
 					if(result.code == 0){//登录成功
 						parent.location.href ='index.html';
@@ -167,9 +164,6 @@ var vm = new Vue({
 						vm.refreshCode();
 					}
 				},
-                complete: function(){
-                   layer.close(ii);
-                }
 			});
 		}
 	}
