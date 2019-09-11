@@ -3,6 +3,7 @@ package com.example.modules.sys.controller;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.example.common.event.MyEvent;
 import com.example.common.exception.BizException;
 import com.example.common.face.FaceManage;
 import com.example.common.face.constant.FaceConstant;
@@ -22,6 +23,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -29,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
 import javax.imageio.ImageIO;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -46,9 +49,12 @@ public class SysLoginController {
 	private Producer producer;
 	@Autowired
 	private ISysOssService sysOssService;
+	@Resource
+	ApplicationEventPublisher applicationEventPublisher;
 
 	@RequestMapping("captcha.jpg")
 	public void captcha(HttpServletResponse response)throws IOException {
+		applicationEventPublisher.publishEvent(new MyEvent<String>("获取验证码......"));
         response.setHeader("Cache-Control", "no-store, no-cache");
         response.setContentType("image/jpeg");
         //生成文字验证码
